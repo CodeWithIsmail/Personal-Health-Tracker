@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'StudyMate\n$userName',
+          'HealthTracker\n$userName',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 20,
@@ -104,24 +104,24 @@ class _HomePageState extends State<HomePage> {
               Icons.list,
               color: pageNumber == 1 ? selectColor : unselectColor,
             ),
-            label: 'Study Planner',
-            tooltip: 'Daily Study Planner',
+            label: 'History',
+            tooltip: 'Health report history',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.assignment_outlined,
               color: pageNumber == 2 ? selectColor : unselectColor,
             ),
-            label: 'Assignment',
-            tooltip: 'Upcoming assignments',
+            label: 'Add record',
+            tooltip: 'Add new medical report record',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.event_available_outlined,
               color: pageNumber == 3 ? selectColor : unselectColor,
             ),
-            label: 'Event',
-            tooltip: 'Upcoming events',
+            label: 'Profile',
+            tooltip: 'Profile page',
           ),
         ],
       ),
