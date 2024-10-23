@@ -12,3 +12,11 @@ Once the data is extracted, the app provides personalized health insights, summa
 In addition, the app serves as a personal health assistant by rapidly reminding users to update their health data on a regular basis. The app will notify users to seek treatment from a healthcare professional to improve their condition if unexpected values or patterns are detected in a report. Regular interaction on the application encourages users to develop a proactive approach towards maintaining their health, raising awareness about personal health conditions, facilitating early detection and avoidance of potential health issues.
 
 Along with monitoring an individual's health, the app provides a news and recommendation section where users may get updates on healthier lifestyle techniques, healthcare news, and general health advice.
+
+## Technology and Tools:
+o Image Processing: Use some Image processing libraries (e.g., OpenCV) to make the data extraction process more accurate.
+o OCR Module: Integrate a reliable OCR library (e.g., Google ML Kit, Tesseract) for text extraction from medical reports.
+o Database: Use Firebase for real-time, scalable data storage, handling both extracted data and historical medical records.
+o Back-end deploy: Deploy back-end functionalities on a cloud server (e.g., Render).
+o Statistical Analysis: Implement algorithms or integrate libraries (e.g. NumPy) to perform statistical comparisons and generate health insights.
+o Mobile Development Framework: Use Flutter for cross-platform app development, ensuring seamless image capturing from camera or gallery using Flutter package (e.g., Image Picker)
