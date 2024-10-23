@@ -15,8 +15,13 @@ Along with monitoring an individual's health, the app provides a news and recomm
 
 ## Technology and Tools:
 o Image Processing: Use some Image processing libraries (e.g., OpenCV) to make the data extraction process more accurate.
+
 o OCR Module: Integrate a reliable OCR library (e.g., Google ML Kit, Tesseract) for text extraction from medical reports.
+
 o Database: Use Firebase for real-time, scalable data storage, handling both extracted data and historical medical records.
+
 o Back-end deploy: Deploy back-end functionalities on a cloud server (e.g., Render).
+
 o Statistical Analysis: Implement algorithms or integrate libraries (e.g. NumPy) to perform statistical comparisons and generate health insights.
+
 o Mobile Development Framework: Use Flutter for cross-platform app development, ensuring seamless image capturing from camera or gallery using Flutter package (e.g., Image Picker)
