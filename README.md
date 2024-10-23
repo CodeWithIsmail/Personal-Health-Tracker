@@ -6,6 +6,9 @@ health monitoring, this application can also be used to efficiently manage healt
 
 ## Project Description:
 The Personal Health Tracker is a comprehensive mobile application designed to help users actively manage and monitor their health with ease and efficiency. The app allows users to upload images of their medical diagnostic reports (text and numeric value based test report e.g., blood test), which are then automatically processed to extract important health data such as test names, values, and results by using Optical Character Recognition (OCR) technology. This automation reduces the need for manual data entry, ensuring more accurate and better user experience for users.
+
 Once the data is extracted, the app provides personalized health insights, summarizing the report in a simple, understandable format. It helps users interpret their diagnostic results, identify health trends over time and provides visual analysis of health records over time. Thus the Personal Health Tracker empowers users to stay updated about their health status and make data-driven decisions.
+
 In addition, the app serves as a personal health assistant by rapidly reminding users to update their health data on a regular basis. The app will notify users to seek treatment from a healthcare professional to improve their condition if unexpected values or patterns are detected in a report. Regular interaction on the application encourages users to develop a proactive approach towards maintaining their health, raising awareness about personal health conditions, facilitating early detection and avoidance of potential health issues.
+
 Along with monitoring an individual's health, the app provides a news and recommendation section where users may get updates on healthier lifestyle techniques, healthcare news, and general health advice.
