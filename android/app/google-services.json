@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "368624307662",
+    "project_id": "personal-health-tracker-48bb8",
+    "storage_bucket": "personal-health-tracker-48bb8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368624307662:android:05c106ee0201096923af9f",
+        "android_client_info": {
+          "package_name": "com.example.personal_health_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrZrX7P81c6HCLCHxWP66sCifTpVpbJgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
