@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import 'ImportAll.dart';
+import '../ImportAll.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,7 +9,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int pageNumber = 0;
-  String userName = 'CodeWithIsmail';
+  String? userName = FirebaseAuth.instance.currentUser?.email;
   Color selectColor = Colors.green;
   Color unselectColor = Colors.lightBlueAccent;
 
@@ -57,7 +55,15 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.info_outline_rounded),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginOrRegistration(),
+                ),
+              );
+            },
             icon: Icon(Icons.logout),
           ),
         ],

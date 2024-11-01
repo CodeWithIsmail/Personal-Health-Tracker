@@ -10,14 +10,49 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LogInScreenState extends State<LogInScreen> {
-  TextEditingController uname = TextEditingController();
+  TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+
+  void googleSignIn() async {
+    try {
+      await AuthService().SignInWithGoogle();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 
   void forgotPassword() {}
 
-  void logIn() {}
-
-  void register() {}
+  void logIn() async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text, password: password.text);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+      print(credential);
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      if (e.code == "invalid-credential") {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return CustomAlert(
+                "Invalid credential.", Colors.deepPurple, Colors.white);
+          },
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +86,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            CustomTextField("Email", false, uname,
+                            CustomTextField("Email", false, email,
                                 TextInputType.emailAddress),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 30),
@@ -101,10 +136,13 @@ class _LogInScreenState extends State<LogInScreen> {
                             ),
                             padding: EdgeInsets.symmetric(
                                 vertical: 1, horizontal: 7),
-                            child: CustomIconName(
-                                'images/googleLogo.png',
-                                MediaQuery.of(context).size.width / 10,
-                                MediaQuery.of(context).size.height / 14),
+                            child: GestureDetector(
+                              onTap: googleSignIn,
+                              child: CustomIconName(
+                                  'images/googleLogo.png',
+                                  MediaQuery.of(context).size.width / 10,
+                                  MediaQuery.of(context).size.height / 14),
+                            ),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 15,
