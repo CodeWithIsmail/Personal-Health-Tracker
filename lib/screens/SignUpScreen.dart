@@ -1,7 +1,7 @@
 import '../ImportAll.dart';
 
 class SignUpScreen extends StatefulWidget {
-  void Function()? togglefunction;
+  final void Function()? togglefunction;
 
   SignUpScreen(this.togglefunction);
 
@@ -10,12 +10,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  @override
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController conPassword = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  String? tempEmail;
+  String? tempPassword;
 
   void register() async {
     try {
@@ -34,93 +36,95 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
 
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email.text,
-        password: password.text,
-      );
+      tempEmail = email.text;
+      tempPassword = password.text;
 
-      print(credential);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+        email: tempEmail!,
+        password: tempPassword!,
       );
-    } on FirebaseAuthException catch (e) {
-      print(e.code);
-      if (e.code == 'weak-password') {
-        CustomToast('The password provided is too weak.', Colors.blueGrey,
-                Colors.white, 16)
-            .showToast();
-      } else if (e.code == 'email-already-in-use') {
-        CustomToast('The account already exists for that email.',
-                Colors.blueGrey, Colors.white, 16)
-            .showToast();
+      User? user = credential.user;
+
+      if (user != null) {
+        await user.sendEmailVerification();
+        _showVerificationDialog();
+        bool isVerified = await checkEmailVerification(user);
+        if (isVerified) {
+          await _auth.signInWithEmailAndPassword(
+            email: tempEmail!,
+            password: tempPassword!,
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          await user.delete();
+          CustomToast('Email verification required. Please sign up again.',
+                  Colors.blueGrey, Colors.white, 16)
+              .showToast();
+        }
       }
+    } on FirebaseAuthException catch (e) {
+      handleFirebaseError(e);
     } catch (e) {
       print(e);
     }
   }
 
-  // final GoogleSignIn googleSignIn = GoogleSignIn();
+  void _showVerificationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Text("Verification Email Sent"),
+          titleTextStyle: TextStyle(color: Colors.white),
+          content: Text(
+              "A verification email has been sent to ${tempEmail}. Please check your email to verify your account."),
+          contentTextStyle: TextStyle(color: Colors.grey),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-  // Future<void> signInWithGoogle() async {
-  //   try {
-  //     final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-  //     final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
-  //
-  //     final AuthCredential credential = GoogleAuthProvider.credential(
-  //       accessToken: googleSignInAuthentication.accessToken,
-  //       idToken: googleSignInAuthentication.idToken,
-  //     );
-  //
-  //     final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-  //     final User? user = userCredential.user;
-  //
-  //     // Use the user object for further operations or navigate to a new screen.
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
+  Future<bool> checkEmailVerification(User user) async {
+    while (!user.emailVerified) {
+      await Future.delayed(Duration(seconds: 5));
+      await user.reload();
+    }
+    return true;
+  }
 
-  // Future<void> signInWithGoogle() async {
-  //   try {
-  //     // Sign in with Google
-  //     final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(
-  //       GoogleAuthProvider.credential(
-  //         accessToken: await GoogleAuthProvider.getCredential(),
-  //       ),
-  //     );
-  //     // Handle successful sign-in here
-  //     print("Google Sign-In Successful: ${userCredential.user?.email}");
-  //   } catch (e) {
-  //     print("Error signing in with Google: $e");
-  //   }
-  // }
-  //
-  // Future<void> signInWithApple() async {
-  //   try {
-  //     // Sign in with Apple
-  //     final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(
-  //       OAuthProvider("apple.com").credential(),
-  //     );
-  //     // Handle successful sign-in here
-  //     print("Apple Sign-In Successful: ${userCredential.user?.email}");
-  //   } catch (e) {
-  //     print("Error signing in with Apple: $e");
-  //   }
-  // }
-
-  void forgotPassword() {}
+  void handleFirebaseError(FirebaseAuthException e) {
+    if (e.code == 'weak-password') {
+      CustomToast('The password provided is too weak.', Colors.blueGrey,
+              Colors.white, 16)
+          .showToast();
+    } else if (e.code == 'email-already-in-use') {
+      CustomToast('The account already exists for that email.', Colors.blueGrey,
+              Colors.white, 16)
+          .showToast();
+    } else if (e.code == 'invalid-email') {
+      CustomToast('Please enter a valid email address.', Colors.blueGrey,
+              Colors.white, 16)
+          .showToast();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          // padding:EdgeInsets.symmetric(vertical: 5,horizontal: 15),
           decoration: BoxDecoration(
             gradient: gradientMain,
           ),
@@ -131,7 +135,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height,
                   child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomIconName(
@@ -139,10 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           MediaQuery.of(context).size.width / 3,
                           MediaQuery.of(context).size.height / 5),
                       SizedBox(height: MediaQuery.of(context).size.width / 50),
-                      Text(
-                        'Personal Health Tracker',
-                        style: appNameTextStyle,
-                      ),
+                      Text('Personal Health Tracker', style: appNameTextStyle),
                       SizedBox(height: MediaQuery.of(context).size.width / 10),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -161,12 +161,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 conPassword, TextInputType.text),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
-                            // Padding(
-                            //   padding: EdgeInsets.only(right: 10),
-                            //   child: CustomTextGestureDetector("Forgot Password?",
-                            //       Colors.white60, 15, true, forgotPassword),
-                            // ),
-                            // SizedBox(height: MediaQuery.of(context).size.width / 10),
                             CustomButtonGestureDetector(
                               "Sign Up",
                               double.infinity,
@@ -181,19 +175,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ],
                         ),
                       ),
-                      Text(
-                        "Or continue with",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white.withOpacity(0.8),
-                            fontWeight: FontWeight.w600),
-                      ),
+                      Text("Or continue with",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white.withOpacity(0.8),
+                              fontWeight: FontWeight.w600)),
                       SizedBox(height: MediaQuery.of(context).size.width / 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            // onTap: signInWithGoogle,
+                            // onTap: signInWithGoogle, // Uncomment when Google sign-in is implemented
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
@@ -208,8 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width / 15,
-                          ),
+                              width: MediaQuery.of(context).size.width / 15),
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),

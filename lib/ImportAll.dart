@@ -28,6 +28,8 @@ export 'custom/CustomButtonGestureDetector.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 export 'package:flutter/cupertino.dart';
 export 'package:flutter/material.dart' hide RefreshCallback;
+export 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
