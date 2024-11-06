@@ -22,7 +22,7 @@ class CustomButtonGestureDetector extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
           text,

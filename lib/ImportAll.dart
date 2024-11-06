@@ -7,6 +7,7 @@ export 'helper/constants.dart';
 
 // helper
 export 'helper/LogOrRegi.dart';
+export 'helper/CropAspectRatio.dart';
 
 // services
 export 'services/AuthService.dart';
@@ -29,10 +30,15 @@ export 'package:fluttertoast/fluttertoast.dart';
 export 'package:flutter/cupertino.dart';
 export 'package:flutter/material.dart' hide RefreshCallback;
 export 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
+export 'package:image_cropper/image_cropper.dart';
+export 'package:image_picker/image_picker.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
 export 'firebase_options.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:google_sign_in/google_sign_in.dart';
+
+// flutter
+export 'dart:io';
+export 'dart:convert';
