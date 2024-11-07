@@ -83,12 +83,12 @@ class _TextRecognitionPageState extends State<TextRecognitionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Text Recognition'),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
-      ),
+      // appBar: AppBar(
+      //   title: Text('Text Recognition'),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.blueAccent,
+      //   foregroundColor: Colors.white,
+      // ),
       body: Padding(
         padding: EdgeInsets.all(20.0),
         child: SingleChildScrollView(
