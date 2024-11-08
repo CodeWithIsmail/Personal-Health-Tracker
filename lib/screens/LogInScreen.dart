@@ -208,24 +208,24 @@ class _LogInScreenState extends State<LogInScreen> {
     }
   }
 
-  void facebookSignIn() async {
-    try {
-      final LoginResult result = await FacebookAuth.instance.login();
-      if (result.status == LoginStatus.success) {
-        final AccessToken accessToken = result.accessToken!;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
-      } else {
-        print("Facebook login failed: ${result.message}");
-      }
-    } catch (e) {
-      print("Facebook login error: $e");
-    }
-  }
+  // void facebookSignIn() async {
+  //   try {
+  //     final LoginResult result = await FacebookAuth.instance.login();
+  //     if (result.status == LoginStatus.success) {
+  //       final AccessToken accessToken = result.accessToken!;
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => HomePage(),
+  //         ),
+  //       );
+  //     } else {
+  //       print("Facebook login failed: ${result.message}");
+  //     }
+  //   } catch (e) {
+  //     print("Facebook login error: $e");
+  //   }
+  // }
 
   void forgotPassword() async {
     await showDialog(

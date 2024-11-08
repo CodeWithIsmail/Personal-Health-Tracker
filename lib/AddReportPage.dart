@@ -252,16 +252,7 @@
 //   }
 // }
 
-
-
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_cropper/image_cropper.dart';
-
 import 'ImportAll.dart';
 
 class AddReportScreen extends StatefulWidget {
@@ -275,6 +266,32 @@ class _AddReportScreenState extends State<AddReportScreen> {
   File? selectedMedia;
   final ImagePicker _picker = ImagePicker();
   String extractedText = "Extracted text will appear here";
+
+  void initState() {
+    super.initState();
+    getLostData();
+  }
+
+  // retrieve lost data
+  Future<void> getLostData() async {
+    final LostDataResponse response = await _picker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    if (response.file != null) {
+      File? croppedFile = await _cropImage(File(response.file!.path));
+      if (croppedFile != null) {
+        setState(() {
+          selectedMedia = croppedFile;
+        });
+        _extractText(croppedFile);
+      }
+    } else {
+      CustomToast(response.exception?.message ?? "Unknown error occurred.",
+              Colors.redAccent, Colors.white, 16)
+          .showToast();
+    }
+  }
 
   // Function to pick an image
   Future<void> _getImage(ImageSource source) async {
@@ -328,7 +345,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
         await _saveRecognizedTextToFile(extractedText);
       } else {
         setState(() {
-          extractedText = "Error extracting text. Status: ${response.statusCode}";
+          extractedText =
+              "Error extracting text. Status: ${response.statusCode}";
         });
       }
     } catch (e) {
@@ -364,7 +382,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
               if (selectedMedia != null)
                 Image.file(selectedMedia!, height: 200)
               else
-                const Placeholder(fallbackHeight: 200, fallbackWidth: double.infinity),
+                const Placeholder(
+                    fallbackHeight: 200, fallbackWidth: double.infinity),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _getImage(ImageSource.gallery),

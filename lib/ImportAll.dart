@@ -29,9 +29,9 @@ export 'custom/CustomButtonGestureDetector.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 export 'package:flutter/cupertino.dart';
 export 'package:flutter/material.dart' hide RefreshCallback;
-export 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 export 'package:image_cropper/image_cropper.dart';
 export 'package:image_picker/image_picker.dart';
+export 'package:path_provider/path_provider.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
