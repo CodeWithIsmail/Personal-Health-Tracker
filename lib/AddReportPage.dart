@@ -330,7 +330,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
   // Function to extract text from the image using the backend
   Future<void> _extractText(File imageFile) async {
     try {
-      var url = Uri.parse('http://10.100.202.150:5000/extract_text');
+      var url = Uri.parse('http://192.168.104.207:5000/extract_text');
       var request = http.MultipartRequest('POST', url)
         ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
 
@@ -338,18 +338,22 @@ class _AddReportScreenState extends State<AddReportScreen> {
       var responseBody = await http.Response.fromStream(response);
 
       if (response.statusCode == 200) {
+
         final responseData = json.decode(responseBody.body);
         setState(() {
           extractedText = responseData['extracted_text'] ?? "No text found";
         });
+        print("extracted text: "+extractedText);
         await _saveRecognizedTextToFile(extractedText);
       } else {
         setState(() {
           extractedText =
               "Error extracting text. Status: ${response.statusCode}";
+
         });
       }
     } catch (e) {
+      print(e);
       setState(() {
         extractedText = "Error: Failed to connect to the server";
       });
