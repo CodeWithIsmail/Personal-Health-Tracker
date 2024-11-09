@@ -42,3 +42,6 @@ export 'package:google_sign_in/google_sign_in.dart';
 // flutter
 export 'dart:io';
 export 'dart:convert';
+
+
+export 'CBCinputScreen.dart';
