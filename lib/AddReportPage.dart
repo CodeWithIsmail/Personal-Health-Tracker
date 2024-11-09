@@ -266,13 +266,13 @@ class _AddReportScreenState extends State<AddReportScreen> {
   File? selectedMedia;
   final ImagePicker _picker = ImagePicker();
   String extractedText = "Extracted text will appear here";
+  String parsedData = "Parsed data will appear here";
 
   void initState() {
     super.initState();
     getLostData();
   }
 
-  // retrieve lost data
   Future<void> getLostData() async {
     final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
@@ -293,12 +293,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
     }
   }
 
-  // Function to pick an image
   Future<void> _getImage(ImageSource source) async {
     try {
       final pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
-        // Crop image if needed
         File? croppedFile = await _cropImage(File(pickedFile.path));
         if (croppedFile != null) {
           setState(() {
@@ -314,7 +312,6 @@ class _AddReportScreenState extends State<AddReportScreen> {
     }
   }
 
-  // Function to crop the image
   Future<File?> _cropImage(File imageFile) async {
     try {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
@@ -327,7 +324,6 @@ class _AddReportScreenState extends State<AddReportScreen> {
     return null;
   }
 
-  // Function to extract text from the image using the backend
   Future<void> _extractText(File imageFile) async {
     try {
       var url = Uri.parse('http://192.168.104.207:5000/extract_text');
@@ -338,18 +334,17 @@ class _AddReportScreenState extends State<AddReportScreen> {
       var responseBody = await http.Response.fromStream(response);
 
       if (response.statusCode == 200) {
-
         final responseData = json.decode(responseBody.body);
         setState(() {
           extractedText = responseData['extracted_text'] ?? "No text found";
         });
         print("extracted text: "+extractedText);
         await _saveRecognizedTextToFile(extractedText);
+        await _fetchReportData(extractedText);
       } else {
         setState(() {
           extractedText =
               "Error extracting text. Status: ${response.statusCode}";
-
         });
       }
     } catch (e) {
@@ -361,7 +356,37 @@ class _AddReportScreenState extends State<AddReportScreen> {
     }
   }
 
-  // Function to save recognized text to a file
+  Future<void> _fetchReportData(String text) async {
+    try {
+      String processedText = text.replaceAll('\n', ' ');
+      print(processedText);
+      text="MCV: 84.5 fL 80 - 96 fL MCH: 29.5 pg 27 - 32 pg";
+      var url = Uri.parse('http://192.168.104.207:5001/extract_test_data');
+      var response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({"extracted_text": text}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          parsedData = data.toString();
+          print(parsedData);
+        });
+      } else {
+        setState(() {
+          parsedData = "Error fetching parsed data. Status: ${response.statusCode}";
+        });
+      }
+    } catch (e) {
+      print("Error fetching parsed data: $e");
+      setState(() {
+        parsedData = "Error: Failed to connect to the server";
+      });
+    }
+  }
+
   Future<void> _saveRecognizedTextToFile(String text) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
@@ -400,6 +425,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
               ),
               const SizedBox(height: 20),
               Text(extractedText, style: const TextStyle(fontSize: 20)),
+              const SizedBox(height: 20),
+              Text("Parsed Data:", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(parsedData, style: const TextStyle(fontSize: 16)),
             ],
           ),
         ),
