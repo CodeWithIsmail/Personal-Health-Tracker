@@ -268,6 +268,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
   String extractedText = "Extracted text will appear here";
   String parsedData = "Parsed data will appear here";
 
+  FirestoreService firestoreService = new FirestoreService();
+
   void initState() {
     super.initState();
     getLostData();
@@ -302,6 +304,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
           setState(() {
             selectedMedia = croppedFile;
           });
+          _uploadImage(croppedFile);
           await _extractText(croppedFile);
         }
       } else {
@@ -309,6 +312,25 @@ class _AddReportScreenState extends State<AddReportScreen> {
       }
     } catch (e) {
       print("Error picking image: $e");
+    }
+  }
+
+  Future<void> _uploadImage(File imageFile) async {
+    final url =
+        Uri.parse("https://api.cloudinary.com/v1_1/ismailCloud/image/upload");
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'healthTracker'
+      ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final responseData = await response.stream.toBytes();
+      final responseString = String.fromCharCodes(responseData);
+      final jsonMap = jsonDecode(responseString);
+
+      print(jsonMap);
+      print(jsonMap['url']);
+      String imgUrl = jsonMap['url'];
+      firestoreService.storeImgLink("123", "234", imgUrl);
     }
   }
 
@@ -338,7 +360,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
         setState(() {
           extractedText = responseData['extracted_text'] ?? "No text found";
         });
-        print("extracted text: "+extractedText);
+        print("extracted text: " + extractedText);
         await _saveRecognizedTextToFile(extractedText);
         await _fetchReportData(extractedText);
       } else {
@@ -360,7 +382,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
     try {
       String processedText = text.replaceAll('\n', ' ');
       print(processedText);
-      text="MCV: 84.5 fL 80 - 96 fL MCH: 29.5 pg 27 - 32 pg";
+      // text = "MCV: 84.5 fL 80 - 96 fL MCH: 29.5 pg 27 - 32 pg";
+      //  text =
+      //   "Total WBC Count: 14.00 X 10^9/uL 4.5 - 11.0 X 10^9/uL Differential Count Neutrophils: 70 % Child ( 25 - 66 %), Adult (40 - 75 %) Lymphocytes:22 % Child(25 - 62 %), Adult (20 - 50 %) Monocytes: 06 % Child (02 - 07 %), Adult (02 - 10 %) Eosinophils: 02 % Child (00 - 03 %), Adult (01 - 06 %)";
+
       var url = Uri.parse('http://192.168.104.207:5001/extract_test_data');
       var response = await http.post(
         url,
@@ -370,13 +395,15 @@ class _AddReportScreenState extends State<AddReportScreen> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(response.body);
         setState(() {
           parsedData = data.toString();
           print(parsedData);
         });
       } else {
         setState(() {
-          parsedData = "Error fetching parsed data. Status: ${response.statusCode}";
+          parsedData =
+              "Error fetching parsed data. Status: ${response.statusCode}";
         });
       }
     } catch (e) {
@@ -426,7 +453,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
               const SizedBox(height: 20),
               Text(extractedText, style: const TextStyle(fontSize: 20)),
               const SizedBox(height: 20),
-              Text("Parsed Data:", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text("Parsed Data:",
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold)),
               Text(parsedData, style: const TextStyle(fontSize: 16)),
             ],
           ),

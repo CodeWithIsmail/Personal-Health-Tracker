@@ -11,6 +11,7 @@ export 'helper/CropAspectRatio.dart';
 
 // services
 export 'services/AuthService.dart';
+export 'services/firestoreDB.dart';
 
 // screens
 export 'screens/SignUpScreen.dart';
@@ -38,6 +39,15 @@ export 'package:firebase_core/firebase_core.dart';
 export 'firebase_options.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:google_sign_in/google_sign_in.dart';
+export 'package:cloud_firestore/cloud_firestore.dart';
+
+// cloudinary
+export 'package:cloudinary_url_gen/cloudinary.dart';
+export 'package:cloudinary_url_gen/transformation/transformation.dart';
+export 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
+export 'package:cloudinary_api/src/request/model/uploader_params.dart';
+export 'package:cloudinary_url_gen/transformation/effect/effect.dart';
+export 'package:cloudinary_url_gen/transformation/resize/resize.dart';
 
 // flutter
 export 'dart:io';
