@@ -10,26 +10,26 @@ app = Flask(__name__)
 def parse_ocr_text(text):
 
     patterns = {
-        "haemoglobin": r"Haemoglobin\s*[:\-]?\s*([\d.,]+)\s*g/dL",
-        "esr": r"ESR\s*\(Westergren Method\)\s*[:\-]?\s*(\d+)\s*mm",
-        "wbc_total": r"Total WBC Count\s*(?:Differential Count\s*)?([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
-        "neutrophils": r"Neutrophils\s*[:\-]?\s*(\d+)\s?%",
-        "lymphocytes": r"Lymphocytes\s*[:\-]?\s*(\d+)\s?%",
-        "monocytes": r"Monocytes\s*[:\-]?\s*(\d+)\s?%",
-        "eosinophils": r"Eosinophils\s*[:\-]?\s*(\d+)\s?%",
-        "basophils": r"Basophils\s*[:\-]?\s*(\d+)\s?%",
-        "rbc_total": r"Total RBC Count\s*[:\-]?\s*([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
-        "hct_pcv": r"HCT\/PCV\s*[:\-]?\s*([\d.,]+)\s?%",
-        "mcv": r"MCV\s*[:\-]?\s*([\d.,]+)\s?fL",
-        "mch": r"MCH\s*[:\-]?\s*([\d.,]+)\s?pg",
-        "mchc": r"MCHC\s*[:\-]?\s*([\d.,]+)\s?g/dL",
-        "rdw_cv": r"RDW-CV\s*[:\-]?\s*([\d.,]+)\s?%",
-        "rdw_sd": r"RDW-SD\s*[:\-]?\s*([\d.,]+)\s?fL",
-        "platelet_total": r"Total Platelet Count\s*[:\-]?\s*([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
-        "mpv": r"MPV\s*[:\-]?\s*([\d.,]+)\s?fL",
-        "pdw": r"PDW\s*[:\-]?\s*([\d.,]+)\s?fL",
-        "p_lcr": r"P-LCR\s*[:\-]?\s*([\d.,]+)\s?%",
-        "pct": r"PCT\s*[:\-]?\s*([\d.,]+)\s?%"
+        "Haemoglobin": r"Haemoglobin\s*[:\-]?\s*([\d.,]+)\s*g/dL",
+        "ESR": r"ESR\s*\(Westergren Method\)\s*[:\-]?\s*(\d+)\s*mm",
+        "WBC": r"Total WBC Count\s*(?:Differential Count\s*)?([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
+        "Neutrophils": r"Neutrophils\s*[:\-]?\s*(\d+)\s?%",
+        "Lymphocytes": r"Lymphocytes\s*[:\-]?\s*(\d+)\s?%",
+        "Monocytes": r"Monocytes\s*[:\-]?\s*(\d+)\s?%",
+        "Eosinophils": r"Eosinophils\s*[:\-]?\s*(\d+)\s?%",
+        "Basophils": r"Basophils\s*[:\-]?\s*(\d+)\s?%",
+        "RBC": r"Total RBC Count\s*[:\-]?\s*([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
+        "HCT_PCV": r"HCT\/PCV\s*[:\-]?\s*([\d.,]+)\s?%",
+        "MCV": r"MCV\s*[:\-]?\s*([\d.,]+)\s?fL",
+        "MCH": r"MCH\s*[:\-]?\s*([\d.,]+)\s?pg",
+        "MCHC": r"MCHC\s*[:\-]?\s*([\d.,]+)\s?g/dL",
+        "RDW_CV": r"RDW-CV\s*[:\-]?\s*([\d.,]+)\s?%",
+        "RDW_SD": r"RDW-SD\s*[:\-]?\s*([\d.,]+)\s?fL",
+        "Platelet": r"Total Platelet Count\s*[:\-]?\s*([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
+        "MPV": r"MPV\s*[:\-]?\s*([\d.,]+)\s?fL",
+        "PDW": r"PDW\s*[:\-]?\s*([\d.,]+)\s?fL",
+        "P_LCR": r"P-LCR\s*[:\-]?\s*([\d.,]+)\s?%",
+        "PCT": r"PCT\s*[:\-]?\s*([\d.,]+)\s?%"
     }
 
     result = {}

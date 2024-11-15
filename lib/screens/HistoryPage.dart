@@ -1,4 +1,4 @@
-import 'ImportAll.dart';
+import '../ImportAll.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
