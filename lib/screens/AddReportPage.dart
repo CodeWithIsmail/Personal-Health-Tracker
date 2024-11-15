@@ -14,6 +14,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
   String extractedText = "Extracted text will appear here";
   String parsedData = "Parsed data will appear here";
   FirestoreService firestoreService = new FirestoreService();
+  bool isLoading = false;
 
   void initState() {
     super.initState();
@@ -48,9 +49,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
         File? croppedFile = await _cropImage(File(pickedFile.path));
         if (croppedFile != null) {
           setState(() {
+            isLoading = true;
             selectedMedia = croppedFile;
           });
-          await _uploadImage(croppedFile);
+          //   await _uploadImage(croppedFile);
           await _processImage(croppedFile);
         }
       } else {
@@ -93,6 +95,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
   }
 
   Future<void> _processImage(File imageFile) async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       var url = Uri.parse('http://192.168.104.207:5000/process_image');
       var request = http.MultipartRequest('POST', url)
@@ -111,6 +116,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
         CBC cbcReport = CBC.fromMap(structuredData);
         print("cbc class print: " + cbcReport.toString());
         setState(() {
+          isLoading = false;
           this.extractedText = extractedText;
           this.parsedData = structuredData.entries
               .map((e) => "${e.key}: ${e.value}")
@@ -138,6 +144,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
         extractedText = "Error: Failed to connect to the server";
         parsedData = "Error: Failed to connect to the server";
       });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -164,6 +174,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                     color: Colors.white),
+              ),
+              if (isLoading) CircularProgressIndicator(
+                color: Colors.white,
               ),
               CustomButtonGestureDetector(
                 'Camera',
