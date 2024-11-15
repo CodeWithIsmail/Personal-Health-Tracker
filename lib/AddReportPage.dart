@@ -1,201 +1,3 @@
-// import 'ImportAll.dart';
-// import 'package:http/http.dart' as http;
-//
-// class AddReportScreen extends StatefulWidget {
-//   const AddReportScreen({super.key});
-//
-//   @override
-//   State<AddReportScreen> createState() => _AddReportScreenState();
-// }
-//
-// class _AddReportScreenState extends State<AddReportScreen> {
-//   File? selectedMedia;
-//   final ImagePicker _picker = ImagePicker();
-//   String extractedText = "";
-//
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     getLostData();
-//   }
-//
-//   Future<void> getLostData() async {
-//     final LostDataResponse response = await _picker.retrieveLostData();
-//     if (response.isEmpty) {
-//       return;
-//     }
-//     if (response.file != null) {
-//       File? croppedFile = await _cropImage(File(response.file!.path));
-//       if (croppedFile != null) {
-//         setState(() {
-//           selectedMedia = croppedFile;
-//         });
-//         final text = await _extractText(croppedFile);
-//         setState(() {
-//           extractedText = text ?? "";
-//         });
-//       }
-//     } else {
-//       CustomToast(response.exception?.message ?? "Unknown error occurred.",
-//               Colors.redAccent, Colors.white, 16)
-//           .showToast();
-//     }
-//   }
-//
-//   Future<File?> _cropImage(File imageFile) async {
-//     try {
-//       CroppedFile? croppedFile = await ImageCropper().cropImage(
-//         sourcePath: imageFile.path,
-//         uiSettings: [
-//           AndroidUiSettings(
-//             toolbarTitle: 'Crop Image',
-//             toolbarColor: Colors.deepOrange,
-//             toolbarWidgetColor: Colors.white,
-//             aspectRatioPresets: [
-//               CropAspectRatioPreset.original,
-//               CropAspectRatioPreset.square,
-//               CropAspectRatioPresetCustom(),
-//             ],
-//           ),
-//           IOSUiSettings(
-//             title: 'Crop Image',
-//             aspectRatioPresets: [
-//               CropAspectRatioPreset.original,
-//               CropAspectRatioPreset.square,
-//               CropAspectRatioPresetCustom(),
-//             ],
-//           ),
-//         ],
-//       );
-//       if (croppedFile != null) {
-//         return File(croppedFile.path);
-//       }
-//       return null;
-//     } on Exception catch (e) {
-//       CustomToast("Image load failed. Try again or try image from gallery.",
-//               Colors.blueGrey, Colors.white, 16)
-//           .showToast();
-//     }
-//     return null;
-//   }
-//
-//   Future<void> _getImage(ImageSource source) async {
-//     try {
-//       final pickedFile = await _picker.pickImage(source: source);
-//       if (pickedFile != null) {
-//         print("Image selected successfully: ${pickedFile.path}");
-//         File? croppedFile = await _cropImage(File(pickedFile.path));
-//         if (croppedFile != null) {
-//           setState(() {
-//             selectedMedia = croppedFile;
-//           });
-//           print("Image cropped successfully: ${croppedFile.path}");
-//           final text = await _extractText(croppedFile);
-//           setState(() {
-//             extractedText = text ?? "No text extracted";
-//           });
-//         }else{
-//           print("Image cropping failed.");
-//           CustomToast("Image cropping failed.", Colors.red, Colors.white, 16).showToast();
-//         }
-//       }else {
-//         print("No image selected.");
-//         CustomToast("No image selected.", Colors.red, Colors.white, 16).showToast();
-//       }
-//
-//     } on Exception catch (e) {
-//       CustomToast("Image load failed. Try again or try image from gallery.",
-//               Colors.blueGrey, Colors.white, 16)
-//           .showToast();
-//     }
-//   }
-//
-//   // Future<String?> _extractText(File imageFile) async {
-//   //   try {
-//   //     var url = Uri.parse('https://ocr-hzm6.onrender.com/extract-text');
-//   //     String fullText = "";
-//   //
-//   //     var request = http.MultipartRequest('POST', url)
-//   //       ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-//   //
-//   //     var response = await request.send();
-//   //
-//   //     if (response.statusCode == 200) {
-//   //       var responseData = await response.stream.bytesToString();
-//   //       var json = jsonDecode(responseData);
-//   //       fullText = json['full_text'];
-//   //       print("Full Text: ${json['full_text']}");
-//   //       print("Test Values: ${json['test_values']}");
-//   //     } else {
-//   //       fullText = response.statusCode.toString();
-//   //       print("Error: ${response.statusCode}");
-//   //     }
-//   //     return fullText;
-//   //   } on Exception catch (e) {
-//   //     CustomToast(
-//   //             "Text extraction failed. Try again or try image from gallery.",
-//   //             Colors.blueGrey,
-//   //             Colors.white,
-//   //             16)
-//   //         .showToast();
-//   //   }
-//   // }
-//
-//   Future<String?> _extractText(File imageFile) async {
-//     try {
-//       var url = Uri.parse('http://192.168.234.167:5000/extract_text');
-//       String fullText = "";
-//
-//       var request = http.MultipartRequest('POST', url)
-//         ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-//
-//       var response = await request.send();
-//
-//       if (response.statusCode == 200) {
-//         var responseData = await response.stream.bytesToString();
-//         var json = jsonDecode(responseData);
-//         fullText = json['full_text'];
-//         print("Full Text: ${json['full_text']}");
-//         print("Test Values: ${json['test_values']}");
-//       } else {
-//         // Log the full response data for debugging
-//         var responseData = await response.stream.bytesToString();
-//         print("Error: ${response.statusCode}");
-//         print("Response: $responseData");
-//         fullText = "Error: ${response.statusCode}";
-//       }
-//       return fullText;
-//     } catch (e) {
-//       print("Error extracting text: $e");
-//       CustomToast(
-//           "Text extraction failed. Try again or try image from gallery.",
-//           Colors.blueGrey,
-//           Colors.white,
-//           16)
-//           .showToast();
-//     }
-//   }
-//
-//
-//   Widget _extractTextView() {
-//     if (selectedMedia == null) {
-//       return Text("No image selected!");
-//     }
-//     return Column(
-//       children: [
-//         if (extractedText.isEmpty)
-//           const CircularProgressIndicator()
-//         else
-//           Text(
-//             extractedText,
-//             style: const TextStyle(fontSize: 20),
-//           ),
-//       ],
-//     );
-//   }
-//
-//   @override
 //   Widget build(BuildContext context) {
 //     return Container(
 //       child: Center(
@@ -287,7 +89,6 @@ class _AddReportScreenState extends State<AddReportScreen> {
           selectedMedia = croppedFile;
         });
         await _processImage(croppedFile);
-      //  _extractText(croppedFile);
       }
     } else {
       CustomToast(response.exception?.message ?? "Unknown error occurred.",
@@ -305,9 +106,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
           setState(() {
             selectedMedia = croppedFile;
           });
-      // await   _uploadImage(croppedFile);
+      await   _uploadImage(croppedFile);
        await _processImage(croppedFile);
-        //  await _extractText(croppedFile);
         }
       } else {
         print("No image selected.");
@@ -350,7 +150,6 @@ class _AddReportScreenState extends State<AddReportScreen> {
 
   Future<void> _processImage(File imageFile) async {
     try {
-      // Send the image to the combined OCR and NER API
       var url = Uri.parse('http://192.168.104.207:5000/process_image');
       var request = http.MultipartRequest('POST', url)
         ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
@@ -373,8 +172,6 @@ class _AddReportScreenState extends State<AddReportScreen> {
         print("Extracted text: " + extractedText);
         print("Structured data: $structuredData");
 
-        // Optionally, save extracted text to file
-     //   await _saveRecognizedTextToFile(extractedText);
       } else {
         setState(() {
           extractedText = "Error extracting text. Status: ${response.statusCode}";
@@ -391,89 +188,6 @@ class _AddReportScreenState extends State<AddReportScreen> {
   }
 
 
-
-  Future<void> _extractText(File imageFile) async {
-    try {
-      var url = Uri.parse('http://192.168.104.207:5000/extract_text');
-      var request = http.MultipartRequest('POST', url)
-        ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-
-      var response = await request.send();
-      var responseBody = await http.Response.fromStream(response);
-
-      if (response.statusCode == 200) {
-        final responseData = json.decode(responseBody.body);
-        setState(() {
-          extractedText = responseData['extracted_text'] ?? "No text found";
-        });
-        print("extracted text: " + extractedText);
-        await _saveRecognizedTextToFile(extractedText);
-        await _fetchReportData(extractedText);
-      } else {
-        setState(() {
-          extractedText =
-              "Error extracting text. Status: ${response.statusCode}";
-        });
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
-        extractedText = "Error: Failed to connect to the server";
-      });
-      print("Error extracting text: $e");
-    }
-  }
-
-  Future<void> _fetchReportData(String text) async {
-    try {
-      String processedText = text.replaceAll('\n', ' ');
-      print(processedText);
-      // text = "MCV: 84.5 fL 80 - 96 fL MCH: 29.5 pg 27 - 32 pg";
-      //  text =
-      //   "Total WBC Count: 14.00 X 10^9/uL 4.5 - 11.0 X 10^9/uL Differential Count Neutrophils: 70 % Child ( 25 - 66 %), Adult (40 - 75 %) Lymphocytes:22 % Child(25 - 62 %), Adult (20 - 50 %) Monocytes: 06 % Child (02 - 07 %), Adult (02 - 10 %) Eosinophils: 02 % Child (00 - 03 %), Adult (01 - 06 %)";
-
-      var url = Uri.parse('http://192.168.104.207:5001/extract_test_data');
-      var response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode({"extracted_text": text}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        print(response.body);
-        setState(() {
-          parsedData = data.toString();
-          print(parsedData);
-        });
-      } else {
-        setState(() {
-          parsedData =
-              "Error fetching parsed data. Status: ${response.statusCode}";
-        });
-      }
-    } catch (e) {
-      print("Error fetching parsed data: $e");
-      setState(() {
-        parsedData = "Error: Failed to connect to the server";
-      });
-    }
-  }
-
-  Future<void> _saveRecognizedTextToFile(String text) async {
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/recognized_text.txt';
-      final file = File(filePath);
-
-      await file.writeAsString(text);
-      print('Text saved to file: $filePath');
-    } catch (e) {
-      print("Error saving text to file: $e");
-    }
-  }
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -511,39 +225,4 @@ class _AddReportScreenState extends State<AddReportScreen> {
     );
   }
 
-// Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: Padding(
-  //       padding: const EdgeInsets.all(20.0),
-  //       child: SingleChildScrollView(
-  //         child: Column(
-  //           children: [
-  //             if (selectedMedia != null)
-  //               Image.file(selectedMedia!, height: 200)
-  //             else
-  //               const Placeholder(
-  //                   fallbackHeight: 200, fallbackWidth: double.infinity),
-  //             const SizedBox(height: 20),
-  //             ElevatedButton(
-  //               onPressed: () => _getImage(ImageSource.gallery),
-  //               child: const Text('Select Image from Gallery'),
-  //             ),
-  //             const SizedBox(height: 20),
-  //             ElevatedButton(
-  //               onPressed: () => _getImage(ImageSource.camera),
-  //               child: const Text('Capture Image from Camera'),
-  //             ),
-  //             const SizedBox(height: 20),
-  //             Text(extractedText, style: const TextStyle(fontSize: 20)),
-  //             const SizedBox(height: 20),
-  //             Text("Parsed Data:",
-  //                 style: const TextStyle(
-  //                     fontSize: 20, fontWeight: FontWeight.bold)),
-  //             Text(parsedData, style: const TextStyle(fontSize: 16)),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
