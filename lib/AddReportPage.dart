@@ -286,7 +286,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
         setState(() {
           selectedMedia = croppedFile;
         });
-        _extractText(croppedFile);
+        await _processImage(croppedFile);
+      //  _extractText(croppedFile);
       }
     } else {
       CustomToast(response.exception?.message ?? "Unknown error occurred.",
@@ -304,8 +305,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
           setState(() {
             selectedMedia = croppedFile;
           });
-          _uploadImage(croppedFile);
-          await _extractText(croppedFile);
+      // await   _uploadImage(croppedFile);
+       await _processImage(croppedFile);
+        //  await _extractText(croppedFile);
         }
       } else {
         print("No image selected.");
@@ -345,6 +347,50 @@ class _AddReportScreenState extends State<AddReportScreen> {
     }
     return null;
   }
+
+  Future<void> _processImage(File imageFile) async {
+    try {
+      // Send the image to the combined OCR and NER API
+      var url = Uri.parse('http://192.168.104.207:5000/process_image');
+      var request = http.MultipartRequest('POST', url)
+        ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
+      var response = await request.send();
+      var responseBody = await http.Response.fromStream(response);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(responseBody.body);
+        String extractedText = responseData['extracted_text'] ?? "No text found";
+        Map<String, dynamic> structuredData = responseData['structured_data'] ?? {};
+
+        setState(() {
+          this.extractedText = extractedText;
+          this.parsedData = structuredData.entries
+              .map((e) => "${e.key}: ${e.value}")
+              .join("\n");
+        });
+
+        print("Extracted text: " + extractedText);
+        print("Structured data: $structuredData");
+
+        // Optionally, save extracted text to file
+     //   await _saveRecognizedTextToFile(extractedText);
+      } else {
+        setState(() {
+          extractedText = "Error extracting text. Status: ${response.statusCode}";
+          parsedData = "Error fetching structured data.";
+        });
+      }
+    } catch (e) {
+      print("Error processing image: $e");
+      setState(() {
+        extractedText = "Error: Failed to connect to the server";
+        parsedData = "Error: Failed to connect to the server";
+      });
+    }
+  }
+
+
 
   Future<void> _extractText(File imageFile) async {
     try {
@@ -428,6 +474,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -463,4 +510,40 @@ class _AddReportScreenState extends State<AddReportScreen> {
       ),
     );
   }
+
+// Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: Padding(
+  //       padding: const EdgeInsets.all(20.0),
+  //       child: SingleChildScrollView(
+  //         child: Column(
+  //           children: [
+  //             if (selectedMedia != null)
+  //               Image.file(selectedMedia!, height: 200)
+  //             else
+  //               const Placeholder(
+  //                   fallbackHeight: 200, fallbackWidth: double.infinity),
+  //             const SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: () => _getImage(ImageSource.gallery),
+  //               child: const Text('Select Image from Gallery'),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: () => _getImage(ImageSource.camera),
+  //               child: const Text('Capture Image from Camera'),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             Text(extractedText, style: const TextStyle(fontSize: 20)),
+  //             const SizedBox(height: 20),
+  //             Text("Parsed Data:",
+  //                 style: const TextStyle(
+  //                     fontSize: 20, fontWeight: FontWeight.bold)),
+  //             Text(parsedData, style: const TextStyle(fontSize: 16)),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
