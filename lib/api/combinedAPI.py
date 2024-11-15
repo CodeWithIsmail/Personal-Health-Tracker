@@ -3,80 +3,34 @@ import cv2
 import pytesseract
 import numpy as np
 import re
-
+from rapidfuzz import process, fuzz
 app = Flask(__name__)
 
+
 def parse_ocr_text(text):
-    # Updated patterns to handle OCR quirks
-    # patterns = {
-    #     "haemoglobin": r"Haemoglobin\s*[:\-]?\s*([\d.]+)\s*g/dL",
-    #     "esr": r"ESR\s*\(Westergren Method\)\s*[:\-]?\s*(\d+)\s*mm in Ist hr",
-    #     "wbc_total": r"Total WBC Count\s*[:\-]?\s*([\d.]+)\s*X\s*10\^?9/uL",
-    #     "neutrophils": r"Neutrophils\s*[:\-]?\s*(\d+)\s*%",
-    #     "lymphocytes": r"Lymphocytes\s*[:\-]?\s*(\d+)\s*%",
-    #     "monocytes": r"Monocytes\s*[:\-]?\s*(\d+)\s*%",
-    #     "eosinophils": r"Eosinophils\s*[:\-]?\s*(\d+)\s*%",
-    #     "basophils": r"Basophils\s*[:\-]?\s*(\d+)\s*%",
-    #     "rbc_total": r"Total RBC Count\s*[:\-]?\s*([\d.]+)\s*X\s*10\^?12/uL",
-    #     "hct_pcv": r"HCT/PCV\s*[:\-]?\s*([\d.]+)\s*%",
-    #     "mcv": r"MCV\s*[:\-]?\s*([\d.]+)\s*fL",
-    #     "mch": r"MCH\s*[:\-]?\s*([\d.]+)\s*pg",
-    #     "mchc": r"MCHC\s*[:\-]?\s*([\d.]+)\s*g/dL",
-    #     "rdw_cv": r"RDW-CV\s*[:\-]?\s*([\d.]+)\s*%",
-    #     "rdw_sd": r"RDW-SD\s*[:\-]?\s*([\d.]+)\s*fL",
-    #     "platelet_total": r"Total Platelet Count\s*[:\-]?\s*([\d.]+)\s*X\s*10\^?9/uL",
-    #     "mpv": r"MPV\s*[:\-]?\s*([\d.]+)\s*fL",
-    #     "pdw": r"PDW\s*[:\-]?\s*([\d.]+)\s*fL",
-    #     "p_lcr": r"P-LCR\s*[:\-]?\s*([\d.]+)\s*%",
-    #     "pct": r"PCT\s*[:\-]?\s*([\d.]+)\s*%"
-    # }
 
     patterns = {
         "haemoglobin": r"Haemoglobin\s*[:\-]?\s*([\d.,]+)\s*g/dL",
-        "esr": r"ESR\s*\(Westergren Method\)\s*[:\-]?\s*(\d+)\s*mm in \d+(?:st|nd|rd|th)? hr",
-        "wbc_total": r"Total WBC Count\s*(?:Differential Count\s*)?([\d.,]+(?:\s*X\s*10\^?\d+)?)\/uL",
+        "esr": r"ESR\s*\(Westergren Method\)\s*[:\-]?\s*(\d+)\s*mm",
+        "wbc_total": r"Total WBC Count\s*(?:Differential Count\s*)?([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
         "neutrophils": r"Neutrophils\s*[:\-]?\s*(\d+)\s?%",
         "lymphocytes": r"Lymphocytes\s*[:\-]?\s*(\d+)\s?%",
         "monocytes": r"Monocytes\s*[:\-]?\s*(\d+)\s?%",
         "eosinophils": r"Eosinophils\s*[:\-]?\s*(\d+)\s?%",
         "basophils": r"Basophils\s*[:\-]?\s*(\d+)\s?%",
-        "rbc_total": r"Total RBC Count\s*[:\-]?\s*([\d.,]+(?:\s*X\s*10\^?\d+)?)\/uL",
+        "rbc_total": r"Total RBC Count\s*[:\-]?\s*([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
         "hct_pcv": r"HCT\/PCV\s*[:\-]?\s*([\d.,]+)\s?%",
         "mcv": r"MCV\s*[:\-]?\s*([\d.,]+)\s?fL",
         "mch": r"MCH\s*[:\-]?\s*([\d.,]+)\s?pg",
         "mchc": r"MCHC\s*[:\-]?\s*([\d.,]+)\s?g/dL",
         "rdw_cv": r"RDW-CV\s*[:\-]?\s*([\d.,]+)\s?%",
         "rdw_sd": r"RDW-SD\s*[:\-]?\s*([\d.,]+)\s?fL",
-        "platelet_total": r"Total Platelet Count\s*[:\-]?\s*([\d.,]+(?:\s*X\s*10\^?\d+)?)\/uL",
+        "platelet_total": r"Total Platelet Count\s*[:\-]?\s*([\d.,]+(?:\s*[xX]\s*\d+)?(?:\s*10\^?\d+)?)\/uL",
         "mpv": r"MPV\s*[:\-]?\s*([\d.,]+)\s?fL",
         "pdw": r"PDW\s*[:\-]?\s*([\d.,]+)\s?fL",
         "p_lcr": r"P-LCR\s*[:\-]?\s*([\d.,]+)\s?%",
         "pct": r"PCT\s*[:\-]?\s*([\d.,]+)\s?%"
-    
     }
-
-    # patterns = {
-    #     "haemoglobin": r"Haemoglobin\s*[:\-]?\s*([\d.]+)\s*g/dL",
-    #     "esr": r"ESR \s*\(Westergren Method\)\s*[:\-]?\s*(\d+)\s*mm in 1st hr",
-    #     "wbc_total": r"Total WBC Count\s*[:\-]?\s*([\d.]+)\s*X\s*10\^?9/uL",
-    #     "neutrophils": r"Neutrophils\s*[:\-]?\s*(\d+)\s?%",
-    #     "lymphocytes": r"Lymphocytes\s*[:\-]?\s*(\d+)\s?%",
-    #     "monocytes": r"Monocytes\s*[:\-]?\s*(\d+)\s?%",
-    #     "eosinophils": r"Eosinophils\s*[:\-]?\s*(\d+)\s?%",
-    #     "basophils": r"Basophils\s*[:\-]?\s*(\d+)\s?%",
-    #     "rbc_total": r"Total RBC Count\s*[:\-]?\s*([\d.]+)\s*X\s*10\^?12/uL",
-    #     "hct_pcv": r"HCT/PCV\s*[:\-]?\s*([\d.]+)\s?%",
-    #     "mcv": r"MCV\s*[:\-]?\s*([\d.]+)\s?fL",
-    #     "mch": r"MCH\s*[:\-]?\s*([\d.]+)\s?pg",
-    #     "mchc": r"MCHC\s*[:\-]?\s*([\d.]+)\s?g/dL",
-    #     "rdw_cv": r"RDW-CV\s*[:\-]?\s*([\d.]+)\s?%",
-    #     "rdw_sd": r"RDW-SD\s*[:\-]?\s*([\d.]+)\s?fL",
-    #     "platelet_total": r"Total Platelet Count\s*[:\-]?\s*([\d.]+)\s*X\s*10\^?9/uL",
-    #     "mpv": r"MPV\s*[:\-]?\s*([\d.]+)\s?fL",
-    #     "pdw": r"PDW\s*[:\-]?\s*([\d.]+)\s?fL",
-    #     "p_lcr": r"P-LCR\s*[:\-]?\s*([\d.]+)\s?%",
-    #     "pct": r"PCT\s*[:\-]?\s*([\d.]+)\s?%"
-    # }
 
     result = {}
     cleaned_text = re.sub(r'\s+', ' ', text)  # Normalize whitespace
@@ -84,56 +38,32 @@ def parse_ocr_text(text):
     # Apply each pattern to the cleaned text
     for key, pattern in patterns.items():
         match = re.search(pattern, cleaned_text, re.IGNORECASE)
-        
+
         if match:
             value = match.group(1).strip()
-            result[key] = value
-            print(f"Match found for {key}: {value}")  # Debugging line for successful matches
-        else:
-            print(f"No match for {key}")  # Debugging line for missing matches
 
-    print("Structured Data Result:", result)  # Final structured data result
+            # Check for scientific notation misread (e.g., X 1049)
+            if re.search(r'\b[xX]\s*(\d{4,})\b', value):
+                base, exponent_part = re.split(r'\s*[xX]\s*', value)
+                # Ignore first 3 digits and convert the rest to an integer
+                exponent = int(exponent_part[3:])
+                value = str(int(float(base) * (10 ** exponent)))
+            elif 'x' in value.lower():
+                # Handles standard scientific format like "285 x 10^9"
+                base, exponent = re.split(r'\s*[xX]\s*10\^?', value)
+                value = str(int(float(base) * (10 ** int(exponent))))
+
+            result[key] = value
+            print(f"Match found for {key}: {value}")
+        else:
+            print(f"No match for {key}")
+
+    print("Structured Data Result:", result)
     return result
 
 
-# Parsing function to perform NER on OCR text
-# def parse_ocr_text(text):
-#     patterns = {
-#         "haemoglobin": r"Haemoglobin\s*:\s*([\d.,]+)\s*g/dL",
-#         "esr": r"ESR \(Westergren Method\)\s*:\s*(\d+)\s*mm in 1st hr",
-#         "wbc_total": r"Total WBC Count\s*:\s*([\d.,]+(?:\s*X\s*10\^?\d+)?)/uL",
-#         "neutrophils": r"Neutrophils\s*:\s*(\d+)\s?%",
-#         "lymphocytes": r"Lymphocytes\s*:\s*(\d+)\s?%",
-#         "monocytes": r"Monocytes\s*:\s*(\d+)\s?%",
-#         "eosinophils": r"Eosinophils\s*:\s*(\d+)\s?%",
-#         "basophils": r"Basophils\s*:\s*(\d+)\s?%",
-#         "rbc_total": r"Total RBC Count\s*:\s*([\d.,]+(?:\s*X\s*10\^?\d+)?)/uL",
-#         "hct_pcv": r"HCT/PCV\s*:\s*([\d.,]+)\s?%",
-#         "mcv": r"MCV\s*:\s*([\d.,]+)\s?fL",
-#         "mch": r"MCH\s*:\s*([\d.,]+)\s?pg",
-#         "mchc": r"MCHC\s*:\s*([\d.,]+)\s?g/dL",
-#         "rdw_cv": r"RDW-CV\s*:\s*([\d.,]+)\s?%",
-#         "rdw_sd": r"RDW-SD\s*:\s*([\d.,]+)\s?fL",
-#         "platelet_total": r"Total Platelet Count\s*:\s*([\d.,]+(?:\s*X\s*10\^?\d+)?)/uL",
-#         "mpv": r"MPV\s*:\s*([\d.,]+)\s?fL",
-#         "pdw": r"PDW\s*:\s*([\d.,]+)\s?fL",
-#         "p_lcr": r"P-LCR\s*:\s*([\d.,]+)\s?%",
-#         "pct": r"PCT\s*:\s*([\d.,]+)\s?%"
-#     }
-
-#     result = {}
-#     for key, pattern in patterns.items():
-#         print(text)
-#         match = re.search(pattern, text, re.IGNORECASE)
-#         if match:
-#             value = match.group(1).strip()
-#             result[key] = value
-#         else:
-#             print("no match")
-#     print(result)
-#     return result
-
 # Combined endpoint to perform OCR and NER
+
 @app.route('/process_image', methods=['POST'])
 def process_image():
     # Step 1: Receive the image and perform OCR
@@ -147,21 +77,20 @@ def process_image():
 
     # Step 2: Perform NER on the extracted text
 
-      # Preprocess OCR text
     text = re.sub(r'\s+', ' ', text)  # Remove excessive whitespace
     text = text.replace('\n', ' ')    # Remove line breaks
-    text = text.encode("ascii", "ignore").decode()  # Convert to ASCII, ignore special chars
+    # Convert to ASCII, ignore special chars
+    text = text.encode("ascii", "ignore").decode()
 
     print("OCR Extracted Text:", text)
-    # print(text)
     structured_data = parse_ocr_text(text)
-    # print(structured_data)
 
     # Return both extracted text and structured data
     return jsonify({
         'extracted_text': text,
         'structured_data': structured_data
     })
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
