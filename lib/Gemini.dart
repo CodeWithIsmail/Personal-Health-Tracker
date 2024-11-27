@@ -59,6 +59,8 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
+  File? selectedMedia;
+  final ImagePicker _picker = ImagePicker();
   late final GenerativeModel _model;
   late final ChatSession _chat;
   final ScrollController _scrollController = ScrollController();
@@ -67,6 +69,38 @@ class _ChatWidgetState extends State<ChatWidget> {
   final List<({Image? image, String? text, bool fromUser})> _generatedContent =
       <({Image? image, String? text, bool fromUser})>[];
   bool _loading = false;
+
+  Future<File?> _cropImage(File imageFile) async {
+    try {
+      CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: imageFile.path,
+      );
+      return croppedFile != null ? File(croppedFile.path) : null;
+    } catch (e) {
+      print("Error cropping image: $e");
+    }
+    return null;
+  }
+
+  Future<void> _getImage(ImageSource source) async {
+    try {
+      final pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile != null) {
+        File? croppedFile = await _cropImage(File(pickedFile.path));
+        if (croppedFile != null) {
+          setState(() {
+            selectedMedia = croppedFile;
+          });
+          //   await _uploadImage(croppedFile);
+          //  await _processImage(croppedFile);
+        }
+      } else {
+        print("No image selected.");
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+    }
+  }
 
   @override
   void initState() {
@@ -162,7 +196,11 @@ class _ChatWidgetState extends State<ChatWidget> {
                 IconButton(
                   onPressed: !_loading
                       ? () async {
-                          _sendImagePrompt(_textController.text);
+                          String promtText =
+                              "scan the health report image. give the test data in json object like test name and value pair";
+                          await _getImage(ImageSource.gallery);
+                          _sendImagePrompt(promtText);
+                          // _sendImagePrompt(_textController.text);
                         }
                       : null,
                   icon: Icon(
@@ -197,22 +235,33 @@ class _ChatWidgetState extends State<ChatWidget> {
       _loading = true;
     });
     try {
-      ByteData catBytes = await rootBundle.load('images/rep1.jpg');
-      ByteData sconeBytes = await rootBundle.load('images/rep1.jpg');
+      // ByteData catBytes = await rootBundle.load('images/rep1.jpg');
+      final imageBytes = await selectedMedia!.readAsBytes();
       final content = [
         Content.multi([
           TextPart(message),
-          // The only accepted mime types are image/*.
-          DataPart('image/jpeg', catBytes.buffer.asUint8List()),
-          DataPart('image/jpeg', sconeBytes.buffer.asUint8List()),
+          DataPart('image/jpeg', imageBytes),
         ])
       ];
-      _generatedContent.add((
-        image: Image.asset("images/rep1.jpg"),
-        text: 'give me the test names and their corresponding values in key-value format.',
-        fromUser: true
-      ));
 
+      _generatedContent.add(
+          (image: Image.file(selectedMedia!), text: message, fromUser: true));
+
+      // ByteData sconeBytes = await rootBundle.load('images/rep1.jpg');
+      // final content = [
+      //   Content.multi([
+      //     TextPart(message),
+      //     // The only accepted mime types are image/*.
+      //     DataPart('image/jpeg', catBytes.buffer.asUint8List()),
+      //     DataPart('image/jpeg', sconeBytes.buffer.asUint8List()),
+      //   ])
+      // ];
+      // _generatedContent.add((
+      //   image: Image.asset("images/rep1.jpg"),
+      //   text:
+      //       'scan the health report image. give the test data in json object like test name and value pair',
+      //   fromUser: true
+      // ));
 
       var response = await _model.generateContent(content);
       var text = response.text;

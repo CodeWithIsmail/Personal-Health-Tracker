@@ -1,7 +1,7 @@
 import 'ImportAll.dart';
 
-void main() async {
 
+void main() async {
   // final model = GenerativeModel(
   //   model: 'gemini-1.5-pro',
   //   apiKey: apiKey,
@@ -19,12 +19,12 @@ void main() async {
   // final response = await model.generateContent(content);
   // print(response.text);
 
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  // runApp(MyApp());
+  runApp(GenerativeAISample());
 }
 
 class MyApp extends StatelessWidget {
