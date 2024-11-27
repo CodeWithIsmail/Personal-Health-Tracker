@@ -99,7 +99,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
       isLoading = true;
     });
     try {
-      var url = Uri.parse('http://192.168.104.207:5000/process_image');
+      var url = Uri.parse('http://192.168.2.193:5000/process_image');
       var request = http.MultipartRequest('POST', url)
         ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
 

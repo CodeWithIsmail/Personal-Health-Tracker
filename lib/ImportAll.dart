@@ -33,6 +33,7 @@ export 'package:flutter/material.dart' hide RefreshCallback;
 export 'package:image_cropper/image_cropper.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:path_provider/path_provider.dart';
+export 'package:flutter_markdown/flutter_markdown.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
@@ -54,3 +55,7 @@ export 'dart:convert';
 
 // components
 export 'components/ReportClass.dart';
+
+// gemini
+export 'package:google_generative_ai/google_generative_ai.dart';
+
