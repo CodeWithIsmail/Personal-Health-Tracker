@@ -1,34 +1,8 @@
 import 'package:flutter/services.dart';
 import 'ImportAll.dart';
 
-
-void main() {
-  runApp(const GenerativeAISample());
-}
-
-class GenerativeAISample extends StatelessWidget {
-  const GenerativeAISample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Personal Health Tracker',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.light,
-          seedColor: const Color.fromARGB(255, 171, 222, 244),
-        ),
-        useMaterial3: true,
-      ),
-      home: const ChatScreen(title: 'Personal Health Tracker'),
-    );
-  }
-}
-
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.title});
-
-  final String title;
+  ChatScreen();
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -38,21 +12,13 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: const ChatWidget(apiKey: _apiKey),
+      body: ChatWidget(),
     );
   }
 }
 
 class ChatWidget extends StatefulWidget {
-  const ChatWidget({
-    required this.apiKey,
-    super.key,
-  });
-
-  final String apiKey;
+  ChatWidget();
 
   @override
   State<ChatWidget> createState() => _ChatWidgetState();
@@ -61,7 +27,6 @@ class ChatWidget extends StatefulWidget {
 class _ChatWidgetState extends State<ChatWidget> {
   File? selectedMedia;
   final ImagePicker _picker = ImagePicker();
-  late final GenerativeModel _model;
   late final ChatSession _chat;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textController = TextEditingController();
@@ -105,11 +70,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   @override
   void initState() {
     super.initState();
-    _model = GenerativeModel(
-      model: 'gemini-1.5-pro',
-      apiKey: widget.apiKey,
-    );
-    _chat = _model.startChat();
+    _chat = GeminiModel.startChat();
   }
 
   void _scrollDown() {
@@ -126,35 +87,14 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final textFieldDecoration = InputDecoration(
-      contentPadding: const EdgeInsets.all(15),
-      hintText: 'Enter a prompt...',
-      border: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(14),
-        ),
-        borderSide: BorderSide(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(14),
-        ),
-        borderSide: BorderSide(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-      ),
-    );
-
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(15.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: _apiKey.isNotEmpty
+            child: GeminiApiKey.isNotEmpty
                 ? ListView.builder(
                     controller: _scrollController,
                     itemBuilder: (context, idx) {
@@ -187,38 +127,43 @@ class _ChatWidgetState extends State<ChatWidget> {
                   child: TextField(
                     autofocus: true,
                     focusNode: _textFieldFocus,
-                    decoration: textFieldDecoration,
+                    decoration: promptTextFieldDecoration,
                     controller: _textController,
                     onSubmitted: _sendChatMessage,
                   ),
                 ),
-                const SizedBox.square(dimension: 15),
+                const SizedBox.square(dimension: 5),
                 IconButton(
-                  onPressed: !_loading
-                      ? () async {
-                          String promtText =
-                              "scan the health report image. give the test data in json object like test name and value pair";
-                          await _getImage(ImageSource.gallery);
-                          _sendImagePrompt(promtText);
-                          // _sendImagePrompt(_textController.text);
-                        }
-                      : null,
+                  onPressed: () async {
+                    _sendChatMessage(_textController.text);
+                  },
                   icon: Icon(
-                    Icons.image,
-                    color: _loading
-                        ? Theme.of(context).colorScheme.secondary
-                        : Theme.of(context).colorScheme.primary,
+                    Icons.send,
+                    color: Color(0xFF355C7D),
                   ),
                 ),
+                const SizedBox.square(dimension: 5),
+                Text(
+                  "Or ",
+                  style: TextStyle(color: Color(0xFF355C7D)),
+                ),
+                const SizedBox.square(dimension: 5),
                 if (!_loading)
-                  IconButton(
-                    onPressed: () async {
-                      _sendChatMessage(_textController.text);
-                    },
-                    icon: Icon(
-                      Icons.send,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                  CustomButtonGestureDetector(
+                    'Analyze Report',
+                    MediaQuery.of(context).size.width / 4,
+                    MediaQuery.of(context).size.width / 6,
+                    Color(0xFF355C7D),
+                    Colors.white,
+                    15,
+                    !_loading
+                        ? () async {
+                            String prompt =
+                                'Analyze the following medical report and provide a summary of the key findings. Are there any abnormal test results that require further investigation? Are there any specific instructions for the patient to follow?';
+                            await _getImage(ImageSource.gallery);
+                            _sendImagePrompt(prompt);
+                          }
+                        : null,
                   )
                 else
                   const CircularProgressIndicator(),
@@ -230,44 +175,18 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
   }
 
-  Future<void> _sendImagePrompt(String message) async {
+  Future<void> _sendImagePrompt(String prompt) async {
     setState(() {
       _loading = true;
     });
     try {
-      // ByteData catBytes = await rootBundle.load('images/rep1.jpg');
-      final imageBytes = await selectedMedia!.readAsBytes();
-      final content = [
-        Content.multi([
-          TextPart(message),
-          DataPart('image/jpeg', imageBytes),
-        ])
-      ];
-
       _generatedContent.add(
-          (image: Image.file(selectedMedia!), text: message, fromUser: true));
+          (image: Image.file(selectedMedia!), text: "Analyze report", fromUser: true));
+      String text = await sendImagePromptToGemini(prompt, selectedMedia!,_chat);
 
-      // ByteData sconeBytes = await rootBundle.load('images/rep1.jpg');
-      // final content = [
-      //   Content.multi([
-      //     TextPart(message),
-      //     // The only accepted mime types are image/*.
-      //     DataPart('image/jpeg', catBytes.buffer.asUint8List()),
-      //     DataPart('image/jpeg', sconeBytes.buffer.asUint8List()),
-      //   ])
-      // ];
-      // _generatedContent.add((
-      //   image: Image.asset("images/rep1.jpg"),
-      //   text:
-      //       'scan the health report image. give the test data in json object like test name and value pair',
-      //   fromUser: true
-      // ));
-
-      var response = await _model.generateContent(content);
-      var text = response.text;
       _generatedContent.add((image: null, text: text, fromUser: false));
 
-      if (text == null) {
+      if (text == "something wrong!") {
         _showError('No response from API.');
         return;
       } else {
@@ -290,20 +209,19 @@ class _ChatWidgetState extends State<ChatWidget> {
     }
   }
 
-  Future<void> _sendChatMessage(String message) async {
+  Future<void> _sendChatMessage(String prompt) async {
     setState(() {
       _loading = true;
     });
 
     try {
-      _generatedContent.add((image: null, text: message, fromUser: true));
-      final response = await _chat.sendMessage(
-        Content.text(message),
-      );
-      final text = response.text;
+      _generatedContent.add((image: null, text: prompt, fromUser: true));
+
+      String text = await sendChatMessage(prompt, _chat);
+
       _generatedContent.add((image: null, text: text, fromUser: false));
 
-      if (text == null) {
+      if (text == "something wrong!") {
         _showError('No response from API.');
         return;
       } else {
@@ -349,43 +267,43 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 }
 
-class MessageWidget extends StatelessWidget {
-  const MessageWidget({
-    super.key,
-    this.image,
-    this.text,
-    required this.isFromUser,
-  });
-
-  final Image? image;
-  final String? text;
-  final bool isFromUser;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        Flexible(
-            child: Container(
-                constraints: const BoxConstraints(maxWidth: 520),
-                decoration: BoxDecoration(
-                  color: isFromUser
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 20,
-                ),
-                margin: const EdgeInsets.only(bottom: 8),
-                child: Column(children: [
-                  if (text case final text?) MarkdownBody(data: text),
-                  if (image case final image?) image,
-                ]))),
-      ],
-    );
-  }
-}
+// class MessageWidget extends StatelessWidget {
+//   const MessageWidget({
+//     super.key,
+//     this.image,
+//     this.text,
+//     required this.isFromUser,
+//   });
+//
+//   final Image? image;
+//   final String? text;
+//   final bool isFromUser;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisAlignment:
+//           isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+//       children: [
+//         Flexible(
+//             child: Container(
+//                 constraints: const BoxConstraints(maxWidth: 500),
+//                 decoration: BoxDecoration(
+//                   color: isFromUser
+//                       ? Theme.of(context).colorScheme.primaryContainer
+//                       : Theme.of(context).colorScheme.surfaceContainerHighest,
+//                   borderRadius: BorderRadius.circular(18),
+//                 ),
+//                 padding: const EdgeInsets.symmetric(
+//                   vertical: 15,
+//                   horizontal: 20,
+//                 ),
+//                 margin: const EdgeInsets.only(bottom: 8),
+//                 child: Column(children: [
+//                   if (text case final text?) MarkdownBody(data: text),
+//                   if (image case final image?) image,
+//                 ]))),
+//       ],
+//     );
+//   }
+// }

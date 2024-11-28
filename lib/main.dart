@@ -1,6 +1,5 @@
 import 'ImportAll.dart';
 
-
 void main() async {
   // final model = GenerativeModel(
   //   model: 'gemini-1.5-pro',
@@ -23,8 +22,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // runApp(MyApp());
-  runApp(GenerativeAISample());
+
+  runApp(MyApp());
+  // runApp(ChatScreen());
+  // runApp(GenerativeAISample());
 }
 
 class MyApp extends StatelessWidget {
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
       //     "", "", "", "", "", "", "", "", "")),
       // home: LoginOrRegistration(),
       home: HomePage(),
+      // home: ChatScreen(),
     );
   }
 }

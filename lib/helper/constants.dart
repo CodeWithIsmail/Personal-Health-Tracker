@@ -1,14 +1,13 @@
 import '../ImportAll.dart';
 
-class Constants{
-  static const String homeRoute='/';
-  static const String signUpRoute='/sign-up';
-  static const String emailVerificationRoute='/verify-email';
-  static const String smsVerificationRoute='/verify-sms';
-  static const String forgotPasswordRoute='/forgot-password';
-  static const String logInRoute='/log-in';
-  static const String landingRoute='/landing';
-
+class Constants {
+  static const String homeRoute = '/';
+  static const String signUpRoute = '/sign-up';
+  static const String emailVerificationRoute = '/verify-email';
+  static const String smsVerificationRoute = '/verify-sms';
+  static const String forgotPasswordRoute = '/forgot-password';
+  static const String logInRoute = '/log-in';
+  static const String landingRoute = '/landing';
 }
 
 final gradientMain = LinearGradient(
@@ -21,7 +20,7 @@ final gradientMain = LinearGradient(
   end: Alignment.bottomRight,
 );
 
-final appNameTextStyle=TextStyle(
+final appNameTextStyle = TextStyle(
   fontSize: 25,
   fontWeight: FontWeight.bold,
   color: Colors.white,
@@ -34,3 +33,23 @@ final appNameTextStyle=TextStyle(
   ],
 );
 
+final promptTextFieldDecoration = InputDecoration(
+  contentPadding: const EdgeInsets.all(15),
+  hintText: 'Enter prompt',
+  border: OutlineInputBorder(
+    borderRadius: const BorderRadius.all(
+      Radius.circular(14),
+    ),
+    borderSide: BorderSide(
+      color: Color(0xFF355C7D),
+    ),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: const BorderRadius.all(
+      Radius.circular(14),
+    ),
+    borderSide: BorderSide(
+      color: Color(0xFF355C7D),
+    ),
+  ),
+);

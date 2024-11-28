@@ -14,7 +14,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
   String extractedText = "Extracted text will appear here";
   String parsedData = "Parsed data will appear here";
   FirestoreService firestoreService = new FirestoreService();
-  bool isLoading = false;
+  // bool isLoading = false;
 
   void initState() {
     super.initState();
@@ -49,11 +49,12 @@ class _AddReportScreenState extends State<AddReportScreen> {
         File? croppedFile = await _cropImage(File(pickedFile.path));
         if (croppedFile != null) {
           setState(() {
-            isLoading = true;
+            // isLoading = true;
             selectedMedia = croppedFile;
           });
           //   await _uploadImage(croppedFile);
-          await _processImage(croppedFile);
+          // await _processImage(croppedFile);
+          await _gotoAnalysisScreen(croppedFile);
         }
       } else {
         print("No image selected.");
@@ -94,9 +95,18 @@ class _AddReportScreenState extends State<AddReportScreen> {
     return null;
   }
 
+  Future<void> _gotoAnalysisScreen(File imageFile) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReportAnalysis(imageFile),
+      ),
+    );
+  }
+
   Future<void> _processImage(File imageFile) async {
     setState(() {
-      isLoading = true;
+      // isLoading = true;
     });
     try {
       var url = Uri.parse('http://192.168.2.193:5000/process_image');
@@ -116,7 +126,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
         CBC cbcReport = CBC.fromMap(structuredData);
         print("cbc class print: " + cbcReport.toString());
         setState(() {
-          isLoading = false;
+          // isLoading = false;
           this.extractedText = extractedText;
           this.parsedData = structuredData.entries
               .map((e) => "${e.key}: ${e.value}")
@@ -146,7 +156,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
       });
     } finally {
       setState(() {
-        isLoading = false;
+        // isLoading = false;
       });
     }
   }
@@ -175,9 +185,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
                     fontSize: 20,
                     color: Colors.white),
               ),
-              if (isLoading) CircularProgressIndicator(
-                color: Colors.white,
-              ),
+              // if (isLoading)
+              //   CircularProgressIndicator(
+              //     color: Colors.white,
+              //   ),
               CustomButtonGestureDetector(
                 'Camera',
                 MediaQuery.of(context).size.width / 3,

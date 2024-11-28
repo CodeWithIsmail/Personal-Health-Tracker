@@ -60,3 +60,7 @@ export 'components/ReportClass.dart';
 export 'package:google_generative_ai/google_generative_ai.dart';
 
 export 'Gemini.dart';
+export 'PrivateData.dart';
+export 'api/GeminiAPI.dart';
+export 'screens/ReportAnalysisScreen.dart';
+export 'components/MessageWidget.dart';
