@@ -14,6 +14,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
   String extractedText = "Extracted text will appear here";
   String parsedData = "Parsed data will appear here";
   FirestoreService firestoreService = new FirestoreService();
+  String imageURL = "";
+
   // bool isLoading = false;
 
   void initState() {
@@ -52,7 +54,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
             // isLoading = true;
             selectedMedia = croppedFile;
           });
-          //   await _uploadImage(croppedFile);
+            await _uploadImage(croppedFile);
           // await _processImage(croppedFile);
           await _gotoAnalysisScreen(croppedFile);
         }
@@ -79,7 +81,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
       print(jsonMap);
       print(jsonMap['url']);
       String imgUrl = jsonMap['url'];
-      firestoreService.storeImgLink("123", "234", imgUrl);
+      setState(() {
+        imageURL = imgUrl;
+      });
+    //  firestoreService.storeImgLink("123", "234", imgUrl);
     }
   }
 
@@ -99,7 +104,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReportAnalysis(imageFile),
+        builder: (context) => ReportAnalysis(imageFile, imageURL),
       ),
     );
   }

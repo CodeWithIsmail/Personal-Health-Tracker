@@ -2,14 +2,17 @@ import '../ImportAll.dart';
 
 class ReportAnalysis extends StatefulWidget {
   File selectedMedia;
+  String imageLink;
 
-  ReportAnalysis(this.selectedMedia);
+  ReportAnalysis(this.selectedMedia, this.imageLink);
 
   @override
   State<ReportAnalysis> createState() => _ReportAnalysisState();
 }
 
 class _ReportAnalysisState extends State<ReportAnalysis> {
+  bool done = false;
+  FirestoreService firestoreService = new FirestoreService();
   late final ChatSession _chat;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textController = TextEditingController();
@@ -134,6 +137,11 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
       } else {
         setState(() {
           _loading = false;
+
+          if (!done) {
+            done = true;
+            firestoreService.storeSummeryImgLink("12", widget.imageLink, text);
+          }
           _scrollDown();
         });
       }

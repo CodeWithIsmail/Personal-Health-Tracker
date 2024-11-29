@@ -14,7 +14,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
-        stream: firestoreService.getEntry("123"),
+        stream: firestoreService.getEntry("12"),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('An error occurred!'));
@@ -37,8 +37,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     documentSnapshot.data() as Map<String, dynamic>;
 
                 String user_id = data['user_id'];
-                String report_id = data['report_id'];
+                String report_id =documentSnapshot.id ;
                 String imgLink = data['image_link'];
+                String reportSummery = data['report_summery'];
 
                 print(user_id + " " + report_id + " " + imgLink);
 
@@ -46,10 +47,55 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.network(
-                      imgLink,
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: gradientMain,
+                        // color: Color(0xFF6C5B7B),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      height: MediaQuery.of(context).size.height / 4,
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Report id: '+report_id),
+                              IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.delete),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.share),
+                              )
+                            ],
+                          ),
+                          Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(
+                                imgLink,
+                                width: MediaQuery.of(context).size.width / 3,
+                                height: MediaQuery.of(context).size.height / 6,
+                              ),
+                              Container(
+                                // decoration: BoxDecoration(color: Colors.blue
+                                // ),
+                                width: MediaQuery.of(context).size.width / 2,
+                                height: MediaQuery.of(context).size.height / 6,
+                                child: Text(
+                                  textAlign: TextAlign.start,
+                                  reportSummery,
+                                  style: TextStyle(color: Colors.white,),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 );
