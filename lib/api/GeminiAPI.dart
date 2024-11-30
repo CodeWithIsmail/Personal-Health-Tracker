@@ -1,7 +1,7 @@
 import '../ImportAll.dart';
 
 Future<String> sendImagePromptToGemini(
-    String prompt, File selectedMedia,ChatSession chat) async {
+    String prompt, File selectedMedia,ChatSession? chat) async {
   try {
     final imageBytes = await selectedMedia.readAsBytes();
     final content = [
@@ -14,7 +14,7 @@ Future<String> sendImagePromptToGemini(
     var response = await GeminiModel.generateContent(content);
     var text = response.text;
 
-    final sudo_response = await chat.sendMessage(
+    final sudo_response = await chat?.sendMessage(
       Content.text(text!),
     );
     final sudo_text = response.text;

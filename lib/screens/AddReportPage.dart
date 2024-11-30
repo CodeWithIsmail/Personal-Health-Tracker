@@ -34,8 +34,8 @@ class _AddReportScreenState extends State<AddReportScreen> {
         setState(() {
           selectedMedia = croppedFile;
         });
-        await _uploadImage(croppedFile);
-        await _processImage(croppedFile);
+        // await _uploadImage(croppedFile);
+        // await _processImage(croppedFile);
       }
     } else {
       CustomToast(response.exception?.message ?? "Unknown error occurred.",
@@ -54,8 +54,13 @@ class _AddReportScreenState extends State<AddReportScreen> {
             // isLoading = true;
             selectedMedia = croppedFile;
           });
-            await _uploadImage(croppedFile);
+          await _uploadImage(croppedFile);
+
           // await _processImage(croppedFile);
+          String values =
+              await sendImagePromptToGemini(ocrPrompt, croppedFile, null);
+          print(values);
+          _processImage(values);
           await _gotoAnalysisScreen(croppedFile);
         }
       } else {
@@ -84,7 +89,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
       setState(() {
         imageURL = imgUrl;
       });
-    //  firestoreService.storeImgLink("123", "234", imgUrl);
+      //  firestoreService.storeImgLink("123", "234", imgUrl);
     }
   }
 
@@ -109,62 +114,100 @@ class _AddReportScreenState extends State<AddReportScreen> {
     );
   }
 
-  Future<void> _processImage(File imageFile) async {
-    setState(() {
-      // isLoading = true;
-    });
-    try {
-      var url = Uri.parse('http://192.168.2.193:5000/process_image');
-      var request = http.MultipartRequest('POST', url)
-        ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+  void _processImage(String response) {
+    // Parse the response string into a map
+    Map<String, String> cbcMap = {};
 
-      var response = await request.send();
-      var responseBody = await http.Response.fromStream(response);
+    List<String> lines = response.split('\n');
+    for (String line in lines) {
+      // Skip empty lines
+      if (line.trim().isEmpty) continue;
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(responseBody.body);
-        String extractedText =
-            responseData['extracted_text'] ?? "No text found";
-        Map<String, dynamic> structuredData =
-            responseData['structured_data'] ?? {};
+      // Split by colon and store the key-value pairs in the map
+      List<String> parts = line.split(':');
+      if (parts.length == 2) {
+        String key = parts[0].trim();
+        String value = parts[1].trim();
 
-        CBC cbcReport = CBC.fromMap(structuredData);
-        print("cbc class print: " + cbcReport.toString());
-        setState(() {
-          // isLoading = false;
-          this.extractedText = extractedText;
-          this.parsedData = structuredData.entries
-              .map((e) => "${e.key}: ${e.value}")
-              .join("\n");
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CBCinputScreen(cbcReport),
-          ),
-        );
+        // Normalize the key to match the CBC class
+        key = key
+            .replaceAll('/', '_')
+            .replaceAll('-', '_')
+            .replaceAll(' ', '_'); // Handle keys like "HCT/PCV" to "HCT_PCV"
 
-        //  print("Extracted text: " + extractedText);
-        //  print("Structured data: $structuredData");
-      } else {
-        setState(() {
-          extractedText =
-              "Error extracting text. Status: ${response.statusCode}";
-          parsedData = "Error fetching structured data.";
-        });
+        cbcMap[key] = value;
       }
-    } catch (e) {
-      print("Error processing image: $e");
-      setState(() {
-        extractedText = "Error: Failed to connect to the server";
-        parsedData = "Error: Failed to connect to the server";
-      });
-    } finally {
-      setState(() {
-        // isLoading = false;
-      });
     }
+
+    // Create CBC object from the parsed map
+    CBC cbc = CBC.fromMap(cbcMap);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CBCinputScreen(cbc),
+      ),
+    );
+
+    // Print the CBC object
+    print(cbc);
   }
+
+  // Future<void> _processImage(File imageFile) async {
+  //   setState(() {
+  //     // isLoading = true;
+  //   });
+  //   try {
+  //     var url = Uri.parse('http://192.168.2.193:5000/process_image');
+  //     var request = http.MultipartRequest('POST', url)
+  //       ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+  //
+  //     var response = await request.send();
+  //     var responseBody = await http.Response.fromStream(response);
+  //
+  //     if (response.statusCode == 200) {
+  //       final responseData = json.decode(responseBody.body);
+  //       String extractedText =
+  //           responseData['extracted_text'] ?? "No text found";
+  //       Map<String, dynamic> structuredData =
+  //           responseData['structured_data'] ?? {};
+  //
+  //       CBC cbcReport = CBC.fromMap(structuredData);
+  //       print("cbc class print: " + cbcReport.toString());
+  //       setState(() {
+  //         // isLoading = false;
+  //         this.extractedText = extractedText;
+  //         this.parsedData = structuredData.entries
+  //             .map((e) => "${e.key}: ${e.value}")
+  //             .join("\n");
+  //       });
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => CBCinputScreen(cbcReport),
+  //         ),
+  //       );
+  //
+  //       //  print("Extracted text: " + extractedText);
+  //       //  print("Structured data: $structuredData");
+  //     } else {
+  //       setState(() {
+  //         extractedText =
+  //             "Error extracting text. Status: ${response.statusCode}";
+  //         parsedData = "Error fetching structured data.";
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print("Error processing image: $e");
+  //     setState(() {
+  //       extractedText = "Error: Failed to connect to the server";
+  //       parsedData = "Error: Failed to connect to the server";
+  //     });
+  //   } finally {
+  //     setState(() {
+  //       // isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

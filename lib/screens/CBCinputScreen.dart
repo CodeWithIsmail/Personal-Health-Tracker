@@ -59,14 +59,24 @@ class _CBCinputScreenState extends State<CBCinputScreen> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
+
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: testNames.map((testName) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: InputBox(testName, controllers[testName]!),
-                );
-              }).toList(),
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: testNames.map((testName) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: InputBox(testName, controllers[testName]!),
+                    );
+                  }).toList(),
+
+                ),
+                CustomButtonGestureDetector("Submit", 100, 50, Color(0xFF355C7D), Colors.white, 20,
+                        () {
+                  Navigator.pop(context);
+                        }),
+              ],
             ),
           ),
         ),
