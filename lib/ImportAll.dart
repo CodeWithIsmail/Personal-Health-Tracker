@@ -17,6 +17,8 @@ export 'screens/SignUpScreen.dart';
 export 'screens/LogInScreen.dart';
 export 'screens/HomePage.dart';
 export 'screens/CBCinputScreen.dart';
+export 'screens/AddReportScreen.dart';
+export 'screens/ReportInputScreen.dart';
 
 // custom
 export 'custom/CustomAlert.dart';

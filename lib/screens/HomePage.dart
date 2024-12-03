@@ -19,7 +19,9 @@ class _HomePageState extends State<HomePage> {
     else if (pageNumber == 1)
       return HistoryScreen();
     else if (pageNumber == 2)
-      return AddReportScreen();
+      return AddReport();
+
+      // return AddReportScreen();
     else
       return ProfileScreen();
   }
