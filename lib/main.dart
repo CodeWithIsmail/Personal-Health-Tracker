@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
 
       // home: LoginOrRegistration(),
       home: HomePage(),
+      // home: ProfileScreen(),
       // home: AddReportScreen(),
       // home: ChatScreen(),
     );

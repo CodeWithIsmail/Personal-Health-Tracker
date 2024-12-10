@@ -28,19 +28,23 @@ class FirestoreService {
 
   Stream<QuerySnapshot<Object?>> getEntry(String user_id) {
     final CollectionReference collectionReference =
-    FirebaseFirestore.instance.collection("ReportSummery");
+        FirebaseFirestore.instance.collection("ReportSummery");
     return collectionReference.where('user_id', isEqualTo: user_id).snapshots();
   }
 
+  Stream<QuerySnapshot<Object?>> getUserProfile(String uname) {
+    final CollectionReference = FirebaseFirestore.instance.collection('users');
+    return CollectionReference.where('uname', isEqualTo: uname).snapshots();
+  }
 
   Future<void> storeSummeryImgLink(
-      String userId, String imgLink,String summery) async {
+      String userId, String imgLink, String summery) async {
     CollectionReference reports =
-    FirebaseFirestore.instance.collection('ReportSummery');
+        FirebaseFirestore.instance.collection('ReportSummery');
     Map<String, dynamic> reportData = {
       'user_id': userId,
       'image_link': imgLink,
-      'report_summery':summery,
+      'report_summery': summery,
       'time': DateTime.now(),
     };
 

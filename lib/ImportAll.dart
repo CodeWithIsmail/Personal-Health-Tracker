@@ -19,6 +19,7 @@ export 'screens/HomePage.dart';
 export 'screens/CBCinputScreen.dart';
 export 'screens/AddReportScreen.dart';
 export 'screens/ReportInputScreen.dart';
+export 'screens/ProfileScreen.dart';
 
 // custom
 export 'custom/CustomAlert.dart';
@@ -36,6 +37,7 @@ export 'package:image_cropper/image_cropper.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:path_provider/path_provider.dart';
 export 'package:flutter_markdown/flutter_markdown.dart';
+export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';

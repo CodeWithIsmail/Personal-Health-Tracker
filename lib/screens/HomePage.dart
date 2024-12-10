@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
       // return AddReportScreen();
     else
-      return ProfileScreen();
+      return ProfileScreen("ismail99");
   }
 
   @override
