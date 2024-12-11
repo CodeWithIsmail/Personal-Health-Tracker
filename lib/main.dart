@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
 
       // home: LoginOrRegistration(),
       home: HomePage(),
+      // home: QRCodeGenerator(),
+      // home:QRCodeScannerPage(),
+      // home:ScanCodePage(),
       // home: ProfileScreen(),
       // home: AddReportScreen(),
       // home: ChatScreen(),

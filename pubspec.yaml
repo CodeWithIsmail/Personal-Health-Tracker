@@ -22,19 +22,20 @@ dev_dependencies:
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.5
   google_sign_in: ^6.2.1
-  flutter_facebook_auth: ^7.1.1
   fluttertoast: ^8.2.8
   image_picker: ^1.1.2
   image_cropper: ^8.0.2
   http: ^1.2.2
   path_provider: ^2.1.5
-  cloudinary_flutter: ^1.3.0
-  cloudinary_url_gen: ^1.6.0
-  cloudinary_api: ^1.0.2
   google_generative_ai: ^0.4.6
   flutter_markdown: ^0.7.4+3
   font_awesome_flutter: ^10.8.0
   intl: ^0.20.1
+  mobile_scanner: ^6.0.2
+  qr_flutter: ^4.1.0
+  pretty_qr_code: ^3.3.0
+  zxing2: ^0.2.3
+  image: ^4.3.0
 
 
 flutter:

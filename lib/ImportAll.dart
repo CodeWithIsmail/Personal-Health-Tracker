@@ -20,6 +20,8 @@ export 'screens/CBCinputScreen.dart';
 export 'screens/AddReportScreen.dart';
 export 'screens/ReportInputScreen.dart';
 export 'screens/ProfileScreen.dart';
+export 'QRmaker.dart';
+export 'QRscan.dart';
 
 // custom
 export 'custom/CustomAlert.dart';
@@ -38,6 +40,8 @@ export 'package:image_picker/image_picker.dart';
 export 'package:path_provider/path_provider.dart';
 export 'package:flutter_markdown/flutter_markdown.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
+export 'package:qr_flutter/qr_flutter.dart';
+export 'package:pretty_qr_code/pretty_qr_code.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
@@ -45,13 +49,6 @@ export 'services/firebase_options.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:google_sign_in/google_sign_in.dart';
 export 'package:cloud_firestore/cloud_firestore.dart';
-
-// cloudinary
-// export 'package:cloudinary_url_gen/cloudinary.dart';
-// export 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
-// export 'package:cloudinary_api/src/request/model/uploader_params.dart';
-// export 'package:cloudinary_url_gen/transformation/effect/effect.dart';
-// export 'package:cloudinary_url_gen/transformation/resize/resize.dart';
 
 // flutter
 export 'dart:io';
@@ -67,4 +64,6 @@ export 'Gemini.dart';
 export 'PrivateData.dart';
 export 'api/GeminiAPI.dart';
 export 'screens/ReportAnalysisScreen.dart';
+export 'QRscan.dart';
+export 'QRmaker.dart';
 export 'components/MessageWidget.dart';

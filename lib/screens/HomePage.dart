@@ -9,9 +9,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int pageNumber = 0;
-  String? userName = FirebaseAuth.instance.currentUser?.email;
+  String uname = "";
+  String imgLink = "";
   Color selectColor = Colors.green;
   Color unselectColor = Colors.lightBlueAccent;
+
+  @override
+  void initState() {
+    super.initState();
+    String? email = FirebaseAuth.instance.currentUser?.email;
+    if (email != null) {
+      uname = email.substring(0, email.indexOf('@'));
+      DocumentSnapshot docSnapshot = FirebaseFirestore.instance
+          .collection('users')
+          .doc(uname)
+          .get() as DocumentSnapshot<Object?>;
+      if (docSnapshot.exists) {
+        imgLink = docSnapshot.get('image');
+      } else {
+        imgLink =
+            "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
+      }
+    } else {
+      uname = "ismail99";
+      imgLink =
+          "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
+    }
+  }
 
   Widget changePage() {
     if (pageNumber == 0)
@@ -21,119 +45,124 @@ class _HomePageState extends State<HomePage> {
     else if (pageNumber == 2)
       return AddReport();
 
-      // return AddReportScreen();
+    // return AddReportScreen();
     else
       return ProfileScreen("ismail99");
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'HealthTracker\n$userName',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.purpleAccent,
-            child: Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 30,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'HealthTracker\n$uname',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
             ),
           ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.info_outline_rounded),
-          ),
-          IconButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginOrRegistration(),
-                ),
-              );
-            },
-            icon: Icon(Icons.logout),
-          ),
-        ],
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xffaa4b6b),
-                Color(0xff6b6b83),
-                Color(0xff3b8d99),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+          // centerTitle: true,
+          leading: Padding(
+            padding: EdgeInsets.all(5),
+            child: ClipOval(
+              child: Image.network(
+                imgLink,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
+          actions: [
+            IconButton(
+              onPressed:(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ScanCodePage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.qr_code_scanner),
+            ),
+            IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginOrRegistration(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.logout),
+            ),
+          ],
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFFA1FFCE),
+                  Color(0xFFFAFFD1),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (int number) {
-          setState(() {
-            print(number);
-            pageNumber = number;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        elevation: 5,
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: (int number) {
+            setState(() {
+              print(number);
+              pageNumber = number;
+            });
+          },
+          type: BottomNavigationBarType.fixed,
+          elevation: 5,
 
-        // backgroundColor: Colors.grey.shade400,
-        // showUnselectedLabels: false,
-        // showSelectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: pageNumber == 0 ? selectColor : unselectColor,
+          // backgroundColor: Colors.grey.shade400,
+          // showUnselectedLabels: false,
+          // showSelectedLabels: false,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                color: pageNumber == 0 ? selectColor : unselectColor,
+              ),
+              label: 'Home',
+              tooltip: 'Home',
             ),
-            label: 'Home',
-            tooltip: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.list,
-              color: pageNumber == 1 ? selectColor : unselectColor,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.history,
+                color: pageNumber == 1 ? selectColor : unselectColor,
+              ),
+              label: 'History',
+              tooltip: 'Health report history',
             ),
-            label: 'History',
-            tooltip: 'Health report history',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.assignment_outlined,
-              color: pageNumber == 2 ? selectColor : unselectColor,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.assignment_outlined,
+                color: pageNumber == 2 ? selectColor : unselectColor,
+              ),
+              label: 'Add record',
+              tooltip: 'Add new medical report record',
             ),
-            label: 'Add record',
-            tooltip: 'Add new medical report record',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event_available_outlined,
-              color: pageNumber == 3 ? selectColor : unselectColor,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.event_available_outlined,
+                color: pageNumber == 3 ? selectColor : unselectColor,
+              ),
+              label: 'Profile',
+              tooltip: 'Profile page',
             ),
-            label: 'Profile',
-            tooltip: 'Profile page',
-          ),
-        ],
+          ],
+        ),
+        body: changePage(),
       ),
-      body: changePage(),
     );
   }
 }
