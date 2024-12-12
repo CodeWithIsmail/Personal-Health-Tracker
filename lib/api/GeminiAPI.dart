@@ -1,7 +1,7 @@
 import '../ImportAll.dart';
 
-Future<String> sendImagePromptToGemini(
-    String prompt, File selectedMedia, ChatSession? chat) async {
+Future<String> sendImagePromptToGemini(String prompt, File selectedMedia,
+    ChatSession? chat) async {
   try {
     final imageBytes = await selectedMedia.readAsBytes();
     final content = [

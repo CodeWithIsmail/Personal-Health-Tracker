@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'ImportAll.dart';
+import '../ImportAll.dart';
 
 class ScanCodePage extends StatefulWidget {
   const ScanCodePage({super.key});
