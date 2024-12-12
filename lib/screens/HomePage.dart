@@ -20,16 +20,18 @@ class _HomePageState extends State<HomePage> {
     String? email = FirebaseAuth.instance.currentUser?.email;
     if (email != null) {
       uname = email.substring(0, email.indexOf('@'));
-      DocumentSnapshot docSnapshot = FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection('users')
           .doc(uname)
-          .get() as DocumentSnapshot<Object?>;
-      if (docSnapshot.exists) {
-        imgLink = docSnapshot.get('image');
-      } else {
-        imgLink =
-            "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
-      }
+          .get()
+          .then((docSnapshot) {
+        if (docSnapshot.exists) {
+          imgLink = docSnapshot.get('image');
+        } else {
+          imgLink =
+              "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
+        }
+      });
     } else {
       uname = "ismail99";
       imgLink =
@@ -47,7 +49,7 @@ class _HomePageState extends State<HomePage> {
 
     // return AddReportScreen();
     else
-      return ProfileScreen("ismail99");
+      return ProfileScreen(uname);
   }
 
   @override
@@ -75,7 +77,7 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             IconButton(
-              onPressed:(){
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

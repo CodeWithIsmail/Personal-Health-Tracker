@@ -54,10 +54,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             email: tempEmail!,
             password: tempPassword!,
           );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
+
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => HomePage()),
+          // );
+
+
         } else {
           await user.delete();
           CustomToast('Email verification required. Please sign up again.',
@@ -201,18 +204,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           SizedBox(
                               width: MediaQuery.of(context).size.width / 15),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.grey.shade400,
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 1, horizontal: 7),
-                            child: CustomIconName(
-                                'images/appleLogo.png',
-                                MediaQuery.of(context).size.width / 10,
-                                MediaQuery.of(context).size.height / 14),
-                          ),
                         ],
                       ),
                       SizedBox(height: MediaQuery.of(context).size.width / 20),

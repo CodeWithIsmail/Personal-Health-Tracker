@@ -10,6 +10,7 @@ export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:qr_flutter/qr_flutter.dart';
 export 'package:pretty_qr_code/pretty_qr_code.dart';
 export 'package:google_sign_in/google_sign_in.dart';
+export 'package:intl/intl.dart' hide TextDirection;
 // firebase
 export 'package:firebase_core/firebase_core.dart';
 export 'package:firebase_auth/firebase_auth.dart';
@@ -27,12 +28,14 @@ export 'screens/ReportInputScreen.dart';
 export 'screens/ProfileScreen.dart';
 export 'screens/HistoryPage.dart';
 export 'screens/ReportAnalysisScreen.dart';
+export 'screens/InputProfileInfoScreen.dart';
 
 // helper
 export 'helper/AuthCheck.dart';
 export 'helper/LogOrRegi.dart';
-export 'helper/QRmaker.dart';
+export 'helper/QRmaker.dart' hide QRCodeGenerator;
 export 'helper/QRscan.dart';
+export 'helper/QRmake.dart';
 export 'helper/constants.dart';
 
 // services
@@ -50,6 +53,7 @@ export 'custom/CustomButtonGestureDetector.dart';
 
 // components
 export 'components/MessageWidget.dart';
+export 'components/ProfileInfo.dart';
 
 // flutter
 export 'dart:io';

@@ -21,9 +21,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      // home: LoginOrRegistration(),
-      home: HomePage(),
-      // home: QRCodeGenerator(),
+      home: LoginOrRegistration(),
+      // home: HomePage(),
+
+      // home: ProfileInput(),
       // home:QRCodeScannerPage(),
       // home:ScanCodePage(),
       // home: ProfileScreen(),
