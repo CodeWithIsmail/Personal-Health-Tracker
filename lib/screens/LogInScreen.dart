@@ -185,34 +185,34 @@ class _LogInScreenState extends State<LogInScreen> {
       User? user = credential.user;
       if (user != null && user.emailVerified) {
 
-        ProfileInfo profileInfo = new ProfileInfo(
-            email.text.substring(0, email.text.indexOf('@')),
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            email.text,
-            "",
-            Timestamp.fromDate(DateTime.now()),
-            "",
-            "",
-            0.0,
-            0.0);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileInput(profileInfo),
-          ),
-        );
-
+        // ProfileInfo profileInfo = new ProfileInfo(
+        //     email.text.substring(0, email.text.indexOf('@')),
+        //     "",
+        //     "",
+        //     "",
+        //     "",
+        //     "",
+        //     "",
+        //     email.text,
+        //     "",
+        //     Timestamp.fromDate(DateTime.now()),
+        //     "",
+        //     "",
+        //     0.0,
+        //     0.0);
         // Navigator.pushReplacement(
         //   context,
         //   MaterialPageRoute(
-        //     builder: (context) => HomePage(),
+        //     builder: (context) => ProfileInput(profileInfo),
         //   ),
         // );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
         print(credential);
       } else {
         showDialog(

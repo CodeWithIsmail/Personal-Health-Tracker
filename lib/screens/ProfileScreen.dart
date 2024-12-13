@@ -76,6 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 documentSnapshot.data() as Map<dynamic, dynamic>;
             //print(data);
             String imgLink = data['image'];
+            String qrLink = data['qr'];
             String full_name = data['fname'] + " " + data['lname'];
             String location = data['city'] + ", " + data['country'];
             String email = data['email'];
@@ -114,6 +115,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               data['height'].toDouble())
                           .toStringAsFixed(2)),
                   ProfileInfoItem(Icons.bloodtype, "Blood Type", bg),
+                  Image.network(
+                    qrLink,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width,
+                  ),
                 ],
               ),
             );

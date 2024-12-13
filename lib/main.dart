@@ -21,8 +21,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      home: LoginOrRegistration(),
+      // home: LoginOrRegistration(),
       // home: HomePage(),
+      home: AuthCheck(),
 
       // home: ProfileInput(),
       // home:QRCodeScannerPage(),

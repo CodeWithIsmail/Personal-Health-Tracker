@@ -39,6 +39,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
       tempEmail = email.text;
       tempPassword = password.text;
 
+      String? uname=tempEmail?.substring(0, tempEmail?.indexOf('@'));
+      ProfileInfo profileInfo = new ProfileInfo(
+          uname!,
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          tempEmail!,
+          "",
+          Timestamp.fromDate(DateTime.now()),
+          "",
+          "",
+          0.0,
+          0.0);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfileInput(profileInfo),
+        ),
+      );
+
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: tempEmail!,
         password: tempPassword!,
@@ -54,6 +77,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             email: tempEmail!,
             password: tempPassword!,
           );
+
+          widget.togglefunction;
 
           // Navigator.pushReplacement(
           //   context,

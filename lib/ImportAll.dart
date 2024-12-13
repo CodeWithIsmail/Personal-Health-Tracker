@@ -61,6 +61,7 @@ export 'dart:convert';
 
 //api
 export 'api/GeminiAPI.dart';
+export 'api/ImageUploadCloudinary.dart';
 
 // private data
 export 'PrivateData.dart';
