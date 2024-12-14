@@ -15,7 +15,7 @@ class _ProfileInputState extends State<ProfileInput> {
   List<TextEditingController> editingControllers = [];
   File? _profileImage;
   String imgUrl =
-      "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
+      "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
   final ImagePicker _picker = ImagePicker();
 
   @override

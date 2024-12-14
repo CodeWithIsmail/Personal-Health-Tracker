@@ -47,27 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (user != null) {
         await user.sendEmailVerification();
-        // _showVerificationDialog(user);
         _showVerificationDialog();
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => LogInScreen(widget.togglefunction),
-        //   ),
-        // );
-        //   bool isVerified = await checkEmailVerification(user);
-        //   if (isVerified) {
-        //     Navigator.pushReplacement(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => LogInScreen(widget.togglefunction)),
-        //     );
-        //   } else {
-        //     await user.delete();
-        //     CustomToast('Email verification required. Please sign up again.',
-        //             Colors.blueGrey, Colors.white, 16)
-        //         .showToast();
-        //   }
       }
     } on FirebaseAuthException catch (e) {
       handleFirebaseError(e);
@@ -75,60 +55,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print(e);
     }
   }
-
-  // void _showVerificationDialog(User user) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setState) {
-  //           return AlertDialog(
-  //             backgroundColor: Colors.deepPurple,
-  //             title: Text("Verification Email Sent",
-  //                 style: TextStyle(color: Colors.white)),
-  //             content: Text(
-  //               "A verification email has been sent to $tempEmail. Please verify your email to continue.",
-  //               style: TextStyle(color: Colors.grey),
-  //             ),
-  //             actions: [
-  //               ElevatedButton(
-  //                 onPressed: () async {
-  //                   await user.reload();
-  //                   if (user.emailVerified) {
-  //                     Navigator.pop(context); // Close the dialog
-  //                     Navigator.pushReplacement(
-  //                       context,
-  //                       MaterialPageRoute(builder: (context) =>
-  //                           LogInScreen(widget.togglefunction)), // Adjust as needed
-  //                     );
-  //                   } else {
-  //                     CustomToast(
-  //                         'Email not verified yet. Please check again.',
-  //                         Colors.blueGrey, Colors.white, 16)
-  //                         .showToast();
-  //                   }
-  //                 },
-  //                 child: Text("I Verified"),
-  //               ),
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context); // Close dialog without verifying
-  //                   user.delete(); // Clean up the account
-  //                   CustomToast(
-  //                       'Account deleted. Please sign up again.', Colors.red,
-  //                       Colors.white, 16)
-  //                       .showToast();
-  //                 },
-  //                 child: Text("Cancel", style: TextStyle(color: Colors.red)),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 
   void _showVerificationDialog() {
     showDialog(
@@ -144,13 +70,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LogInScreen(widget.togglefunction),
-                  ),
-                );
-                //  Navigator.pop(context);
+                Navigator.pop(context);
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => LogInScreen(widget.togglefunction),
+                //   ),
+                // );
               },
               child: Text("OK"),
             ),
@@ -158,14 +84,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       },
     );
-  }
-
-  Future<bool> checkEmailVerification(User user) async {
-    while (!user.emailVerified) {
-      await Future.delayed(Duration(seconds: 5));
-      await user.reload();
-    }
-    return true;
   }
 
   void handleFirebaseError(FirebaseAuthException e) {

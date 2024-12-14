@@ -11,9 +11,47 @@ class AuthCheck extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasData) {
-          String? email = FirebaseAuth.instance.currentUser?.email;
-          print(email);
-          return HomePage();
+          User? currentUser = FirebaseAuth.instance.currentUser;
+          if (currentUser != null && currentUser.emailVerified) {
+            String? email = FirebaseAuth.instance.currentUser?.email;
+            if (email != null) {
+              String uname = email.substring(0, email.indexOf('@'));
+              return FutureBuilder<DocumentSnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uname)
+                    .get(),
+                builder: (context, docSnapshot) {
+                  if (docSnapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (docSnapshot.hasData && docSnapshot.data!.exists) {
+                    return HomePage();
+                  } else {
+                    ProfileInfo profileInfo = new ProfileInfo(
+                        uname,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        email,
+                        "",
+                        Timestamp.fromDate(DateTime.now()),
+                        "",
+                        "",
+                        0.0,
+                        0.0);
+                    // return ProfileInput(profileInfo);
+                    return LoginOrRegistration();
+                  }
+                },
+              );
+            } else
+              return LoginOrRegistration();
+          } else {
+            return LoginOrRegistration();
+          }
         } else {
           return LoginOrRegistration();
         }
