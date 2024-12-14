@@ -13,8 +13,6 @@ class _LogInScreenState extends State<LogInScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
-
-
   void googleSignIn() async {
     try {
       await AuthService().SignInWithGoogle();
@@ -184,35 +182,41 @@ class _LogInScreenState extends State<LogInScreen> {
           email: email.text, password: password.text);
       User? user = credential.user;
       if (user != null && user.emailVerified) {
+        String uname = email.text.substring(0, email.text.indexOf('@'));
 
-        // ProfileInfo profileInfo = new ProfileInfo(
-        //     email.text.substring(0, email.text.indexOf('@')),
-        //     "",
-        //     "",
-        //     "",
-        //     "",
-        //     "",
-        //     "",
-        //     email.text,
-        //     "",
-        //     Timestamp.fromDate(DateTime.now()),
-        //     "",
-        //     "",
-        //     0.0,
-        //     0.0);
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => ProfileInput(profileInfo),
-        //   ),
-        // );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+        DocumentReference documentReference =
+            await FirebaseFirestore.instance.collection('users').doc(uname);
+        DocumentSnapshot documentSnapshot = await documentReference.get();
+        if (documentSnapshot.exists) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } else {
+          ProfileInfo profileInfo = new ProfileInfo(
+              uname,
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              email.text,
+              "",
+              Timestamp.fromDate(DateTime.now()),
+              "",
+              "",
+              0.0,
+              0.0);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileInput(profileInfo),
+            ),
+          );
+        }
         print(credential);
       } else {
         showDialog(

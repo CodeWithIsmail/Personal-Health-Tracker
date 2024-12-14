@@ -32,11 +32,7 @@ class _HomePageState extends State<HomePage> {
               "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
         }
       });
-    } else {
-      uname = "ismail99";
-      imgLink =
-          "https://res.cloudinary.com/ismailcloud/image/upload/v1733837944/photo_2024-12-10_11-35-11_vqwhvj.jpg";
-    }
+    } else {}
   }
 
   Widget changePage() {
