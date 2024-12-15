@@ -10,6 +10,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool isLoading = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController conPassword = TextEditingController();
@@ -35,6 +36,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             .showToast();
         return;
       }
+      setState(() {
+        isLoading = true;
+      });
 
       tempEmail = email.text;
       tempPassword = password.text;
@@ -47,8 +51,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (user != null) {
         await user.sendEmailVerification();
+        setState(() {
+          isLoading = false;
+        });
+
         _showVerificationDialog();
       }
+      setState(() {
+        isLoading = false;
+      });
     } on FirebaseAuthException catch (e) {
       handleFirebaseError(e);
     } catch (e) {
@@ -143,15 +154,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 conPassword, TextInputType.text),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
-                            CustomButtonGestureDetector(
-                              "Sign Up",
-                              double.infinity,
-                              kToolbarHeight,
-                              Colors.white.withOpacity(0.8),
-                              Colors.black,
-                              20,
-                              register,
-                            ),
+                            isLoading
+                                ? SpinKitFadingFour(
+                                    size: 50,
+                                    color: Colors.tealAccent,
+                                  )
+                                : CustomButtonGestureDetector(
+                                    "Sign Up",
+                                    double.infinity,
+                                    kToolbarHeight,
+                                    Colors.white.withOpacity(0.8),
+                                    Colors.black,
+                                    20,
+                                    register,
+                                  ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
                           ],

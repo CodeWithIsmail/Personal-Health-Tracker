@@ -50,117 +50,115 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'HealthTracker\n$uname',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w400,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'HealthTracker\n$uname',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
           ),
-          // centerTitle: true,
-          leading: Padding(
-            padding: EdgeInsets.all(5),
-            child: ClipOval(
-              child: Image.network(
-                imgLink,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ScanCodePage(),
-                  ),
-                );
-              },
-              icon: Icon(Icons.qr_code_scanner),
-            ),
-            IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginOrRegistration(),
-                  ),
-                );
-              },
-              icon: Icon(Icons.logout),
-            ),
-          ],
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFFA1FFCE),
-                  Color(0xFFFAFFD1),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: (int number) {
-            setState(() {
-              print(number);
-              pageNumber = number;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          elevation: 5,
-
-          // backgroundColor: Colors.grey.shade400,
-          // showUnselectedLabels: false,
-          // showSelectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: pageNumber == 0 ? selectColor : unselectColor,
-              ),
-              label: 'Home',
-              tooltip: 'Home',
+        // centerTitle: true,
+        leading: Padding(
+          padding: EdgeInsets.all(5),
+          child: ClipOval(
+            child: Image.network(
+              imgLink,
+              fit: BoxFit.cover,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.history,
-                color: pageNumber == 1 ? selectColor : unselectColor,
-              ),
-              label: 'History',
-              tooltip: 'Health report history',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.assignment_outlined,
-                color: pageNumber == 2 ? selectColor : unselectColor,
-              ),
-              label: 'Add record',
-              tooltip: 'Add new medical report record',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.event_available_outlined,
-                color: pageNumber == 3 ? selectColor : unselectColor,
-              ),
-              label: 'Profile',
-              tooltip: 'Profile page',
-            ),
-          ],
+          ),
         ),
-        body: changePage(),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScanCodePage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.qr_code_scanner),
+          ),
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginOrRegistration(),
+                ),
+              );
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFFA1FFCE),
+                Color(0xFFFAFFD1),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (int number) {
+          setState(() {
+            print(number);
+            pageNumber = number;
+          });
+        },
+        type: BottomNavigationBarType.fixed,
+        elevation: 5,
+
+        // backgroundColor: Colors.grey.shade400,
+        // showUnselectedLabels: false,
+        // showSelectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: pageNumber == 0 ? selectColor : unselectColor,
+            ),
+            label: 'Home',
+            tooltip: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.history,
+              color: pageNumber == 1 ? selectColor : unselectColor,
+            ),
+            label: 'History',
+            tooltip: 'Health report history',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.assignment_outlined,
+              color: pageNumber == 2 ? selectColor : unselectColor,
+            ),
+            label: 'Add record',
+            tooltip: 'Add new medical report record',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.event_available_outlined,
+              color: pageNumber == 3 ? selectColor : unselectColor,
+            ),
+            label: 'Profile',
+            tooltip: 'Profile page',
+          ),
+        ],
+      ),
+      body: changePage(),
     );
   }
 }

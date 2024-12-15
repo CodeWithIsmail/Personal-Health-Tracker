@@ -11,6 +11,8 @@ export 'package:qr_flutter/qr_flutter.dart';
 export 'package:pretty_qr_code/pretty_qr_code.dart';
 export 'package:google_sign_in/google_sign_in.dart';
 export 'package:intl/intl.dart' hide TextDirection;
+export 'package:flutter_spinkit/flutter_spinkit.dart';
+
 // firebase
 export 'package:firebase_core/firebase_core.dart';
 export 'package:firebase_auth/firebase_auth.dart';

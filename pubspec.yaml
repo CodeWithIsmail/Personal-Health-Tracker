@@ -36,6 +36,7 @@ dev_dependencies:
   pretty_qr_code: ^3.3.0
   zxing2: ^0.2.3
   image: ^4.3.0
+  flutter_spinkit: ^5.2.1
 
 
 flutter:

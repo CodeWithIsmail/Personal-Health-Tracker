@@ -12,6 +12,7 @@ class LogInScreen extends StatefulWidget {
 class _LogInScreenState extends State<LogInScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  bool isLoading = false;
 
   void googleSignIn() async {
     try {
@@ -178,6 +179,9 @@ class _LogInScreenState extends State<LogInScreen> {
 
   void logIn() async {
     try {
+      setState(() {
+        isLoading=true;
+      });
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text, password: password.text);
       User? user = credential.user;
@@ -229,6 +233,9 @@ class _LogInScreenState extends State<LogInScreen> {
           },
         );
       }
+      setState(() {
+        isLoading=false;
+      });
     } on FirebaseAuthException catch (e) {
       print(e.code);
       if (e.code == "invalid-credential") {
@@ -294,6 +301,10 @@ class _LogInScreenState extends State<LogInScreen> {
                             ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 10),
+                            isLoading? SpinKitFadingFour(
+                              size: 50,
+                              color:Colors.tealAccent,
+                            ):
                             CustomButtonGestureDetector(
                               "Login",
                               double.infinity,

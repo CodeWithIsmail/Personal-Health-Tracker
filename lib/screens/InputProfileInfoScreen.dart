@@ -10,6 +10,7 @@ class ProfileInput extends StatefulWidget {
 }
 
 class _ProfileInputState extends State<ProfileInput> {
+  bool isLoading = false;
   Timestamp? timestamp;
   late DateTime selected;
   List<TextEditingController> editingControllers = [];
@@ -230,21 +231,26 @@ class _ProfileInputState extends State<ProfileInput> {
                 SizedBox(
                   height: 15,
                 ),
-                CustomButtonGestureDetector(
-                  "Save info",
-                  100,
-                  50,
-                  Color(0xFF355C7D),
-                  Colors.white,
-                  20,
-                  () {
-                    saveInfoToDB();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  },
-                ),
+                isLoading
+                    ? SpinKitPouringHourGlassRefined(
+                        size: 50,
+                        color: Colors.tealAccent,
+                      )
+                    : CustomButtonGestureDetector(
+                        "Save info",
+                        100,
+                        50,
+                        Color(0xFF355C7D),
+                        Colors.white,
+                        20,
+                        () {
+                          saveInfoToDB();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        },
+                      ),
               ],
             ),
           ),
