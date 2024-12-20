@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:personal_health_tracker/screens/ManualReport.dart';
 import '../ImportAll.dart';
 
 class AddReportScreen extends StatefulWidget {
@@ -16,7 +17,11 @@ class _AddReportScreenState extends State<AddReportScreen> {
   FirestoreService firestoreService = new FirestoreService();
   String imageURL = "";
 
+  bool isManualInputVisible = false;
+
   // bool isLoading = false;
+
+  List<Map<String, TextEditingController>> manualFields = [];
 
   void initState() {
     super.initState();
@@ -266,32 +271,11 @@ class _AddReportScreenState extends State<AddReportScreen> {
                 Colors.white,
                 Colors.black,
                 18,
-                () {
+                    () {
+                  // Navigate to the ManualReport screen
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => CBCinputScreen(new CBC(
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "",
-                          "")),
-                    ),
+                    MaterialPageRoute(builder: (context) => Manualreport()),
                   );
                 },
               ),
