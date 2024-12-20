@@ -20,17 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-
-      // home: LoginOrRegistration(),
-      // home: HomePage(),
       home: AuthCheck(),
-
-      // home: ProfileInput(),
-      // home:QRCodeScannerPage(),
-      // home:ScanCodePage(),
-      // home: ProfileScreen(),
-      // home: AddReportScreen(),
-      // home: ChatScreen(),
     );
   }
 }

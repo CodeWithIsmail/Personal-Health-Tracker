@@ -10,40 +10,45 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int pageNumber = 0;
   String uname = "";
-  String imgLink = "";
+  String imgLink = "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
   Color selectColor = Colors.green;
   Color unselectColor = Colors.lightBlueAccent;
+
+  Future<void> setImageLink() async {
+    try {
+      DocumentSnapshot docSnapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uname).get();
+
+      if (docSnapshot.exists) {
+        imgLink = docSnapshot.get('image');
+      } else {
+        imgLink =
+            "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
+      }
+    } catch (e) {
+      print("Error fetching image link: $e");
+      imgLink =
+          "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png"; // Default image in case of error
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     String? email = FirebaseAuth.instance.currentUser?.email;
-    if (email != null) {
-      uname = email.substring(0, email.indexOf('@'));
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(uname)
-          .get()
-          .then((docSnapshot) {
-        if (docSnapshot.exists) {
-          imgLink = docSnapshot.get('image');
-        } else {
-          imgLink =
-              "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
-        }
-      });
-    } else {}
+    uname = email!.substring(0, email.indexOf('@'));
+      setImageLink();
   }
 
   Widget changePage() {
     if (pageNumber == 0)
       return HomeScreen();
     else if (pageNumber == 1)
-      return HistoryScreen();
+      return HistoryAnalysisScreen();
     else if (pageNumber == 2)
+      return ReportHistoryVisualization();
+    else if (pageNumber == 3)
       return AddReport();
-
-    // return AddReportScreen();
     else
       return ProfileScreen(uname);
   }
@@ -142,8 +147,16 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.assignment_outlined,
+              Icons.stacked_line_chart,
               color: pageNumber == 2 ? selectColor : unselectColor,
+            ),
+            label: 'Visualization',
+            tooltip: 'Report History Visualization',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.assignment_outlined,
+              color: pageNumber == 3 ? selectColor : unselectColor,
             ),
             label: 'Add record',
             tooltip: 'Add new medical report record',
@@ -151,7 +164,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.event_available_outlined,
-              color: pageNumber == 3 ? selectColor : unselectColor,
+              color: pageNumber == 4 ? selectColor : unselectColor,
             ),
             label: 'Profile',
             tooltip: 'Profile page',

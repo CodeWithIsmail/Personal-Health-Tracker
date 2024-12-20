@@ -1,17 +1,18 @@
-// External Package
-export 'package:fluttertoast/fluttertoast.dart';
 export 'package:flutter/cupertino.dart';
 export 'package:flutter/material.dart' hide RefreshCallback;
+
+// External Package
+export 'package:fluttertoast/fluttertoast.dart';
 export 'package:image_cropper/image_cropper.dart';
 export 'package:image_picker/image_picker.dart';
-export 'package:path_provider/path_provider.dart';
 export 'package:flutter_markdown/flutter_markdown.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:qr_flutter/qr_flutter.dart';
-export 'package:pretty_qr_code/pretty_qr_code.dart';
 export 'package:google_sign_in/google_sign_in.dart';
 export 'package:intl/intl.dart' hide TextDirection;
 export 'package:flutter_spinkit/flutter_spinkit.dart';
+export 'package:syncfusion_flutter_charts/charts.dart';
+export 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
@@ -29,13 +30,13 @@ export 'screens/AddReportScreen.dart';
 export 'screens/ReportInputScreen.dart';
 export 'screens/ProfileScreen.dart';
 export 'screens/HistoryPage.dart';
+export 'screens/ReportHistoryvisualization.dart';
 export 'screens/ReportAnalysisScreen.dart';
 export 'screens/InputProfileInfoScreen.dart';
 
 // helper
 export 'helper/AuthCheck.dart';
 export 'helper/LogOrRegi.dart';
-export 'helper/QRmaker.dart' hide QRCodeGenerator;
 export 'helper/QRscan.dart';
 export 'helper/QRmake.dart';
 export 'helper/constants.dart';
@@ -67,3 +68,4 @@ export 'api/ImageUploadCloudinary.dart';
 
 // private data
 export 'PrivateData.dart';
+

@@ -58,7 +58,7 @@ class _AddReportState extends State<AddReport> {
           setState(() {
             isLoading = true;
           });
-          //  await _uploadImage(croppedFile);
+          await _uploadImage(croppedFile);
           String values =
               await sendImagePromptToGemini(generalPrompt, croppedFile, null);
           print(values);
