@@ -1,108 +1,125 @@
 import '../ImportAll.dart';
 
-class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({super.key});
+class SummaryData {
+  String date;
+  String imageLink;
+  String summary;
 
-  @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  SummaryData(this.date, this.imageLink, this.summary);
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
-  FirestoreService firestoreService = new FirestoreService();
+class HistoryAnalysisScreen extends StatefulWidget {
+  const HistoryAnalysisScreen({Key? key}) : super(key: key);
+
+  @override
+  _HistoryAnalysisScreenState createState() => _HistoryAnalysisScreenState();
+}
+
+class _HistoryAnalysisScreenState extends State<HistoryAnalysisScreen> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<SummaryData> _summaryData = [];
+  String uname = "";
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    String? email = FirebaseAuth.instance.currentUser?.email;
+    uname = email!.substring(0, email.indexOf('@'));
+    _fetchSummaryData();
+  }
+
+  Future<void> _fetchSummaryData() async {
+    setState(() {
+      _isLoading = true;
+      _summaryData = [];
+    });
+
+    try {
+      DocumentSnapshot snapshot =
+          await _firestore.collection('report_summery').doc(uname).get();
+      if (snapshot.exists) {
+        List<dynamic> summaryList = snapshot['summery'];
+        print(summaryList);
+        List<SummaryData> data = summaryList.map((summaryItem) {
+          DateTime dateTime = summaryItem['date'].toDate();
+          String formattedDate = DateFormat('dd MMM yyyy').format(dateTime);
+          String imageLink = summaryItem['image_link'] ?? '';
+          String summary = summaryItem['summery'] ?? '';
+          return SummaryData(formattedDate, imageLink, summary);
+        }).toList();
+
+        setState(() {
+          _summaryData = data;
+        });
+      } else {
+        print('No summary data found for the user.');
+      }
+    } catch (e) {
+      print('Error fetching summary data: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Widget _buildSummaryList() {
+    return ListView.builder(
+      itemCount: _summaryData.length,
+      itemBuilder: (context, index) {
+        SummaryData summary = _summaryData[index];
+        return Card(
+          color: Colors.brown.shade100,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 5,
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(10),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  summary.date,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                if (summary.imageLink.isNotEmpty)
+                  Image.network(summary.imageLink,
+                      height: 100, fit: BoxFit.cover),
+                SizedBox(height: 5),
+                Text(
+                  summary.summary,
+                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: firestoreService.getEntry("12"),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('An error occurred!'));
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData) {
-            return Center(child: Text('No records found.'));
-          }
-          List entryList = snapshot.data!.docs;
-          print(entryList);
-          return Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-            child: ListView.builder(
-              itemCount: entryList.length,
-              itemBuilder: (BuildContext context, int index) {
-                DocumentSnapshot documentSnapshot = entryList[index];
-                Map<String, dynamic> data =
-                    documentSnapshot.data() as Map<String, dynamic>;
-
-                String user_id = data['user_id'];
-                String report_id =documentSnapshot.id ;
-                String imgLink = data['image_link'];
-                String reportSummery = data['report_summery'];
-
-                print(user_id + " " + report_id + " " + imgLink);
-
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: gradientMain,
-                        // color: Color(0xFF6C5B7B),
-                        borderRadius: BorderRadius.circular(10),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          children: [
+            _isLoading
+                ? SpinKitFadingFour(
+                    size: 50,
+                    color: Colors.deepPurple,
+                  )
+                : _summaryData.isEmpty
+                    ? Text('No data available')
+                    : Expanded(
+                        child: _buildSummaryList(),
                       ),
-                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      height: MediaQuery.of(context).size.height / 4,
-                      width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Report id: '+report_id),
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.delete),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.share),
-                              )
-                            ],
-                          ),
-                          Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.network(
-                                imgLink,
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: MediaQuery.of(context).size.height / 6,
-                              ),
-                              Container(
-                                // decoration: BoxDecoration(color: Colors.blue
-                                // ),
-                                width: MediaQuery.of(context).size.width / 2,
-                                height: MediaQuery.of(context).size.height / 6,
-                                child: Text(
-                                  textAlign: TextAlign.start,
-                                  reportSummery,
-                                  style: TextStyle(color: Colors.white,),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }

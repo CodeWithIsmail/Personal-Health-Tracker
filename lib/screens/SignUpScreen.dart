@@ -10,6 +10,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool isLoading = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController conPassword = TextEditingController();
@@ -35,6 +36,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             .showToast();
         return;
       }
+      setState(() {
+        isLoading = true;
+      });
 
       tempEmail = email.text;
       tempPassword = password.text;
@@ -47,24 +51,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (user != null) {
         await user.sendEmailVerification();
+        setState(() {
+          isLoading = false;
+        });
+
         _showVerificationDialog();
-        bool isVerified = await checkEmailVerification(user);
-        if (isVerified) {
-          await _auth.signInWithEmailAndPassword(
-            email: tempEmail!,
-            password: tempPassword!,
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        } else {
-          await user.delete();
-          CustomToast('Email verification required. Please sign up again.',
-                  Colors.blueGrey, Colors.white, 16)
-              .showToast();
-        }
       }
+      setState(() {
+        isLoading = false;
+      });
     } on FirebaseAuthException catch (e) {
       handleFirebaseError(e);
     } catch (e) {
@@ -87,6 +82,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => LogInScreen(widget.togglefunction),
+                //   ),
+                // );
               },
               child: Text("OK"),
             ),
@@ -94,14 +95,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       },
     );
-  }
-
-  Future<bool> checkEmailVerification(User user) async {
-    while (!user.emailVerified) {
-      await Future.delayed(Duration(seconds: 5));
-      await user.reload();
-    }
-    return true;
   }
 
   void handleFirebaseError(FirebaseAuthException e) {
@@ -161,15 +154,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 conPassword, TextInputType.text),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
-                            CustomButtonGestureDetector(
-                              "Sign Up",
-                              double.infinity,
-                              kToolbarHeight,
-                              Colors.white.withOpacity(0.8),
-                              Colors.black,
-                              20,
-                              register,
-                            ),
+                            isLoading
+                                ? SpinKitFadingFour(
+                                    size: 50,
+                                    color: Colors.tealAccent,
+                                  )
+                                : CustomButtonGestureDetector(
+                                    "Sign Up",
+                                    double.infinity,
+                                    kToolbarHeight,
+                                    Colors.white.withOpacity(0.8),
+                                    Colors.black,
+                                    20,
+                                    register,
+                                  ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
                           ],
@@ -201,18 +199,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           SizedBox(
                               width: MediaQuery.of(context).size.width / 15),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.grey.shade400,
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 1, horizontal: 7),
-                            child: CustomIconName(
-                                'images/appleLogo.png',
-                                MediaQuery.of(context).size.width / 10,
-                                MediaQuery.of(context).size.height / 14),
-                          ),
                         ],
                       ),
                       SizedBox(height: MediaQuery.of(context).size.width / 20),

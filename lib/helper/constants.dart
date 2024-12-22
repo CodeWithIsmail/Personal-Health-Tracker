@@ -11,6 +11,10 @@ class Constants {
 }
 
 final gradientMain = LinearGradient(
+  // colors: [
+  //   Color(0xFFA1FFCE),
+  //   Color(0xFFFAFFD1),
+  // ],
   colors: [
     Color(0xFF355C7D),
     Color(0xFF6C5B7B),
@@ -52,4 +56,11 @@ final promptTextFieldDecoration = InputDecoration(
       color: Color(0xFF355C7D),
     ),
   ),
+);
+
+const kAppBarTextStyle = TextStyle(
+  fontSize: 25,
+  color: Colors.white,
+  letterSpacing: 2,
+  fontWeight: FontWeight.bold,
 );

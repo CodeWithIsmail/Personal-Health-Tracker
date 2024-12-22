@@ -20,9 +20,12 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
   final List<({Image? image, String? text, bool fromUser})> _generatedContent =
       <({Image? image, String? text, bool fromUser})>[];
   bool _loading = false;
+  String uname = "";
 
   void initState() {
     super.initState();
+    String? email = FirebaseAuth.instance.currentUser?.email;
+    uname = email!.substring(0, email.indexOf('@'));
     _chat = GeminiModel.startChat();
     _sendImagePrompt(analyzeReportPrompt);
   }
@@ -140,7 +143,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
 
           if (!done) {
             done = true;
-            firestoreService.storeSummeryImgLink("12", widget.imageLink, text);
+            firestoreService.storeSummeryImgLink(uname, widget.imageLink, text);
           }
           _scrollDown();
         });

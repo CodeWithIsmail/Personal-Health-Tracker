@@ -9,19 +9,48 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int pageNumber = 0;
-  String? userName = FirebaseAuth.instance.currentUser?.email;
+  String uname = "";
+  String imgLink = "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
   Color selectColor = Colors.green;
   Color unselectColor = Colors.lightBlueAccent;
+
+  Future<void> setImageLink() async {
+    try {
+      DocumentSnapshot docSnapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uname).get();
+
+      if (docSnapshot.exists) {
+        imgLink = docSnapshot.get('image');
+      } else {
+        imgLink =
+            "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
+      }
+    } catch (e) {
+      print("Error fetching image link: $e");
+      imgLink =
+          "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png"; // Default image in case of error
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    String? email = FirebaseAuth.instance.currentUser?.email;
+    uname = email!.substring(0, email.indexOf('@'));
+      setImageLink();
+  }
 
   Widget changePage() {
     if (pageNumber == 0)
       return HomeScreen();
     else if (pageNumber == 1)
-      return HistoryScreen();
+      return HistoryAnalysisScreen();
     else if (pageNumber == 2)
-      return AddReportScreen();
+      return ReportHistoryVisualization();
+    else if (pageNumber == 3)
+      return AddReport();
     else
-      return ProfileScreen();
+      return ProfileScreen(uname);
   }
 
   @override
@@ -29,30 +58,34 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'HealthTracker\n$userName',
+          'HealthTracker\n$uname',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w400,
           ),
         ),
-        centerTitle: true,
+        // centerTitle: true,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.purpleAccent,
-            child: Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 30,
+          padding: EdgeInsets.all(5),
+          child: ClipOval(
+            child: Image.network(
+              imgLink,
+              fit: BoxFit.cover,
             ),
           ),
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.info_outline_rounded),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScanCodePage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.qr_code_scanner),
           ),
           IconButton(
             onPressed: () {
@@ -71,12 +104,11 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xffaa4b6b),
-                Color(0xff6b6b83),
-                Color(0xff3b8d99),
+                Color(0xFFA1FFCE),
+                Color(0xFFFAFFD1),
               ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
         ),
@@ -107,7 +139,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.list,
+              Icons.history,
               color: pageNumber == 1 ? selectColor : unselectColor,
             ),
             label: 'History',
@@ -115,8 +147,16 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.assignment_outlined,
+              Icons.stacked_line_chart,
               color: pageNumber == 2 ? selectColor : unselectColor,
+            ),
+            label: 'Visualization',
+            tooltip: 'Report History Visualization',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.assignment_outlined,
+              color: pageNumber == 3 ? selectColor : unselectColor,
             ),
             label: 'Add record',
             tooltip: 'Add new medical report record',
@@ -124,7 +164,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.event_available_outlined,
-              color: pageNumber == 3 ? selectColor : unselectColor,
+              color: pageNumber == 4 ? selectColor : unselectColor,
             ),
             label: 'Profile',
             tooltip: 'Profile page',
