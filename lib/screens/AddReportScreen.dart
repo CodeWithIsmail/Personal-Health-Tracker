@@ -1,4 +1,5 @@
 import '../ImportAll.dart';
+import 'ManualReport.dart';
 
 class AddReport extends StatefulWidget {
   const AddReport({super.key});
@@ -15,6 +16,9 @@ class _AddReportState extends State<AddReport> {
   FirestoreService firestoreService = new FirestoreService();
   String imageURL = "";
   bool isLoading = false;
+  bool isManualInputVisible = false;
+
+  List<Map<String, TextEditingController>> manualFields = [];
 
   void initState() {
     super.initState();
@@ -247,7 +251,12 @@ class _AddReportState extends State<AddReport> {
                       Colors.white,
                       Colors.black,
                       18,
-                      () {},
+                          () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Manualreport()),
+                        );
+                      },
                     ),
                   ],
                 ),
