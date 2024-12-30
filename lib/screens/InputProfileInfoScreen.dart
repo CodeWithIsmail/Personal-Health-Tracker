@@ -18,6 +18,9 @@ class _ProfileInputState extends State<ProfileInput> {
   String imgUrl =
       "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
   final ImagePicker _picker = ImagePicker();
+  int selectedGenderIndex = 0;
+
+  final List<String> genderOptions = ['Male', 'Female', 'Other'];
 
   @override
   void initState() {
@@ -36,6 +39,10 @@ class _ProfileInputState extends State<ProfileInput> {
     editingControllers[8].text = widget.profileInfo.weight.toString();
     editingControllers[9].text = widget.profileInfo.height.toString();
     editingControllers[10].text = widget.profileInfo.bg;
+
+    if (genderOptions.contains(widget.profileInfo.gender)) {
+      selectedGenderIndex = genderOptions.indexOf(widget.profileInfo.gender);
+    }
   }
 
   @override
@@ -80,7 +87,8 @@ class _ProfileInputState extends State<ProfileInput> {
         editingControllers[4].text,
         editingControllers[5].text,
         timestamp!,
-        editingControllers[7].text,
+        genderOptions[selectedGenderIndex],
+        // editingControllers[7].text,
         editingControllers[10].text,
         double.tryParse(editingControllers[8].text) ?? 0.0,
         double.tryParse(editingControllers[9].text) ?? 0.0);
@@ -211,11 +219,44 @@ class _ProfileInputState extends State<ProfileInput> {
                 SizedBox(
                   height: 15,
                 ),
-                CustomTextField(
-                    "Gender", false, editingControllers[7], TextInputType.name),
-                SizedBox(
-                  height: 15,
+                // CustomTextField(
+                //     "Gender", false, editingControllers[7], TextInputType.name),
+                // SizedBox(
+                //   height: 15,
+                // ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Gender',
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8),
+                    ...List.generate(genderOptions.length, (index) {
+                      return Row(
+                        children: [
+                          Radio(
+                            value: index,
+                            groupValue: selectedGenderIndex,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedGenderIndex = index;
+                                editingControllers[7].text =
+                                genderOptions[index]; // Update controller
+                              });
+                            },
+                          ),
+                          Text(
+                            genderOptions[index],
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
                 ),
+                SizedBox(height: 15),
                 CustomTextField("Weight (kg)", false, editingControllers[8],
                     TextInputType.number),
                 SizedBox(
