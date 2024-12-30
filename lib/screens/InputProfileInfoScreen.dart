@@ -1,4 +1,5 @@
 import '../ImportAll.dart';
+import '../custom/CustomDropDown.dart';
 
 class ProfileInput extends StatefulWidget {
   ProfileInfo profileInfo;
@@ -279,43 +280,28 @@ class _ProfileInputState extends State<ProfileInput> {
                 SizedBox(
                   height: 15,
                 ),
-                DropdownButtonFormField<String>(
-                  value: selectedBloodGroup,
-                  decoration: InputDecoration(
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Blood Group',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide:
-                      BorderSide(color: Colors.deepPurple, width: 0),
+                    SizedBox(height: 8),
+                    CustomDropdown<String>(
+                      options: bloodGroupOptions,
+                      selectedItem: selectedBloodGroup,
+                      hint: "Select Blood Group",
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedBloodGroup = newValue!;
+                          editingControllers[10].text = selectedBloodGroup;
+                        });
+                      },
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide:
-                      BorderSide(color: Colors.purpleAccent, width: 1),
-                    ),
-                  ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedBloodGroup = newValue!;
-                      editingControllers[10].text = selectedBloodGroup;
-                    });
-                  },
-                  items: bloodGroupOptions.map<DropdownMenuItem<String>>(
-                        (String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    },
-                  ).toList(),
+                  ],
                 ),
+
                 // CustomTextField("Blood group", false, editingControllers[10],
                 //     TextInputType.text),
                 SizedBox(
