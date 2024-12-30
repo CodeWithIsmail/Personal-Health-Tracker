@@ -21,6 +21,9 @@ class _ProfileInputState extends State<ProfileInput> {
   int selectedGenderIndex = 0;
 
   final List<String> genderOptions = ['Male', 'Female', 'Other'];
+  final List<String> bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',];
+
+  String selectedBloodGroup = '';
 
   @override
   void initState() {
@@ -42,6 +45,14 @@ class _ProfileInputState extends State<ProfileInput> {
 
     if (genderOptions.contains(widget.profileInfo.gender)) {
       selectedGenderIndex = genderOptions.indexOf(widget.profileInfo.gender);
+    }
+
+    if (bloodGroupOptions.isNotEmpty && bloodGroupOptions.contains(widget.profileInfo.bg)) {
+      selectedBloodGroup = widget.profileInfo.bg;
+    }
+    else {
+      // Set to default if not found in the list
+      selectedBloodGroup = bloodGroupOptions.first;
     }
   }
 
@@ -89,7 +100,8 @@ class _ProfileInputState extends State<ProfileInput> {
         timestamp!,
         genderOptions[selectedGenderIndex],
         // editingControllers[7].text,
-        editingControllers[10].text,
+        selectedBloodGroup,
+        //editingControllers[10].text,
         double.tryParse(editingControllers[8].text) ?? 0.0,
         double.tryParse(editingControllers[9].text) ?? 0.0);
 
@@ -267,8 +279,45 @@ class _ProfileInputState extends State<ProfileInput> {
                 SizedBox(
                   height: 15,
                 ),
-                CustomTextField("Blood group", false, editingControllers[10],
-                    TextInputType.text),
+                DropdownButtonFormField<String>(
+                  value: selectedBloodGroup,
+                  decoration: InputDecoration(
+                    contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                      BorderSide(color: Colors.deepPurple, width: 0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                      BorderSide(color: Colors.purpleAccent, width: 1),
+                    ),
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedBloodGroup = newValue!;
+                      editingControllers[10].text = selectedBloodGroup;
+                    });
+                  },
+                  items: bloodGroupOptions.map<DropdownMenuItem<String>>(
+                        (String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    },
+                  ).toList(),
+                ),
+                // CustomTextField("Blood group", false, editingControllers[10],
+                //     TextInputType.text),
                 SizedBox(
                   height: 15,
                 ),
