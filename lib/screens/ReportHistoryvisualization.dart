@@ -1,3 +1,6 @@
+import 'package:personal_health_tracker/components/ReportFilterWidget.dart';
+import 'package:personal_health_tracker/custom/CustomDropDown.dart';
+
 import '../ImportAll.dart';
 
 class DateWiseTestData {
@@ -18,11 +21,13 @@ class ReportHistoryVisualization extends StatefulWidget {
 class _ReportHistoryVisualizationState
     extends State<ReportHistoryVisualization> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   List<String> _testNames = [];
   String? _selectedTestName;
   List<DateWiseTestData> _chartData = [];
   String uname = "";
   bool _isLoading = false;
+  //filter date and time selector
 
   @override
   void initState() {
@@ -120,6 +125,9 @@ class _ReportHistoryVisualizationState
       ),
     );
   }
+
+  //dialog start
+  //dialog end
 
   Widget _buildDateWiseCharts() {
     return SingleChildScrollView(
@@ -230,6 +238,9 @@ class _ReportHistoryVisualizationState
         child: Column(
           children: [
             _buildDropdown(),
+            //filter start
+            Reportfilterwidget(),
+            //filter end
             _isLoading
                 ? SpinKitFadingCircle(
                     size: 50,
