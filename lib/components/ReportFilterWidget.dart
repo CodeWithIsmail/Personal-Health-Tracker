@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import '../ImportAll.dart';
 
 class Reportfilterwidget extends StatefulWidget {
-  Reportfilterwidget({super.key});
+
+ // Reportfilterwidget({super.key});
+
+  final Function(DateTime? , DateTime?) onDateRangeSelected;
+
+  Reportfilterwidget({Key? key, required this.onDateRangeSelected}) : super(key: key);
 
   @override
   State<Reportfilterwidget> createState() => _ReportfilterwidgetState();
@@ -65,8 +70,7 @@ class _ReportfilterwidgetState extends State<Reportfilterwidget> {
                     if (pickedStartDate != null) {
                       setState(() {
                         tempStartDate = pickedStartDate;
-                        startDateController.text =
-                            dateFormat.format(tempStartDate!); // Update text
+                        startDateController.text = dateFormat.format(tempStartDate!); // Update text
                       });
                     }
                   },
@@ -104,8 +108,7 @@ class _ReportfilterwidgetState extends State<Reportfilterwidget> {
                     if (pickedEndDate != null) {
                       setState(() {
                         tempEndDate = pickedEndDate;
-                        endDateController.text =
-                            dateFormat.format(tempEndDate!); // Update text
+                        endDateController.text = dateFormat.format(tempEndDate!); // Update text
                       });
                     }
                   },
@@ -133,8 +136,10 @@ class _ReportfilterwidgetState extends State<Reportfilterwidget> {
                   });
                   Navigator.pop(context);
                   if (startDate != null && endDate != null) {
-                    print(
-                        "Selected Range: ${dateFormat.format(startDate!)} - ${dateFormat.format(endDate!)}");
+                    print("Date time gotten from report filter");
+                    print("Selected Range: ${dateFormat.format(startDate!)} - ${dateFormat.format(endDate!)}");
+
+                    widget.onDateRangeSelected(startDate, endDate);
                   }
                 },
                 child: Text("Apply"),

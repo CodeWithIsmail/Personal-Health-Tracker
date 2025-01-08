@@ -18,8 +18,8 @@ class ReportHistoryVisualization extends StatefulWidget {
       _ReportHistoryVisualizationState();
 }
 
-class _ReportHistoryVisualizationState
-    extends State<ReportHistoryVisualization> {
+class _ReportHistoryVisualizationState extends State<ReportHistoryVisualization> {
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<String> _testNames = [];
@@ -27,6 +27,9 @@ class _ReportHistoryVisualizationState
   List<DateWiseTestData> _chartData = [];
   String uname = "";
   bool _isLoading = false;
+
+  DateTime? startDate;  // **Added**
+  DateTime? endDate;
   //filter date and time selector
 
   @override
@@ -39,8 +42,7 @@ class _ReportHistoryVisualizationState
 
   Future<void> _fetchTestNames() async {
     try {
-      DocumentSnapshot snapshot =
-          await _firestore.collection('test_collection').doc('sample').get();
+      DocumentSnapshot snapshot = await _firestore.collection('test_collection').doc('sample').get();
       List<dynamic> testNames = snapshot['test_names'];
       setState(() {
         _testNames = List<String>.from(testNames);
@@ -49,6 +51,7 @@ class _ReportHistoryVisualizationState
       print('Error fetching test names: $e');
     }
   }
+  // modified fetchTestValues start
 
   Future<void> _fetchTestValues(String testName) async {
     setState(() {
@@ -57,10 +60,23 @@ class _ReportHistoryVisualizationState
     });
 
     try {
-      DocumentSnapshot snapshot =
-          await _firestore.collection('report_data').doc(uname).get();
+      DocumentSnapshot snapshot = await _firestore.collection('report_data').doc(uname).get();
       List<dynamic> testData = snapshot[testName];
-      List<DateWiseTestData> chartData = testData.map((data) {
+
+      List<DateWiseTestData> chartData = testData.where((data) {
+        DateTime dateTime = data['timestamp'].toDate();
+
+        if(startDate != null && endDate != null){
+          DateTime startDateNormalized = DateTime(startDate!.year, startDate!.month, startDate!.day);
+          DateTime endDateNormalized = DateTime(endDate!.year, endDate!.month, endDate!.day).add(Duration(days: 1));
+
+          return dateTime.isAfter(startDateNormalized) && dateTime.isBefore(endDateNormalized);
+        }
+
+        else{
+          return true;
+        }
+      }).map((data){
         DateTime dateTime = data['timestamp'].toDate();
         String formattedDate = DateFormat('dd-MMM-yy').format(dateTime);
         double value = double.parse(data['value']);
@@ -79,6 +95,9 @@ class _ReportHistoryVisualizationState
       });
     }
   }
+
+  // modified fetchTestValues end
+
 
   Widget _buildDropdown() {
     return Container(
@@ -239,7 +258,24 @@ class _ReportHistoryVisualizationState
           children: [
             _buildDropdown(),
             //filter start
-            Reportfilterwidget(),
+            Reportfilterwidget(
+              onDateRangeSelected: (DateTime? start , DateTime? end){
+               // print("testing");
+                setState(() {
+                  startDate = start;
+                  endDate = end;
+                });
+
+                //print('This is in visualization : ${startDate ?? 'Not selected'} ${endDate ?? 'Not selected'}');
+
+                // print('This is in visualization : ${startDate} ${endDate}');
+                if(_selectedTestName != null){
+                  _fetchTestValues(_selectedTestName!);
+                  //print('Selected Test is not null : ${startDate} ${endDate}');
+                }
+              },
+
+            ),
             //filter end
             _isLoading
                 ? SpinKitFadingCircle(
@@ -252,7 +288,7 @@ class _ReportHistoryVisualizationState
                         child: SingleChildScrollView(
                           child: _buildDateWiseCharts(),
                         ),
-                      ),
+            ),
           ],
         ),
       ),
