@@ -1,3 +1,5 @@
+import 'package:personal_health_tracker/NavigationRoute/Routes.dart';
+
 import 'ImportAll.dart';
 
 void main() async {
@@ -20,7 +22,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AuthCheck(),
+      initialRoute: '/authCheck',
+      routes: AppRoutes.getRoutes(),
     );
   }
 }

@@ -78,24 +78,26 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ScanCodePage(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => ScanCodePage(),
+              //   ),
+              // );
+              Navigator.pushNamed(context, '/scanCodePage');
             },
             icon: Icon(Icons.qr_code_scanner),
           ),
           IconButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginOrRegistration(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => LoginOrRegistration(),
+              //   ),
+              // );
+              Navigator.pushNamed(context, '/loginOrRegistration');
             },
             icon: Icon(Icons.logout),
           ),
