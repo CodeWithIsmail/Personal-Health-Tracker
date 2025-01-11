@@ -1,19 +1,19 @@
 import '../ImportAll.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class WebViewPage extends StatefulWidget {
+  final String url;
+
+  WebViewPage(this.url);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  _WebViewPageState createState() => _WebViewPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int pageNumber = 0;
+class _WebViewPageState extends State<WebViewPage> {
+  late WebViewController _controller;
+  bool _isLoading = true;
   String uname = "";
-  String imgLink =
-      "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
-  Color selectColor = Colors.green;
-  Color unselectColor = Colors.lightBlueAccent;
+  String imgLink = "";
 
   Future<void> setImageLink() async {
     try {
@@ -36,22 +36,47 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _initializeWebViewController();
     String? email = FirebaseAuth.instance.currentUser?.email;
     uname = email!.substring(0, email.indexOf('@'));
     setImageLink();
   }
 
-  Widget changePage() {
-    if (pageNumber == 0)
-      return HomeScreen();
-    else if (pageNumber == 1)
-      return HistoryAnalysisScreen();
-    else if (pageNumber == 2)
-      return ReportHistoryVisualization();
-    else if (pageNumber == 3)
-      return AddReport();
-    else
-      return ProfileScreen(uname);
+  void _initializeWebViewController() {
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            debugPrint('Loading progress: $progress%');
+          },
+          onPageStarted: (String url) {
+            setState(() {
+              _isLoading = true;
+            });
+            debugPrint('Page started loading: $url');
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              _isLoading = false;
+            });
+            debugPrint('Page finished loading: $url');
+          },
+          onWebResourceError: (WebResourceError error) {
+            setState(() {
+              _isLoading = false;
+            });
+            debugPrint('Web resource error: ${error.description}');
+          },
+          onHttpError: (HttpResponseError error) {
+            setState(() {
+              _isLoading = false;
+            });
+            debugPrint('HTTP error: ${error.response}');
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
   }
 
   @override
@@ -118,63 +143,15 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (int number) {
-          setState(() {
-            print(number);
-            pageNumber = number;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        elevation: 5,
-
-        // backgroundColor: Colors.grey.shade400,
-        // showUnselectedLabels: false,
-        // showSelectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: pageNumber == 0 ? selectColor : unselectColor,
+      body: Stack(
+        children: [
+          WebViewWidget(controller: _controller),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
             ),
-            label: 'Home',
-            tooltip: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.history,
-              color: pageNumber == 1 ? selectColor : unselectColor,
-            ),
-            label: 'History',
-            tooltip: 'Health report history',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.stacked_line_chart,
-              color: pageNumber == 2 ? selectColor : unselectColor,
-            ),
-            label: 'Visualization',
-            tooltip: 'Report History Visualization',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.assignment_outlined,
-              color: pageNumber == 3 ? selectColor : unselectColor,
-            ),
-            label: 'Add record',
-            tooltip: 'Add new medical report record',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event_available_outlined,
-              color: pageNumber == 4 ? selectColor : unselectColor,
-            ),
-            label: 'Profile',
-            tooltip: 'Profile page',
-          ),
         ],
       ),
-      body: changePage(),
     );
   }
 }

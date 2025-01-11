@@ -1,5 +1,4 @@
 import 'package:personal_health_tracker/NavigationRoute/Routes.dart';
-
 import 'ImportAll.dart';
 
 void main() async {
@@ -16,14 +15,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NewsProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        initialRoute: '/authCheck',
+        routes: AppRoutes.getRoutes(),
       ),
-      initialRoute: '/authCheck',
-      routes: AppRoutes.getRoutes(),
     );
   }
 }

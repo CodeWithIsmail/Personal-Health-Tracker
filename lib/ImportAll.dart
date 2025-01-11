@@ -13,6 +13,11 @@ export 'package:intl/intl.dart' hide TextDirection;
 export 'package:flutter_spinkit/flutter_spinkit.dart';
 export 'package:syncfusion_flutter_charts/charts.dart';
 export 'package:syncfusion_flutter_charts/sparkcharts.dart';
+export 'package:provider/provider.dart';
+export 'package:webview_flutter/webview_flutter.dart';
+
+// provider
+export 'provider/news_provider.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
@@ -33,6 +38,7 @@ export 'screens/HistoryPage.dart';
 export 'screens/ReportHistoryvisualization.dart';
 export 'screens/ReportAnalysisScreen.dart';
 export 'screens/InputProfileInfoScreen.dart';
+export 'screens/WebView.dart';
 
 // helper
 export 'helper/AuthCheck.dart';
