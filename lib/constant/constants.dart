@@ -1,14 +1,5 @@
 import '../ImportAll.dart';
 
-class Constants {
-  static const String homeRoute = '/';
-  static const String signUpRoute = '/sign-up';
-  static const String emailVerificationRoute = '/verify-email';
-  static const String smsVerificationRoute = '/verify-sms';
-  static const String forgotPasswordRoute = '/forgot-password';
-  static const String logInRoute = '/log-in';
-  static const String landingRoute = '/landing';
-}
 
 final gradientMain = LinearGradient(
   // colors: [

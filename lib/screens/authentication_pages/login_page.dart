@@ -1,16 +1,17 @@
-import '../ImportAll.dart';
+import 'package:personal_health_tracker/screens/authentication_pages/signup_page.dart';
 
-class SignupPage extends StatefulWidget {
+import '../../ImportAll.dart';
+
+class LoginPage extends StatefulWidget {
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<LoginPage> createState() => _LoginPageState();
 
-  SignupPage();
+  LoginPage();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  TextEditingController conPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,10 @@ class _SignupPageState extends State<SignupPage> {
                           MediaQuery.of(context).size.width / 3,
                           MediaQuery.of(context).size.height / 5),
                       SizedBox(height: MediaQuery.of(context).size.width / 50),
-                      Text('Personal Health Tracker', style: appNameTextStyle),
+                      Text(
+                        'Personal Health Tracker',
+                        style: appNameTextStyle,
+                      ),
                       SizedBox(height: MediaQuery.of(context).size.width / 10),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -50,28 +54,50 @@ class _SignupPageState extends State<SignupPage> {
                                 "Password", true, password, TextInputType.text),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
-                            CustomTextField("Confirm Password", true,
-                                conPassword, TextInputType.text),
+                            Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: CustomTextGestureDetector(
+                                "Forgot Password?",
+                                Colors.white60,
+                                15,
+                                true,
+                                () {
+                                  if (email.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Enter your email to reset password.')),
+                                    );
+                                    return;
+                                  }
+                                  authProvider.resetPassword(
+                                      email.text, context);
+                                },
+                              ),
+                            ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.width / 20),
+                                height: MediaQuery.of(context).size.width / 10),
                             CustomButtonGestureDetector(
-                              "Sign Up",
+                              "Login",
                               double.infinity,
                               kToolbarHeight,
                               Colors.white.withOpacity(0.8),
                               Colors.black,
                               20,
-                              () async {
-                                await authProvider.signUp(
-                                  email.text.trim(),
-                                  password.text.trim(),
-                                  conPassword.text.trim(),
-                                  context,
-                                );
+                              () {
+                                if (email.text.isEmpty ||
+                                    password.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Email and Password are required!')),
+                                  );
+                                  return;
+                                }
+                                authProvider.logIn(
+                                    email.text, password.text, context);
                               },
                             ),
-                            SizedBox(
-                                height: MediaQuery.of(context).size.width / 20),
                           ],
                         ),
                       ),
@@ -86,9 +112,7 @@ class _SignupPageState extends State<SignupPage> {
                         margin:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
-                          onTap: () async {
-                            await authProvider.googleSignIn(context);
-                          },
+                          onTap: () => authProvider.googleSignIn(context),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -98,7 +122,7 @@ class _SignupPageState extends State<SignupPage> {
                                   MediaQuery.of(context).size.height / 14),
                               SizedBox(width: 10),
                               Text(
-                                "Sign up with Google",
+                                "Log in with Google",
                                 style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.black,
@@ -110,15 +134,12 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       SizedBox(height: MediaQuery.of(context).size.width / 20),
                       CustomTextGestureDetector(
-                        "Already a member? Login now!",
+                        "Not a member? Register now!",
                         Colors.white60,
                         15,
                         true,
                         () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()));
+                          Navigator.pushReplacementNamed(context, AppRoutes.signup);
                         },
                       ),
                       SizedBox(height: MediaQuery.of(context).size.width / 20),

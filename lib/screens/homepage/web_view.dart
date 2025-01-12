@@ -1,4 +1,4 @@
-import '../ImportAll.dart';
+import '../../ImportAll.dart';
 
 class WebViewPage extends StatefulWidget {
   final String url;

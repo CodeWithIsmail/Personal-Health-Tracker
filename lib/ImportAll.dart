@@ -35,10 +35,16 @@ export 'package:cloud_firestore/cloud_firestore.dart';
 export 'package:google_generative_ai/google_generative_ai.dart';
 
 // screens
-export 'screens/SignUpScreen.dart';
-export 'screens/LogInScreen.dart';
-export 'screens/HomePage.dart';
-export 'screens/HomeScreenPage.dart';
+// authentication pages
+export 'screens/authentication_pages/login_page.dart';
+export 'screens/authentication_pages/signup_page.dart';
+export 'screens/authentication_pages/verification_page.dart';
+// homepage
+export 'screens/homepage/home_page.dart';
+export 'screens/homepage/web_view.dart';
+
+export 'screens/main_navigation_page.dart';
+export 'screens/homepage/home_page.dart';
 export 'screens/AddReportScreen.dart';
 export 'screens/ReportInputScreen.dart';
 export 'screens/ProfileScreen.dart';
@@ -46,18 +52,18 @@ export 'screens/HistoryPage.dart';
 export 'screens/ReportHistoryvisualization.dart';
 export 'screens/ReportAnalysisScreen.dart';
 export 'screens/InputProfileInfoScreen.dart';
-export 'screens/WebView.dart';
-export 'screens/VerificationPendingScreen.dart';
-export 'screens/LoginPage.dart';
+
 // helper
-export 'helper/AuthCheck.dart';
-export 'helper/LogOrRegi.dart';
 export 'helper/QRscan.dart';
 export 'helper/QRmake.dart';
-export 'helper/constants.dart';
 export 'helper/Calculator.dart';
+
+// constant
+export 'constant/constant_loading_indicator.dart';
+export 'constant/constants.dart';
+
+
 // services
-export 'services/AuthService.dart';
 export 'services/firestoreDB.dart';
 export 'services/firebase_options.dart';
 
@@ -72,8 +78,7 @@ export 'custom/CustomButtonGestureDetector.dart';
 // components
 export 'components/MessageWidget.dart';
 export 'components/ProfileInfo.dart';
-export '../components/MyAppBar.dart';
-
+export 'components/MyAppBar.dart';
 
 // flutter
 export 'dart:io';
@@ -85,3 +90,6 @@ export 'api/ImageUploadCloudinary.dart';
 
 // private data
 export 'PrivateData.dart';
+
+// routes
+export 'route/routes.dart';

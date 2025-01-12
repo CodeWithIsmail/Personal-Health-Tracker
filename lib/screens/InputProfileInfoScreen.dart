@@ -323,7 +323,7 @@ class _ProfileInputState extends State<ProfileInput> {
                           saveInfoToDB();
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(builder: (context) => NavigationPage()),
                           );
                         },
                       ),

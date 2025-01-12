@@ -1,24 +1,20 @@
 import '../ImportAll.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class NavigationPage extends StatefulWidget {
+  const NavigationPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<NavigationPage> createState() => _NavigationPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NavigationPageState extends State<NavigationPage> {
   int pageNumber = 0;
-  String uname = "";
-  String imgLink =
-      "https://res.cloudinary.com/ismailcloud/image/upload/v1734184215/defaultProfilePic_vtfdj1.png";
   Color selectColor = Colors.green;
   Color unselectColor = Colors.lightBlueAccent;
 
-
   Widget changePage() {
     if (pageNumber == 0)
-      return HomeScreen();
+      return HomePage();
     else if (pageNumber == 1)
       return HistoryAnalysisScreen();
     else if (pageNumber == 2)
@@ -89,5 +85,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

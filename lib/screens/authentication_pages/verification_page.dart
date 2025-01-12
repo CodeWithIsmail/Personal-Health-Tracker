@@ -1,6 +1,6 @@
-import '../ImportAll.dart';
+import '../../ImportAll.dart';
 
-class VerificationPendingScreen extends StatelessWidget {
+class VerificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthenticationProvider>(context);
@@ -10,6 +10,7 @@ class VerificationPendingScreen extends StatelessWidget {
         title: Text('Verify Your Email'),
         centerTitle: true,
         backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -59,16 +60,18 @@ class VerificationPendingScreen extends StatelessWidget {
                     );
                   }
                 },
-                icon: Icon(Icons.refresh,color: Colors.white,),
-                label: Text('Resend Verification Email',style: TextStyle(color: Colors.white),),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  backgroundColor: Colors.teal.shade600,
-                  textStyle: TextStyle(fontSize: 18),
+                icon: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
                 ),
+                label: Text(
+                  'Resend Verification Email',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: buildVerifyButton(),
               ),
               SizedBox(height: 15),
-              TextButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   try {
                     await authProvider.refreshUser(); // Reload user state
@@ -76,10 +79,8 @@ class VerificationPendingScreen extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Email verified!')),
                       );
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
+                      Navigator.pushReplacementNamed(
+                          context, AppRoutes.mainNavigationPage);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Email not verified yet.')),
@@ -91,14 +92,30 @@ class VerificationPendingScreen extends StatelessWidget {
                     );
                   }
                 },
-                child: Text(
-                  'I\'ve Verified My Email',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal.shade800,
-                  ),
+                icon: Icon(
+                  Icons.done,
+                  color: Colors.white,
                 ),
+                label: Text(
+                  'I\'ve Verified My Email',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: buildVerifyButton(),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.login);
+                },
+                icon: Icon(
+                  Icons.login,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  'Go to Login page',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: buildVerifyButton(),
               ),
               SizedBox(height: 20),
               Text(
@@ -113,6 +130,14 @@ class VerificationPendingScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  ButtonStyle buildVerifyButton() {
+    return ElevatedButton.styleFrom(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      backgroundColor: Colors.teal.shade600,
+      textStyle: TextStyle(fontSize: 18),
     );
   }
 }

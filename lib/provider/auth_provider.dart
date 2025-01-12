@@ -7,12 +7,9 @@ class AuthenticationProvider with ChangeNotifier {
   User? _user;
 
   User? get user => _user;
-
-  // Current logged-in user details
   User? _currentUser;
 
   User? get currentUser => _currentUser;
-
   String? _currentUserName;
 
   String? get currentUserName => _currentUserName;
@@ -53,7 +50,7 @@ class AuthenticationProvider with ChangeNotifier {
         password: password,
       );
       _currentUser = userCredential.user;
-      _updateUserName(); // Update username after sign-up
+      _updateUserName();
       notifyListeners();
 
       // Send verification email
@@ -66,10 +63,7 @@ class AuthenticationProvider with ChangeNotifier {
       );
 
       // Navigate to VerificationPendingScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => VerificationPendingScreen()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.verify);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
@@ -85,8 +79,8 @@ class AuthenticationProvider with ChangeNotifier {
         email: email,
         password: password,
       );
-      _currentUser = userCredential.user; // Set the current user
-      _updateUserName(); // Update the username after login
+      _currentUser = userCredential.user;
+      _updateUserName();
 
       // Check if the email is verified
       if (_currentUser != null && !_currentUser!.emailVerified) {
@@ -94,10 +88,8 @@ class AuthenticationProvider with ChangeNotifier {
           const SnackBar(
               content: Text('Please verify your email before logging in.')),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => VerificationPendingScreen()),
-        );
+        Navigator.pushReplacementNamed(context, AppRoutes.verify);
+        return;
       }
 
       notifyListeners();
@@ -106,10 +98,7 @@ class AuthenticationProvider with ChangeNotifier {
       );
 
       // Navigate to HomePage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.mainNavigationPage);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
@@ -141,10 +130,7 @@ class AuthenticationProvider with ChangeNotifier {
         const SnackBar(content: Text('Google Sign-In successful!')),
       );
       // Navigate to HomePage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.mainNavigationPage);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
@@ -210,8 +196,7 @@ class AuthenticationProvider with ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signed out successfully!')),
       );
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
