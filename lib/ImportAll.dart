@@ -16,13 +16,21 @@ export 'package:syncfusion_flutter_charts/sparkcharts.dart';
 export 'package:provider/provider.dart';
 export 'package:webview_flutter/webview_flutter.dart';
 
+export 'AuthWrapper.dart';
+
+// model
+export 'model/user_model.dart';
+
 // provider
 export 'provider/news_provider.dart';
+export 'provider/auth_provider.dart';
+export 'provider/user_provider.dart';
 
 // firebase
 export 'package:firebase_core/firebase_core.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:cloud_firestore/cloud_firestore.dart';
+
 // gemini
 export 'package:google_generative_ai/google_generative_ai.dart';
 
@@ -39,14 +47,15 @@ export 'screens/ReportHistoryvisualization.dart';
 export 'screens/ReportAnalysisScreen.dart';
 export 'screens/InputProfileInfoScreen.dart';
 export 'screens/WebView.dart';
-
+export 'screens/VerificationPendingScreen.dart';
+export 'screens/LoginPage.dart';
 // helper
 export 'helper/AuthCheck.dart';
 export 'helper/LogOrRegi.dart';
 export 'helper/QRscan.dart';
 export 'helper/QRmake.dart';
 export 'helper/constants.dart';
-
+export 'helper/Calculator.dart';
 // services
 export 'services/AuthService.dart';
 export 'services/firestoreDB.dart';
@@ -63,6 +72,8 @@ export 'custom/CustomButtonGestureDetector.dart';
 // components
 export 'components/MessageWidget.dart';
 export 'components/ProfileInfo.dart';
+export '../components/MyAppBar.dart';
+
 
 // flutter
 export 'dart:io';
@@ -74,4 +85,3 @@ export 'api/ImageUploadCloudinary.dart';
 
 // private data
 export 'PrivateData.dart';
-

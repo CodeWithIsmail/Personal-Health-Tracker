@@ -37,7 +37,7 @@ class _ScanCodePageState extends State<ScanCodePage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfileScreen(uname),
+                builder: (context) => ProfileScreen(),
               ),
             );
           }

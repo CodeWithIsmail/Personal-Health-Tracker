@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: MediaQuery.of(context).size.height / 3,
+              height: MediaQuery.of(context).size.height / 4,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               'Stay Updated with the Latest Health News',
               style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: FontWeight.w500,
                   color: Colors.green.shade900),
               textAlign: TextAlign.center,

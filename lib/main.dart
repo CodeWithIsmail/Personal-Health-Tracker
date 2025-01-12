@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => NewsProvider()),
+        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider(create: (_) => UserInfoProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -25,8 +27,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: '/authCheck',
-        routes: AppRoutes.getRoutes(),
+        // initialRoute: '/authCheck',
+        // routes: AppRoutes.getRoutes(),
+        home: LoginPage(),
       ),
     );
   }
