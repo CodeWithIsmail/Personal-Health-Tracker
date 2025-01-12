@@ -16,7 +16,7 @@ class _NavigationPageState extends State<NavigationPage> {
     if (pageNumber == 0)
       return HomePage();
     else if (pageNumber == 1)
-      return HistoryAnalysisScreen();
+      return ReportListScreen();
     else if (pageNumber == 2)
       return ReportHistoryVisualization();
     else if (pageNumber == 3)

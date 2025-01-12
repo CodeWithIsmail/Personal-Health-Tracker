@@ -62,7 +62,6 @@ export 'screens/InputProfileInfoScreen.dart';
 export 'helper/QRscan.dart';
 export 'helper/QRmake.dart';
 export 'helper/Calculator.dart';
-export 'helper/time_converter.dart';
 
 // constant
 export 'constant/constant_loading_indicator.dart';
