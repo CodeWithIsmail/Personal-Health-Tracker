@@ -55,3 +55,4 @@ const kAppBarTextStyle = TextStyle(
   letterSpacing: 2,
   fontWeight: FontWeight.bold,
 );
+
