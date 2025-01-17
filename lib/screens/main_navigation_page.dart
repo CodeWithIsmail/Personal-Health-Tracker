@@ -29,58 +29,136 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (int number) {
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.yellow[50],
+        onPressed: (){
           setState(() {
-            print(number);
-            pageNumber = number;
+            pageNumber = 3;
           });
         },
-        type: BottomNavigationBarType.fixed,
-        elevation: 5,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: pageNumber == 0 ? selectColor : unselectColor,
-            ),
-            label: 'Home',
-            tooltip: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.history,
-              color: pageNumber == 1 ? selectColor : unselectColor,
-            ),
-            label: 'History',
-            tooltip: 'Health report history',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.stacked_line_chart,
-              color: pageNumber == 2 ? selectColor : unselectColor,
-            ),
-            label: 'Visualization',
-            tooltip: 'Report History Visualization',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.assignment_outlined,
-              color: pageNumber == 3 ? selectColor : unselectColor,
-            ),
-            label: 'Add record',
-            tooltip: 'Add new medical report record',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event_available_outlined,
-              color: pageNumber == 4 ? selectColor : unselectColor,
-            ),
-            label: 'Profile',
-            tooltip: 'Profile page',
-          ),
-        ],
+        child: Icon(Icons.add),
+        shape: CircleBorder(),
       ),
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        color: Colors.greenAccent[100],
+        child: IconTheme(
+            data: IconThemeData(),
+            child: Padding(
+                padding: EdgeInsets.all(0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                        onPressed: (){
+                           setState(() {
+                             pageNumber = 0;
+                           });
+                        },
+                      icon: Icon(
+                        Icons.home,
+                        color: pageNumber == 0 ? selectColor : unselectColor,
+                        size: 30,
+                      ),
+                      tooltip: 'Home',
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          pageNumber = 1; // Favorites
+                        });
+                      },
+                      icon: Icon(
+                        Icons.history,
+                        color: pageNumber == 1 ? selectColor : unselectColor,
+                        size: 30,
+                      ),
+                      tooltip: 'Health report history',
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          pageNumber = 2; // Profile
+                        });
+                      },
+                      icon: Icon(
+                        Icons.bar_chart,
+                        color: pageNumber == 2 ? selectColor : unselectColor,
+                        size: 30,
+                      ),
+                      tooltip: 'Report History Visualization',
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          pageNumber = 4; // Profile
+                        });
+                      },
+                      icon: Icon(
+                        Icons.person,
+                        color: pageNumber == 4 ? selectColor : unselectColor,
+                        size: 30,
+                      ),
+                      tooltip: 'Profile page',
+                    ),
+                  ],
+                ),
+            )
+        ),
+      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   onTap: (int number) {
+      //     setState(() {
+      //       print(number);
+      //       pageNumber = number;
+      //     });
+      //   },
+      //   type: BottomNavigationBarType.fixed,
+      //   elevation: 5,
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.home,
+      //         color: pageNumber == 0 ? selectColor : unselectColor,
+      //       ),
+      //       label: 'Home',
+      //       tooltip: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.history,
+      //         color: pageNumber == 1 ? selectColor : unselectColor,
+      //       ),
+      //       label: 'History',
+      //       tooltip: 'Health report history',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.stacked_line_chart,
+      //         color: pageNumber == 2 ? selectColor : unselectColor,
+      //       ),
+      //       label: 'Visualization',
+      //       tooltip: 'Report History Visualization',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.assignment_outlined,
+      //         color: pageNumber == 3 ? selectColor : unselectColor,
+      //       ),
+      //       label: 'Add record',
+      //       tooltip: 'Add new medical report record',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.event_available_outlined,
+      //         color: pageNumber == 4 ? selectColor : unselectColor,
+      //       ),
+      //       label: 'Profile',
+      //       tooltip: 'Profile page',
+      //     ),
+      //   ],
+      // ),
       body: changePage(),
     );
   }
