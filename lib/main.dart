@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
         ChangeNotifierProvider(create: (_) => ReportProvider()),
+        ChangeNotifierProvider(create: (_) => TestNamesProvider()),
+        ChangeNotifierProvider(create: (_) => ReportAttributeProvider()),
       ],
       child: MaterialApp(
         title: 'Personal Health Tracker',
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: '/authCheck',
+        initialRoute: AppRoutes.authCheck,
         routes: AppRoutes.getRoutes(),
         // home: LoginPage(),
       ),

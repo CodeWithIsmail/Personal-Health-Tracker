@@ -1,4 +1,4 @@
-import '../ImportAll.dart';
+import '../../ImportAll.dart';
 import 'ManualReport.dart';
 
 class AddReport extends StatefulWidget {
@@ -11,8 +11,7 @@ class AddReport extends StatefulWidget {
 class _AddReportState extends State<AddReport> {
   File? selectedMedia;
   final ImagePicker _picker = ImagePicker();
-  String extractedText = "Extracted text will appear here";
-  String parsedData = "Parsed data will appear here";
+
   FirestoreService firestoreService = new FirestoreService();
   String imageURL = "";
   bool isLoading = false;
@@ -58,16 +57,16 @@ class _AddReportState extends State<AddReport> {
         if (croppedFile != null) {
           setState(() {
             selectedMedia = croppedFile;
-          });
-          setState(() {
             isLoading = true;
           });
-          await _uploadImage(croppedFile);
+
+
           String values =
               await sendImagePromptToGemini(generalPrompt, croppedFile, null);
           print(values);
-
+          await _uploadImage(croppedFile);
           await _processImage(values);
+
           setState(() {
             isLoading = false;
           });
@@ -197,10 +196,7 @@ class _AddReportState extends State<AddReport> {
       child: Center(
         child: isLoading
             ? Center(
-                child: SpinKitPouringHourGlassRefined(
-                  size: 50,
-                  color: Colors.deepPurpleAccent,
-                ),
+                child: defaultSpinKitWave,
               )
             : Container(
                 decoration: BoxDecoration(
@@ -251,10 +247,11 @@ class _AddReportState extends State<AddReport> {
                       Colors.white,
                       Colors.black,
                       18,
-                          () {
+                      () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Manualreport()),
+                          MaterialPageRoute(
+                              builder: (context) => Manualreport()),
                         );
                       },
                     ),

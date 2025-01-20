@@ -1,4 +1,4 @@
-import '../ImportAll.dart';
+import '../../ImportAll.dart';
 
 class ReportAnalysis extends StatefulWidget {
   File selectedMedia;

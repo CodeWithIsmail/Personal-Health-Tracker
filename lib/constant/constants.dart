@@ -56,3 +56,12 @@ const kAppBarTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
+final visualizationDropdownDecoration=InputDecoration(
+  labelText: 'Select Date Range',
+  labelStyle: const TextStyle(color: Colors.teal),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(8.0),
+    borderSide: const BorderSide(color: Colors.teal),
+  ),
+);
+

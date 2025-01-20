@@ -8,6 +8,8 @@ class AppRoutes {
   static const String verify = '/verify';
   static const String mainNavigationPage = 'mainNavigationPage';
   static const String scanCodePage = '/scanCodePage';
+  static const String historyVisualizationPage = '/historyVisualizationPage';
+
 
   // Function to get the route map
   static Map<String, WidgetBuilder> getRoutes() {
@@ -18,6 +20,7 @@ class AppRoutes {
       verify: (context) => VerificationPage(),
       mainNavigationPage: (context) => NavigationPage(),
       scanCodePage: (context) => ScanCodePage(),
+      historyVisualizationPage: (context) => HistoryVisualization(),
     };
   }
 }
