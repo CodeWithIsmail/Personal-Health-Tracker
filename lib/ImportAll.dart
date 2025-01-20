@@ -22,6 +22,7 @@ export 'AuthWrapper.dart';
 export 'model/user_model.dart';
 export 'model/report_model.dart';
 export 'model/report_attribute_model.dart';
+
 // provider
 export 'provider/news_provider.dart';
 export 'provider/auth_provider.dart';
@@ -29,6 +30,7 @@ export 'provider/user_provider.dart';
 export 'provider/report_provider.dart';
 export 'provider/test_names_provider.dart';
 export 'provider/report_attribute_provider.dart';
+
 // chart_builder
 export 'chart_builder/chart_data_timewise.dart';
 export 'chart_builder/linechart_builder.dart';
@@ -47,23 +49,29 @@ export 'package:google_generative_ai/google_generative_ai.dart';
 export 'screens/authentication_pages/login_page.dart';
 export 'screens/authentication_pages/signup_page.dart';
 export 'screens/authentication_pages/verification_page.dart';
+
 // homepage
 export 'screens/homepage/home_page.dart';
 export 'screens/homepage/web_view.dart';
+
 // report_history
 export 'screens/report_history/report_detail_page.dart';
 export 'screens/report_history/report_history_page.dart';
+
 // history_visualization
 export 'screens/history_visualization/history_visualization_page.dart';
 
-export 'screens/main_navigation_page.dart';
-export 'screens/homepage/home_page.dart';
+// profile_page
+export 'screens/profile_page/ProfileScreen.dart';
+export 'screens/profile_page/InputProfileInfoScreen.dart';
+
+// report_add
 export 'screens/report_add/AddReportScreen.dart';
 export 'screens/report_add/ReportInputScreen.dart';
-export 'screens/ProfileScreen.dart';
-export 'screens/ReportHistoryvisualization.dart';
+export 'screens/report_add/ManualReport.dart';
 export 'screens/report_add/ReportAnalysisScreen.dart';
-export 'screens/InputProfileInfoScreen.dart';
+
+export 'screens/main_navigation_page.dart';
 
 // helper
 export 'helper/QRscan.dart';
@@ -89,6 +97,7 @@ export 'custom/CustomTextGestureDetector.dart';
 export 'custom/CustomButtonGestureDetector.dart';
 export 'custom/custom_date_range_widget.dart';
 export 'custom/custom_history_container_widget.dart';
+
 // components
 export 'components/MessageWidget.dart';
 export 'components/ProfileInfo.dart';

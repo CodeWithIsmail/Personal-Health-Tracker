@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import '../../ImportAll.dart';
 
 class ReportInputScreen extends StatefulWidget {
@@ -16,9 +18,17 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
   TextEditingController dayController = new TextEditingController();
   bool isLoading = false;
 
+  late String username;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider =
+          Provider.of<AuthenticationProvider>(context, listen: false);
+      username = authProvider.currentUserName ?? "";
+    });
+
     selected = DateTime.now();
     controllers = {};
     widget.testData.forEach((testName, value) {
@@ -34,56 +44,10 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
     super.dispose();
   }
 
-  Future<void> saveTestDataToDB() async {
-    setState(() {
-      isLoading = true;
-    });
-    String? uemail = await FirebaseAuth.instance.currentUser?.email;
-    String? uname = uemail?.substring(0, uemail.indexOf('@'));
-
-    if (uname != null) {
-      try {
-        DocumentReference documentRef =
-            FirebaseFirestore.instance.collection('report_data').doc(uname);
-        DocumentSnapshot snapshot = await documentRef.get();
-
-        if (!snapshot.exists) {
-          await documentRef.set(<String, dynamic>{});
-        }
-
-        for (var entry in controllers.entries) {
-          String testName = entry.key;
-          TextEditingController valueController = entry.value;
-
-          Map<String, dynamic> newEntry = {
-            "value": valueController.text,
-            "timestamp": timestamp,
-          };
-
-          print("newentry: ${newEntry}");
-          if (snapshot.exists &&
-              (snapshot.data() as Map<String, dynamic>).containsKey(testName)) {
-            await documentRef.update({
-              testName: FieldValue.arrayUnion([newEntry]),
-            });
-          } else {
-            await documentRef.set({
-              testName: [newEntry],
-            }, SetOptions(merge: true));
-          }
-        }
-      } on Exception catch (e) {
-        print("Failed to save data: $e");
-      }
-    }
-
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final reportAttributeProvider =
+        Provider.of<ReportAttributeProvider>(context);
     return Scaffold(
       appBar: AppBar(title: Text("Report Input")),
       body: Column(
@@ -99,15 +63,14 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
                   context: context,
                   initialDate: selected,
                   firstDate: DateTime.now().subtract(Duration(days: 36500)),
-                  // 100 years ago
                   lastDate: DateTime.now(),
                 );
 
                 if (current != null) {
                   selected = current;
-                  timestamp = Timestamp.fromDate(selected);
+                 // timestamp = Timestamp.fromDate(selected);
                   dayController.text = DateFormat('dd-MMM-yy').format(current);
-                  print('Timestamp: $timestamp');
+                //  print('Timestamp: $timestamp');
                 }
               },
               decoration: InputDecoration(
@@ -153,10 +116,7 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
           ),
           SizedBox(height: 16),
           isLoading
-              ? SpinKitFadingCircle(
-                  color: Colors.deepPurple,
-                  size: 50,
-                )
+              ? defaultSpinKitDoubleBounce
               : CustomButtonGestureDetector(
                   "Submit",
                   100,
@@ -165,8 +125,14 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
                   Colors.white,
                   20,
                   () async {
-                    await saveTestDataToDB();
-                    Navigator.pop(context);
+                    controllers.forEach((key, value) {
+                      reportAttributeProvider.storeReportData(
+                          username: username,
+                          date: selected,
+                          attributeName: key,
+                          value: double.parse(value.text));
+                    });
+                    Navigator.pop(context,selected);
                   },
                 ),
           SizedBox(height: 16),

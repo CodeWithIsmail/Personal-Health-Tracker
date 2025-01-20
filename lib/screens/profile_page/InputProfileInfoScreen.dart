@@ -1,5 +1,5 @@
-import '../ImportAll.dart';
-import '../custom/CustomDropDown.dart';
+import '../../ImportAll.dart';
+import '../../custom/CustomDropDown.dart';
 
 class ProfileInput extends StatefulWidget {
   ProfileInfo profileInfo;

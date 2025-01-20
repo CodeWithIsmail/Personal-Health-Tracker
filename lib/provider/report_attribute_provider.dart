@@ -72,7 +72,7 @@ class ReportAttributeProvider with ChangeNotifier {
 
       _chartData.sort((a, b) => a.time.compareTo(b.time));
 
-      for(var ev in _chartData) {
+      for (var ev in _chartData) {
         print('${ev.time} : ${ev.value}');
       }
 
@@ -82,6 +82,26 @@ class ReportAttributeProvider with ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> storeReportData({
+    required String username,
+    required DateTime date,
+    required String attributeName,
+    required double value,
+  }) async {
+    try {
+      await _firestore.collection('report_attribute').add({
+        'username': username,
+        'date': date,
+        'attribute_name': attributeName,
+        'value': value,
+      });
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error storing report data: $e');
     }
   }
 }

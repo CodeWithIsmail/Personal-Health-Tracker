@@ -1,34 +1,49 @@
 import '../ImportAll.dart';
 
 class FirestoreService {
+  // Future<void> storeSummeryImgLink(
+  //     String uname, String imgLink, String summeryText) async {
+  //   CollectionReference reports =
+  //       FirebaseFirestore.instance.collection('report_summery');
+  //
+  //   Map<String, dynamic> reportData = {
+  //     'date': DateTime.now(),
+  //     'image_link': imgLink,
+  //     'summery': summeryText,
+  //   };
+  //
+  //   try {
+  //     DocumentReference docRef = reports.doc(uname);
+  //     DocumentSnapshot docSnapshot = await docRef.get();
+  //
+  //     if (docSnapshot.exists) {
+  //       await docRef.update({
+  //         'summery': FieldValue.arrayUnion([reportData]),
+  //       });
+  //     } else {
+  //       await docRef.set({
+  //         'summery': [reportData],
+  //       });
+  //     }
+  //
+  //     print("Report added successfully");
+  //   } catch (e) {
+  //     print("Error storing report: $e");
+  //   }
+  // }
+
   Future<void> storeSummeryImgLink(
-      String uname, String imgLink, String summeryText) async {
-    CollectionReference reports =
-        FirebaseFirestore.instance.collection('report_summery');
-
-    Map<String, dynamic> reportData = {
-      'date': DateTime.now(),
-      'image_link': imgLink,
-      'summery': summeryText,
-    };
-
+      String username, String imgLink, String summery) async {
     try {
-      DocumentReference docRef = reports.doc(uname);
-      DocumentSnapshot docSnapshot = await docRef.get();
-
-      if (docSnapshot.exists) {
-        await docRef.update({
-          'summery': FieldValue.arrayUnion([reportData]),
-        });
-      } else {
-        await docRef.set({
-          'summery': [reportData],
-        });
-      }
-
-      print("Report added successfully");
+      await FirebaseFirestore.instance.collection('report').add({
+        'username': username,
+        'date': DateTime.now(),
+        'image': imgLink,
+        'summery': summery,
+        'viewer': [],
+      });
     } catch (e) {
-      print("Error storing report: $e");
+      debugPrint('Error storing report data: $e');
     }
   }
 

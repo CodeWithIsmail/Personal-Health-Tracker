@@ -1,4 +1,4 @@
-import '../ImportAll.dart';
+import '../../ImportAll.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override

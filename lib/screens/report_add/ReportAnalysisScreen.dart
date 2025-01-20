@@ -143,6 +143,13 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
 
           if (!done) {
             done = true;
+            // final reportProvider = Provider.of<ReportProvider>(context);
+            // reportProvider.addReport(Report(
+            //     username: uname,
+            //     viewer: [],
+            //     date: DateTime.now(),
+            //     image: widget.imageLink,
+            //     summary: text));
             firestoreService.storeSummeryImgLink(uname, widget.imageLink, text);
           }
           _scrollDown();

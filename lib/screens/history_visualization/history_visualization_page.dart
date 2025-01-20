@@ -9,7 +9,7 @@ class _HistoryVisualizationState extends State<HistoryVisualization> {
   String? _selectedDateRange = 'All';
   DateTimeRange? _selectedDateRangeCustom;
   String? _selectedTestName;
-  late String username;
+   String username="";
 
   @override
   void initState() {
