@@ -170,8 +170,9 @@ class _ManualreportState extends State<Manualreport> {
                 onPressed: () {
                   setState(() {
                     selectedTests.removeAt(index);
-                    // isTestSelected = false;
-                    // selectedTest = null;
+                    if (selectedTests.isEmpty) {
+                      selectedTests.add(null);
+                    }
                   });
                 },
                 icon: Icon(
