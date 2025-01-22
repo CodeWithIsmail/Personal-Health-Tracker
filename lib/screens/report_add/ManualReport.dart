@@ -13,17 +13,21 @@ class _ManualreportState extends State<Manualreport> {
   DateTime? reportCollectionDate;
 
   final TextEditingController reportDateController = TextEditingController();
-  final TextEditingController reportCollectionDateController =
-      TextEditingController();
+  final TextEditingController reportCollectionDateController = TextEditingController();
   final TextEditingController testController = TextEditingController();
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   List<String> testNames = [];
   List<String> filteredTestNames = [];
-  List<DropdownButtonFormField<String>> dropdownFields = [];
   String? selectedTest;
   bool isTestSelected = false;
+
+  bool isNewTest = false;
+
+  List<Widget> testTextFields = [];
+  List<Widget> additionalTestDropdowns = [];
+  List<String?> selectedTests = [null];
 
   @override
   void initState() {
@@ -74,13 +78,14 @@ class _ManualreportState extends State<Manualreport> {
     }
   }
 
-  Widget DropDownSelector() {
+  Widget DropDownSelector(int index) {
     return DropdownButtonFormField<String>(
-      value: selectedTest,
+      value: selectedTests[index],
       hint: Text('Select a test'),
       onChanged: (String? newValue) {
         setState(() {
-          selectedTest = newValue;
+          //selectedTest = newValue;
+          selectedTests[index] = newValue;
           isTestSelected = true; // Set isTestSelected to true when a test is selected
         });
       },
@@ -109,13 +114,14 @@ class _ManualreportState extends State<Manualreport> {
     );
   }
 
-  Widget SelectedTestInput() {
+  Widget SelectedTestInput(int index) {
     return Column(
       children: [
         Row(
           children: [
             Text(
-              selectedTest!,
+              //selectedTest!,
+              selectedTests[index]!,
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),
             ),
             SizedBox(
@@ -124,7 +130,8 @@ class _ManualreportState extends State<Manualreport> {
             TextButton(
               onPressed: () {
                 setState(() {
-                  isTestSelected = false;
+                  // isTestSelected = false;
+                  selectedTests[index] = null;
                 });
               },
               child: Text('Change'),
@@ -162,8 +169,9 @@ class _ManualreportState extends State<Manualreport> {
             IconButton(
                 onPressed: () {
                   setState(() {
-                    isTestSelected = false;
-                    selectedTest = null;
+                    selectedTests.removeAt(index);
+                    // isTestSelected = false;
+                    // selectedTest = null;
                   });
                 },
                 icon: Icon(
@@ -172,13 +180,6 @@ class _ManualreportState extends State<Manualreport> {
                 ))
           ],
         ),
-        TextButton(
-            onPressed: (){},
-            child: Text('+ Add Another Test',style: TextStyle(color: Colors.green),),
-          style: TextButton.styleFrom(
-            side: BorderSide(color: Colors.green, width: 2),
-          ),
-        )
       ],
     );
   }
@@ -290,20 +291,42 @@ class _ManualreportState extends State<Manualreport> {
                       ),
                       SizedBox(height: 16),
                       Text('Select Test'),
-                      SizedBox(height: 16),
-                      if (isTestSelected) ...[
-                        SelectedTestInput(),
-                      ] else ...[
-                        DropDownSelector(),
-                      ],
+                      Column(
+                        children: List.generate(selectedTests.length, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0), // Add spacing here
+                            child: selectedTests[index] == null
+                                ? DropDownSelector(index)
+                                : SelectedTestInput(index),
+                          );
+                        }),
+                      ),
+
                       SizedBox(
                         height: 16,
                       ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTests.add(null);
+                            });
+                          },
+                          child: Text(
+                            '+ Add Another Test',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          style: TextButton.styleFrom(
+                            side: BorderSide(color: Colors.green, width: 2),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TextButton(
-                              onPressed: fetchTestNames,
+                              onPressed: (){},
                               child: Text(
                                 'Add',
                                 style: TextStyle(
