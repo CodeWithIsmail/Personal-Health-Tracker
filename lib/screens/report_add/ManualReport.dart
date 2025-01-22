@@ -9,20 +9,21 @@ class Manualreport extends StatefulWidget {
 }
 
 class _ManualreportState extends State<Manualreport> {
-
   DateTime? reportDate;
   DateTime? reportCollectionDate;
 
   final TextEditingController reportDateController = TextEditingController();
-  final TextEditingController reportCollectionDateController = TextEditingController();
+  final TextEditingController reportCollectionDateController =
+      TextEditingController();
   final TextEditingController testController = TextEditingController();
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   List<String> testNames = [];
-  String? selectedTest;
   List<String> filteredTestNames = [];
-  OverlayEntry? dropdownOverlay;
+  List<DropdownButtonFormField<String>> dropdownFields = [];
+  String? selectedTest;
+  bool isTestSelected = false;
 
   @override
   void initState() {
@@ -34,33 +35,35 @@ class _ManualreportState extends State<Manualreport> {
   Future<void> fetchTestNames() async {
     List fetchedTestNames = await getTestNames();
     setState(() {
-      testNames = List<String>.from(fetchedTestNames); // Ensure the data is a List<String>
+      testNames = List<String>.from(
+          fetchedTestNames); // Ensure the data is a List<String>
       filteredTestNames = List.from(testNames); // Initialize filtered list
     });
   }
 
   Future<List> getTestNames() async {
     QuerySnapshot snapshot =
-    await firebaseFirestore.collection('test_collection').get();
+        await firebaseFirestore.collection('test_collection').get();
 
     List<String> testNames = [];
 
     for (var doc in snapshot.docs) {
       // Ensure test_names is a List and flatten its contents
       if (doc['test_names'] is List<dynamic>) {
-        testNames.addAll(List<String>.from(doc['test_names'])); // Add individual strings to the list
+        testNames.addAll(List<String>.from(
+            doc['test_names'])); // Add individual strings to the list
       } else if (doc['test_names'] is String) {
-        testNames.add(doc['test_names']); // Handle case where test_names is a single string
+        testNames.add(doc[
+            'test_names']); // Handle case where test_names is a single string
       }
     }
 
-    for(var doc in testNames){
+    for (var doc in testNames) {
       print(doc);
     }
 
     return testNames;
   }
-
 
   Future<void> selectDate(
       BuildContext context, Function(DateTime?) DatePicker) async {
@@ -71,6 +74,114 @@ class _ManualreportState extends State<Manualreport> {
     }
   }
 
+  Widget DropDownSelector() {
+    return DropdownButtonFormField<String>(
+      value: selectedTest,
+      hint: Text('Select a test'),
+      onChanged: (String? newValue) {
+        setState(() {
+          selectedTest = newValue;
+          isTestSelected = true; // Set isTestSelected to true when a test is selected
+        });
+      },
+      items: testNames.map((String testName) {
+        return DropdownMenuItem<String>(
+          value: testName,
+          child: Text(testName),
+        );
+      }).toList(),
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          Icons.search,
+          color: Colors.grey[600],
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.green,
+            width: 2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget SelectedTestInput() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              selectedTest!,
+              style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  isTestSelected = false;
+                });
+              },
+              child: Text('Change'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.grey[400],
+                foregroundColor: Colors.black87,
+              ),
+            )
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 100,
+              child: TextField(
+                cursorColor: Colors.green,
+                decoration: InputDecoration(
+                  hintText: '0.0',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green,width: 2),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                ),
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    isTestSelected = false;
+                    selectedTest = null;
+                  });
+                },
+                icon: Icon(
+                  Icons.cancel,
+                  size: 40,
+                ))
+          ],
+        ),
+        TextButton(
+            onPressed: (){},
+            child: Text('+ Add Another Test',style: TextStyle(color: Colors.green),),
+          style: TextButton.styleFrom(
+            side: BorderSide(color: Colors.green, width: 2),
+          ),
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +234,7 @@ class _ManualreportState extends State<Manualreport> {
                           setState(() {
                             reportDate = pickedDate;
                             reportDateController.text =
-                            "${reportDate!.day}/${reportDate!.month}/${reportDate!.year}";
+                                "${reportDate!.day}/${reportDate!.month}/${reportDate!.year}";
                           });
                         }),
                         child: AbsorbPointer(
@@ -138,7 +249,7 @@ class _ManualreportState extends State<Manualreport> {
                                 ),
                               ),
                               prefixIconConstraints:
-                              BoxConstraints(maxWidth: 40, maxHeight: 24),
+                                  BoxConstraints(maxWidth: 40, maxHeight: 24),
                               labelText: 'Report Date',
                               hintText: reportDate != null
                                   ? "${reportDate!.day}/${reportDate!.month}/${reportDate!.year}"
@@ -153,7 +264,7 @@ class _ManualreportState extends State<Manualreport> {
                           setState(() {
                             reportCollectionDate = pickedDate;
                             reportCollectionDateController.text =
-                            "${reportCollectionDate!.day}/${reportCollectionDate!.month}/${reportCollectionDate!.year}";
+                                "${reportCollectionDate!.day}/${reportCollectionDate!.month}/${reportCollectionDate!.year}";
                           });
                         }),
                         child: AbsorbPointer(
@@ -168,7 +279,7 @@ class _ManualreportState extends State<Manualreport> {
                                 ),
                               ),
                               prefixIconConstraints:
-                              BoxConstraints(maxWidth: 40, maxHeight: 24),
+                                  BoxConstraints(maxWidth: 40, maxHeight: 24),
                               labelText: 'Report Collection Date',
                               hintText: reportCollectionDate != null
                                   ? "${reportCollectionDate!.day}/${reportCollectionDate!.month}/${reportCollectionDate!.year}"
@@ -180,52 +291,29 @@ class _ManualreportState extends State<Manualreport> {
                       SizedBox(height: 16),
                       Text('Select Test'),
                       SizedBox(height: 16),
-                      // Dropdown Selector
-                      DropdownButtonFormField<String>(
-                        value: selectedTest,
-                        hint: Text('Select a test'),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedTest = newValue;
-                          });
-                        },
-                        items: testNames.map((String testName) {
-                          return DropdownMenuItem<String>(
-                            value: testName,
-                            child: Text(testName),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey[600],
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                              color: Colors.green,
-                              width: 2,
-                            ),
-                          ),
-                        ),
+                      if (isTestSelected) ...[
+                        SelectedTestInput(),
+                      ] else ...[
+                        DropDownSelector(),
+                      ],
+                      SizedBox(
+                        height: 16,
                       ),
-
-                      SizedBox(height: 16,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TextButton(
                               onPressed: fetchTestNames,
-                              child: Text('Add',style: TextStyle(fontSize: 18,fontWeight: FontWeight.normal),),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                              minimumSize: Size(120, 40)
-                            )
-                          ),
+                              child: Text(
+                                'Add',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: Size(120, 40))),
                         ],
                       )
                     ],
@@ -238,5 +326,4 @@ class _ManualreportState extends State<Manualreport> {
       ),
     );
   }
-
 }
