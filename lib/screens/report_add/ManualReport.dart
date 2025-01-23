@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:personal_health_tracker/ImportAll.dart';
 import 'package:personal_health_tracker/custom/CustomRadioSelectionTextField.dart';
-import 'package:personal_health_tracker/custom/CustomTextField.dart';
 
 class Manualreport extends StatefulWidget {
   @override
@@ -14,17 +12,14 @@ class _ManualreportState extends State<Manualreport> {
 
   final TextEditingController reportDateController = TextEditingController();
   final TextEditingController reportCollectionDateController = TextEditingController();
-  final TextEditingController testController = TextEditingController();
+  final TextEditingController patientNameController = TextEditingController();
+  final TextEditingController patientAgeController = TextEditingController();
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   List<String> testNames = [];
   List<String> filteredTestNames = [];
   String? selectedTest;
-  bool isTestSelected = false;
-
-  bool isNewTest = false;
-
   List<Widget> testTextFields = [];
   List<Widget> additionalTestDropdowns = [];
   List<String?> selectedTests = [null];
@@ -52,18 +47,11 @@ class _ManualreportState extends State<Manualreport> {
     List<String> testNames = [];
 
     for (var doc in snapshot.docs) {
-      // Ensure test_names is a List and flatten its contents
       if (doc['test_names'] is List<dynamic>) {
-        testNames.addAll(List<String>.from(
-            doc['test_names'])); // Add individual strings to the list
+        testNames.addAll(List<String>.from(doc['test_names']));
       } else if (doc['test_names'] is String) {
-        testNames.add(doc[
-            'test_names']); // Handle case where test_names is a single string
+            testNames.add(doc['test_names']);
       }
-    }
-
-    for (var doc in testNames) {
-      print(doc);
     }
 
     return testNames;
@@ -84,9 +72,7 @@ class _ManualreportState extends State<Manualreport> {
       hint: Text('Select a test'),
       onChanged: (String? newValue) {
         setState(() {
-          //selectedTest = newValue;
           selectedTests[index] = newValue;
-          isTestSelected = true; // Set isTestSelected to true when a test is selected
         });
       },
       items: testNames.map((String testName) {
@@ -148,6 +134,7 @@ class _ManualreportState extends State<Manualreport> {
             SizedBox(
               width: 100,
               child: TextField(
+                keyboardType: TextInputType.number,
                 cursorColor: Colors.green,
                 decoration: InputDecoration(
                   hintText: '0.0',
@@ -185,6 +172,72 @@ class _ManualreportState extends State<Manualreport> {
     );
   }
 
+  Future<void> saveManualReport() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not logged in');
+      return;
+    }
+
+    final String userId = user.uid; // Get the logged-in user's UID
+    final String reportId = firebaseFirestore.collection('manual_report').doc().id; // Generate a unique report ID
+
+    // Validate input fields
+    if (patientNameController.text.isEmpty || patientAgeController.text.isEmpty) {
+      print('Please fill in all required fields');
+      return;
+    }
+
+    // Convert age to an integer
+    int? age = int.tryParse(patientAgeController.text);
+    if (age == null) {
+      print('Invalid age');
+      return;
+    }
+
+    // Prepare the data to be stored
+    Map<String, dynamic> reportData = {
+      'userId': userId,
+      'reportDate': reportDate?.toIso8601String(),
+      'reportCollectionDate': reportCollectionDate?.toIso8601String(),
+      'patientName': patientNameController.text, // Get patient name from text field
+      'age': age, // Get age from text field
+      'tests': selectedTests
+          .where((test) => test != null) // Exclude null entries
+          .map((test) => {
+        'testName': test,
+        'value': 0.0, // Replace with the entered test value
+      })
+          .toList(),
+    };
+
+    try {
+      // Save the report data in the manual_report collection
+      await firebaseFirestore.collection('manual_report').doc(reportId).set(reportData);
+      print('Report saved successfully!');
+      resetScreen();
+    } catch (e) {
+      print('Error saving report: $e');
+    }
+  }
+
+  void resetScreen() {
+    setState(() {
+      // Reset all text fields
+      patientNameController.clear();
+      patientAgeController.clear();
+      reportDateController.clear();
+      reportCollectionDateController.clear();
+
+      // Reset dates
+      reportDate = null;
+      reportCollectionDate = null;
+
+      // Reset test selections
+      selectedTests = [null];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -217,6 +270,7 @@ class _ManualreportState extends State<Manualreport> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        controller: patientNameController,
                         decoration: InputDecoration(
                           labelText: "Patient's Name",
                         ),
@@ -224,43 +278,13 @@ class _ManualreportState extends State<Manualreport> {
                       SizedBox(height: 16),
                       TextField(
                         keyboardType: TextInputType.number,
+                        controller: patientAgeController,
                         decoration: InputDecoration(
                           labelText: 'Age',
                         ),
                       ),
                       SizedBox(height: 16),
                       Customradioselectiontextfield(),
-                      SizedBox(height: 16),
-                      GestureDetector(
-                        onTap: () => selectDate(context, (pickedDate) {
-                          setState(() {
-                            reportDate = pickedDate;
-                            reportDateController.text =
-                                "${reportDate!.day}/${reportDate!.month}/${reportDate!.year}";
-                          });
-                        }),
-                        child: AbsorbPointer(
-                          child: TextField(
-                            controller: reportDateController,
-                            decoration: InputDecoration(
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Icons.calendar_today,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              prefixIconConstraints:
-                                  BoxConstraints(maxWidth: 40, maxHeight: 24),
-                              labelText: 'Report Date',
-                              hintText: reportDate != null
-                                  ? "${reportDate!.day}/${reportDate!.month}/${reportDate!.year}"
-                                  : 'Select Report Date',
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
                       GestureDetector(
                         onTap: () => selectDate(context, (pickedDate) {
                           setState(() {
@@ -327,7 +351,9 @@ class _ManualreportState extends State<Manualreport> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TextButton(
-                              onPressed: (){},
+                              onPressed:  () async {
+                                await saveManualReport();
+                              },
                               child: Text(
                                 'Add',
                                 style: TextStyle(
