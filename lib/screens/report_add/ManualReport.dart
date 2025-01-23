@@ -1,6 +1,8 @@
 import 'package:personal_health_tracker/ImportAll.dart';
 import 'package:personal_health_tracker/custom/CustomRadioSelectionTextField.dart';
 
+import '../../custom/CustomDropDown.dart';
+
 class Manualreport extends StatefulWidget {
   @override
   State<Manualreport> createState() => _ManualreportState();
@@ -14,6 +16,7 @@ class _ManualreportState extends State<Manualreport> {
   final TextEditingController reportCollectionDateController = TextEditingController();
   final TextEditingController patientNameController = TextEditingController();
   final TextEditingController patientAgeController = TextEditingController();
+  Map<int, TextEditingController> testValueControllers = {};
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
@@ -23,6 +26,7 @@ class _ManualreportState extends State<Manualreport> {
   List<Widget> testTextFields = [];
   List<Widget> additionalTestDropdowns = [];
   List<String?> selectedTests = [null];
+
 
   @override
   void initState() {
@@ -66,41 +70,58 @@ class _ManualreportState extends State<Manualreport> {
     }
   }
 
+  // Widget DropDownSelector(int index) {
+  //   return DropdownButtonFormField<String>(
+  //     value: selectedTests[index],
+  //     hint: Text('Select a test'),
+  //     onChanged: (String? newValue) {
+  //       setState(() {
+  //         selectedTests[index] = newValue;
+  //       });
+  //     },
+  //     items: testNames.map((String testName) {
+  //       return DropdownMenuItem<String>(
+  //         value: testName,
+  //         child: Text(testName),
+  //       );
+  //     }).toList(),
+  //     decoration: InputDecoration(
+  //       prefixIcon: Icon(
+  //         Icons.search,
+  //         color: Colors.grey[600],
+  //       ),
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(30.0),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(30.0),
+  //         borderSide: BorderSide(
+  //           color: Colors.green,
+  //           width: 2,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget DropDownSelector(int index) {
-    return DropdownButtonFormField<String>(
-      value: selectedTests[index],
-      hint: Text('Select a test'),
+    return CustomDropdown<String>(
+      options: testNames, // Pass the list of test names
+      selectedItem: selectedTests[index], // The currently selected test
       onChanged: (String? newValue) {
         setState(() {
-          selectedTests[index] = newValue;
+          selectedTests[index] = newValue; // Update the selected test
         });
       },
-      items: testNames.map((String testName) {
-        return DropdownMenuItem<String>(
-          value: testName,
-          child: Text(testName),
-        );
-      }).toList(),
-      decoration: InputDecoration(
-        prefixIcon: Icon(
-          Icons.search,
-          color: Colors.grey[600],
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30.0),
-          borderSide: BorderSide(
-            color: Colors.green,
-            width: 2,
-          ),
-        ),
-      ),
+      hint: 'Select a test', // Hint text for the dropdown
     );
   }
 
+
   Widget SelectedTestInput(int index) {
+
+    testValueControllers.putIfAbsent(index, () => TextEditingController());
+
     return Column(
       children: [
         Row(
@@ -116,8 +137,8 @@ class _ManualreportState extends State<Manualreport> {
             TextButton(
               onPressed: () {
                 setState(() {
-                  // isTestSelected = false;
                   selectedTests[index] = null;
+                  testValueControllers.remove(index);
                 });
               },
               child: Text('Change'),
@@ -134,6 +155,7 @@ class _ManualreportState extends State<Manualreport> {
             SizedBox(
               width: 100,
               child: TextField(
+                controller: testValueControllers[index],
                 keyboardType: TextInputType.number,
                 cursorColor: Colors.green,
                 decoration: InputDecoration(
@@ -157,6 +179,7 @@ class _ManualreportState extends State<Manualreport> {
                 onPressed: () {
                   setState(() {
                     selectedTests.removeAt(index);
+                    testValueControllers.remove(index);
                     if (selectedTests.isEmpty) {
                       selectedTests.add(null);
                     }
@@ -198,15 +221,18 @@ class _ManualreportState extends State<Manualreport> {
     // Prepare the data to be stored
     Map<String, dynamic> reportData = {
       'userId': userId,
-      'reportDate': reportDate?.toIso8601String(),
       'reportCollectionDate': reportCollectionDate?.toIso8601String(),
       'patientName': patientNameController.text, // Get patient name from text field
       'age': age, // Get age from text field
       'tests': selectedTests
           .where((test) => test != null) // Exclude null entries
-          .map((test) => {
-        'testName': test,
-        'value': 0.0, // Replace with the entered test value
+          .map((test){
+             int index = selectedTests.indexOf(test);
+             double testValue = double.tryParse(testValueControllers[index]?.text ?? '0.0') ?? 0.0;
+             return {
+               'testName': test,
+               'value': testValue,
+             };
       })
           .toList(),
     };
