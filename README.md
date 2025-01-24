@@ -1,27 +1,86 @@
-# Personal Health Tracker using Automated Report Scanning
+# 🩺 Personal Health Tracker
 
-## Motivation: 
-In today’s busy world, being regularly updated about personal health is a challenge for most people. But currently the ability to understand, enable early detection and preventative health care and track personal health information is more important than ever. The motivation behind developing this system stems from the realization that people often ignore to maintain their medical records, and this habit can have serious consequences for their health. Unfortunately, people often lose their reports, which can cause delays in the detection of major health issues. Additionally, individuals miss out on the opportunity to track their own health trends and become aware about their health condition. Besides using this application in personal 
-health monitoring, this application can also be used to efficiently manage health care systems globally and locally.
+**A comprehensive health tracking app that lets users upload medical reports, extract data using Gemini LLM, track health trends, and securely share insights with others.**
 
-## Project Description:
-The Personal Health Tracker is a comprehensive mobile application designed to help users actively manage and monitor their health with ease and efficiency. The app allows users to upload images of their medical diagnostic reports (text and numeric value based test report e.g., blood test), which are then automatically processed to extract important health data such as test names, values, and results by using Optical Character Recognition (OCR) technology. This automation reduces the need for manual data entry, ensuring more accurate and better user experience for users.
+---
 
-Once the data is extracted, the app provides personalized health insights, summarizing the report in a simple, understandable format. It helps users interpret their diagnostic results, identify health trends over time and provides visual analysis of health records over time. Thus the Personal Health Tracker empowers users to stay updated about their health status and make data-driven decisions.
+## 🌟 Key Highlights
 
-In addition, the app serves as a personal health assistant by rapidly reminding users to update their health data on a regular basis. The app will notify users to seek treatment from a healthcare professional to improve their condition if unexpected values or patterns are detected in a report. Regular interaction on the application encourages users to develop a proactive approach towards maintaining their health, raising awareness about personal health conditions, facilitating early detection and avoidance of potential health issues.
+- **Secure User Authentication**: Multiple sign-up options (email, or Google) with robust verification processes.
+- **AI-Powered OCR with Gemini LLM**: Extract data from uploaded medical reports with exceptional accuracy.
+- **Health Trends Analysis**: Visualize your health history using **Syncfusion Flutter Charts**.
+- **Customizable Profiles**: Manage and personalize your health information.
+- **Seamless Sharing**: Share medical reports and health insights securely using QR codes or user permissions.
 
-Along with monitoring an individual's health, the app provides a news and recommendation section where users may get updates on healthier lifestyle techniques, healthcare news, and general health advice.
+---
 
-## Technology and Tools:
-o Image Processing: Use some Image processing libraries (e.g., OpenCV) to make the data extraction process more accurate.
+## 🛠️ Features Overview
 
-o OCR Module: Integrate a reliable OCR library (e.g., Google ML Kit, Tesseract) for text extraction from medical reports.
+### 🔒 **Authentication System**
+- **Sign-Up**: Register with email or Google. Verify your account via email confirmation.
+- **Login**: Login securely using email/username and password. 
+- **Google Login**: Seamlessly authenticate using the Google account on your device.
 
-o Database: Use Firebase for real-time, scalable data storage, handling both extracted data and historical medical records.
+### 👤 **User Profile Management**
+- **Edit Profile**: Update details like username, email, password, profile picture, and health information (e.g., age, blood group).
+- **View Profile**: Access uploaded medical reports, health history, and trends.
+- **Search Users**: Look up other users by username or email. Use QR codes for easy connections.
 
-o Back-end deploy: Deploy back-end functionalities on a cloud server (e.g., Render).
+### 📄 **Medical Report Upload & Management**
+- **Upload Options**:
+    - Capture reports directly using the camera.
+    - Select images from the gallery, with options to crop or rotate before upload.
+    - Add manual entries for custom medical parameters.
+- **AI OCR with Gemini LLM**: Extracts text from medical reports with exceptional accuracy, regardless of format.
+- **Categorization**: Reports are auto-classified based on type (e.g., blood tests).
 
-o Statistical Analysis: Implement algorithms or integrate libraries (e.g. NumPy) to perform statistical comparisons and generate health insights.
+### 📊 **Health Insights & Analytics**
+- **Health Trends Visualization with Syncfusion Charts**:
+    - View historical data with bar charts showing test results and trends.
+    - Monitor progress over time based on key metrics.
+- **Report Summaries**: Automatically generated insights highlight important details in medical reports.
+- **Warnings**: Get notified about potential health risks identified in your reports.
 
-o Mobile Development Framework: Use Flutter for cross-platform app development, ensuring seamless image capturing from camera or gallery using Flutter package (e.g., Image Picker)
+### 🤝 **Secure Sharing & Permissions**
+- **Share Reports**: Grant access to specific users with permission controls.
+- **QR Code Sharing**: Generate QR codes for profiles or reports to facilitate quick sharing.
+- **Privacy Control**: Customize who can view your reports and profile.
+
+### 🔔 **Notifications**
+- **Health Alerts**: Receive reminders for regular check-ups or abnormal test results.
+- **Connected Users**: Get notified when a connected user uploads a new report.
+- **Daily Health News**: Stay updated with the latest health trends and tips.
+
+---
+
+## 💡 Why Choose Personal Health Tracker?
+
+1. **AI-Powered Insights**: Leverage the cutting-edge Gemini LLM for accurate OCR and data extraction, delivering unparalleled accuracy.
+2. **Health Trends at a Glance**: Syncfusion Flutter Charts visualize your health metrics, helping you identify trends and monitor progress over time.
+3. **Seamless Sharing**: Share reports securely using QR codes or manage permissions for privacy. Ideal for sharing with family, doctors, or caregivers.
+4. **User-Centric Design**: Built with an intuitive and user-friendly interface for effortless navigation.
+5. **Data Security**: Your health data is encrypted and secure, with strict privacy controls for report sharing and user access.
+6. **Daily Health Updates**: Stay informed with health news and get notifications for routine health check-ups.
+
+---
+
+## 🖥️ Technology Stack
+
+| **Technology**               | **Purpose**                              |  
+|-------------------------------|------------------------------------------|  
+| **Flutter (Dart)**            | Frontend framework for mobile/web UI     |  
+| **Firebase Firestore**        | Backend database for report storage      |  
+| **Firebase Auth**             | User authentication and management       |  
+| **Gemini LLM**                | OCR for text extraction                  |  
+| **Syncfusion Flutter Charts** | Data visualization in the app            |  
+
+---
+
+## 🏁 Ending Summary
+
+The **Personal Health Tracker** app empowers you to take control of your health with ease and efficiency. From uploading medical reports to analyzing health trends, this app integrates advanced AI-powered technologies to provide actionable insights while ensuring your data remains private and secure. Whether you're tracking your health journey or collaborating with others, this app is designed to make your experience seamless, insightful, and impactful.
+
+**Your health is your wealth—start tracking it today with Personal Health Tracker!**
+
+---
+
