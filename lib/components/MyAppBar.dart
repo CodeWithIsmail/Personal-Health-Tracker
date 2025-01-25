@@ -59,8 +59,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFA1FFCE),
-              Color(0xFFFAFFD1),
+
+              Color(0xFF1D976C),
+              Color(0xFF93F9B9),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

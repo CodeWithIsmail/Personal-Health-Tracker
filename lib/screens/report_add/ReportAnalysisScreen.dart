@@ -13,6 +13,7 @@ class ReportAnalysis extends StatefulWidget {
 class _ReportAnalysisState extends State<ReportAnalysis> {
   bool done = false;
   FirestoreService firestoreService = new FirestoreService();
+  GeminiService geminiService = new GeminiService();
   late final ChatSession _chat;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textController = TextEditingController();
@@ -130,7 +131,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
         fromUser: true
       ));
       String text =
-          await sendImagePromptToGemini(prompt, widget.selectedMedia, _chat);
+          await geminiService.sendImagePromptToGemini(prompt, widget.selectedMedia, _chat);
 
       _generatedContent.add((image: null, text: text, fromUser: false));
 
@@ -177,7 +178,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
     try {
       _generatedContent.add((image: null, text: prompt, fromUser: true));
 
-      String text = await sendChatMessage(prompt, _chat);
+      String text = await geminiService.sendChatMessage(prompt, _chat);
 
       _generatedContent.add((image: null, text: text, fromUser: false));
 

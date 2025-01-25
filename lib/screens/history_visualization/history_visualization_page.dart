@@ -9,7 +9,7 @@ class _HistoryVisualizationState extends State<HistoryVisualization> {
   String? _selectedDateRange = 'All';
   DateTimeRange? _selectedDateRangeCustom;
   String? _selectedTestName;
-   String username="";
+  String username = "";
 
   @override
   void initState() {
@@ -135,12 +135,11 @@ class _HistoryVisualizationState extends State<HistoryVisualization> {
         onPressed: () async {
           if (_selectedTestName != null && _selectedDateRange != null) {
             await context.read<ReportAttributeProvider>().fetchReportData(
-                  username: username,
-                  testName: _selectedTestName!,
-                  dateRange: _selectedDateRange!,
-                  startDate: _selectedDateRangeCustom?.start,
-                  endDate: _selectedDateRangeCustom?.end,
-                );
+                username,
+                _selectedTestName!,
+                _selectedDateRange!,
+                _selectedDateRangeCustom?.start,
+                _selectedDateRangeCustom?.end);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Please select a test and date range')),

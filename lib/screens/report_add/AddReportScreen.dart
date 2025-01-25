@@ -13,6 +13,7 @@ class _AddReportState extends State<AddReport> {
   final ImagePicker _picker = ImagePicker();
 
   FirestoreService firestoreService = new FirestoreService();
+  GeminiService geminiService = new GeminiService();
   String imageURL = "";
   bool isLoading = false;
   bool isManualInputVisible = false;
@@ -37,7 +38,7 @@ class _AddReportState extends State<AddReport> {
         });
         // await _uploadImage(croppedFile);
         String values =
-            await sendImagePromptToGemini(generalPrompt, croppedFile, null);
+            await geminiService.sendImagePromptToGemini(generalPrompt, croppedFile, null);
         print(values);
         await _processImage(values);
         //  await _gotoAnalysisScreen(croppedFile);
@@ -62,7 +63,7 @@ class _AddReportState extends State<AddReport> {
 
 
           String values =
-              await sendImagePromptToGemini(generalPrompt, croppedFile, null);
+              await geminiService.sendImagePromptToGemini(generalPrompt, croppedFile, null);
           print(values);
           await _uploadImage(croppedFile);
           await _processImage(values);
@@ -80,7 +81,7 @@ class _AddReportState extends State<AddReport> {
   }
 
   Future<void> _uploadImage(File imageFile) async {
-    CloudinaryImageUpload cloudinaryImageUpload = new CloudinaryImageUpload();
+    CloudinaryService cloudinaryImageUpload = new CloudinaryService();
     String imgUrl = await cloudinaryImageUpload.uploadImage(imageFile);
     setState(() {
       imageURL = imgUrl;
@@ -138,7 +139,7 @@ class _AddReportState extends State<AddReport> {
       }
     } // created a comma seperated string of founded test names from user input
 
-    String similarCheck = await similar(stnames, found);
+    String similarCheck = await geminiService.similar(stnames, found);
     print("predefined: " + stnames);
     print("found: " + found);
     print(similarCheck);

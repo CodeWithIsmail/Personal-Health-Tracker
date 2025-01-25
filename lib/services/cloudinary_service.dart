@@ -1,7 +1,7 @@
 import '../ImportAll.dart';
 import 'package:http/http.dart' as http;
 
-class CloudinaryImageUpload {
+class CloudinaryService {
   Future<String> uploadImage(File imageFile) async {
     String imgUrl = "";
     final url =

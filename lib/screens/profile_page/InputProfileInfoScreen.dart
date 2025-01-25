@@ -73,7 +73,7 @@ class _ProfileInputState extends State<ProfileInput> {
         _profileImage = File(pickedFile.path);
       });
     }
-    CloudinaryImageUpload cloudinaryImageUpload = new CloudinaryImageUpload();
+    CloudinaryService cloudinaryImageUpload = new CloudinaryService();
     imgUrl = await cloudinaryImageUpload.uploadImage(_profileImage!);
   }
 

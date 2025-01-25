@@ -83,9 +83,10 @@ export 'helper/time_converter.dart';
 export 'constant/constant_loading_indicator.dart';
 export 'constant/constants.dart';
 export 'constant/dropdown_options.dart';
+export 'constant/constant_prompt.dart';
 
 // services
-export 'services/firestoreDB.dart';
+export 'services/firestore_service.dart';
 export 'services/firebase_options.dart';
 
 // custom
@@ -108,8 +109,8 @@ export 'dart:io';
 export 'dart:convert';
 
 //api
-export 'api/GeminiAPI.dart';
-export 'api/ImageUploadCloudinary.dart';
+export 'services/gemini_service.dart';
+export 'services/cloudinary_service.dart';
 
 // private data
 export 'PrivateData.dart';
