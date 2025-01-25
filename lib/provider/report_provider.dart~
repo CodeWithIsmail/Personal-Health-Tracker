@@ -1,7 +1,7 @@
 import '../ImportAll.dart';
 
 class ReportProvider with ChangeNotifier {
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreProvider _firestoreProvider = FirestoreProvider();
 
   List<Report> _reports = [];
   bool _isLoading = false;
@@ -25,7 +25,7 @@ class ReportProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      _reports = await _firestoreService.fetchReports(username);
+      _reports = await _firestoreProvider.fetchReports(username);
     } catch (error) {
       print('Error fetching reports: $error');
     }
@@ -41,7 +41,7 @@ class ReportProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      _reports = await _firestoreService.fetchReportsByDateRange(
+      _reports = await _firestoreProvider.fetchReportsByDateRange(
           username, startDate, endDate);
     } catch (error) {
       print('Error filtering reports: $error');
@@ -54,7 +54,7 @@ class ReportProvider with ChangeNotifier {
   /// Add a new report
   Future<void> addReport(Report report) async {
     try {
-      await _firestoreService.addReport(report);
+      await _firestoreProvider.addReport(report);
       _reports.add(report);
       notifyListeners();
     } catch (error) {
@@ -65,7 +65,7 @@ class ReportProvider with ChangeNotifier {
   /// Add a viewer to the report's viewer list
   Future<void> addViewer(String docId, String addViewerUsername) async {
     try {
-      await _firestoreService.addViewer(docId, addViewerUsername);
+      await _firestoreProvider.addViewer(docId, addViewerUsername);
 
       final index = _reports.indexWhere((report) => report.username == docId);
       if (index != -1) {
@@ -80,7 +80,7 @@ class ReportProvider with ChangeNotifier {
   /// Remove a viewer from the report's viewer list
   Future<void> removeViewer(String docId, String removeViewerUsername) async {
     try {
-      await _firestoreService.removeViewer(docId, removeViewerUsername);
+      await _firestoreProvider.removeViewer(docId, removeViewerUsername);
 
       final index = _reports.indexWhere((report) => report.username == docId);
       if (index != -1) {
@@ -95,7 +95,7 @@ class ReportProvider with ChangeNotifier {
   /// Delete a report
   Future<void> deleteReport(String docId) async {
     try {
-      await _firestoreService.deleteReport(docId);
+      await _firestoreProvider.deleteReport(docId);
       _reports.removeWhere((report) => report.username == docId);
       notifyListeners();
     } catch (error) {

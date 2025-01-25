@@ -68,9 +68,9 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
 
                 if (current != null) {
                   selected = current;
-                 // timestamp = Timestamp.fromDate(selected);
+                  // timestamp = Timestamp.fromDate(selected);
                   dayController.text = DateFormat('dd-MMM-yy').format(current);
-                //  print('Timestamp: $timestamp');
+                  //  print('Timestamp: $timestamp');
                 }
               },
               decoration: InputDecoration(
@@ -127,12 +127,9 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
                   () async {
                     controllers.forEach((key, value) {
                       reportAttributeProvider.storeReportData(
-                          username: username,
-                          date: selected,
-                          attributeName: key,
-                          value: double.parse(value.text));
+                          username, selected, key, double.parse(value.text));
                     });
-                    Navigator.pop(context,selected);
+                    Navigator.pop(context, selected);
                   },
                 ),
           SizedBox(height: 16),
