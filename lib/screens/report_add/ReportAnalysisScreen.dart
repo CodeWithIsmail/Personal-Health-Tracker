@@ -28,7 +28,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
     String? email = FirebaseAuth.instance.currentUser?.email;
     uname = email!.substring(0, email.indexOf('@'));
     _chat = GeminiModel.startChat();
-    _sendImagePrompt(analyzeReportPrompt);
+    _sendImagePrompt(Prompt.analyzeReportPrompt());
   }
 
   @override
@@ -105,7 +105,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
                       15,
                       !_loading
                           ? () async {
-                              _sendImagePrompt(analyzeReportPrompt);
+                              _sendImagePrompt(Prompt.analyzeReportPrompt());
                             }
                           : null,
                     )

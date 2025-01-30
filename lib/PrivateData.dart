@@ -5,9 +5,6 @@ final GenerativeModel GeminiModel = GenerativeModel(
   apiKey: GeminiApiKey,
 );
 
-const analyzeReportPrompt =
-    "Analyze the following medical report in detail. Summarize the key findings, focusing on any abnormal test results that may require further investigation or medical attention. Identify any patterns or trends in the data that could indicate potential health concerns. Additionally, highlight any specific instructions, recommendations, or advice to the patient for follow-up care or lifestyle changes. Be thorough and ensure nothing important is overlooked.";
-
 const String ocrPrompt = '''
 You are analyzing a haematology report image. Extract all test names and their corresponding values, ensuring the values match the units used in the provided sample report. For scientific notation (e.g., \`14.00 x 10^9/uL\`), convert it to its full numeric form (e.g., \`14000000000\`).
 
@@ -77,7 +74,7 @@ P-LCR: 19.4
 PCT: 0.26
 ''';
 
-const st="Haemoglobin";
+const st = "Haemoglobin";
 
 const String generalPrompt = '''
 You are analyzing a medical diagnostic report image. Extract all test names and their corresponding values (consider only these test which gives numerical value). For scientific notation (e.g., \`14.00 x 10^9/uL\`), convert it to its full numeric form (e.g., \`14000000000\`).
@@ -94,7 +91,7 @@ $st: 11.8
 
 ''';
 
-String matchChecker='''
+String matchChecker = '''
 Here are two comma-separated string:
 
     Predefined Test Names: [insert your predefined names here]
