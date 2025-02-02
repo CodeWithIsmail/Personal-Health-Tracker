@@ -7,9 +7,8 @@ final gradientMain = LinearGradient(
   //   Color(0xFFFAFFD1),
   // ],
   colors: [
-    Color(0xFF355C7D),
-    Color(0xFF6C5B7B),
-    Color(0xFFC06C84),
+    Color(0xFF1D976C),
+    Color(0xFF93F9B9),
   ],
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,

@@ -43,7 +43,7 @@ class _NavigationPageState extends State<NavigationPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        color: Colors.greenAccent[100],
+        color: Color(0xFF93F9B9),
         child: IconTheme(
             data: IconThemeData(),
             child: Padding(
@@ -108,58 +108,6 @@ class _NavigationPageState extends State<NavigationPage> {
             )
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   onTap: (int number) {
-      //     setState(() {
-      //       print(number);
-      //       pageNumber = number;
-      //     });
-      //   },
-      //   type: BottomNavigationBarType.fixed,
-      //   elevation: 5,
-      //   items: [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.home,
-      //         color: pageNumber == 0 ? selectColor : unselectColor,
-      //       ),
-      //       label: 'Home',
-      //       tooltip: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.history,
-      //         color: pageNumber == 1 ? selectColor : unselectColor,
-      //       ),
-      //       label: 'History',
-      //       tooltip: 'Health report history',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.stacked_line_chart,
-      //         color: pageNumber == 2 ? selectColor : unselectColor,
-      //       ),
-      //       label: 'Visualization',
-      //       tooltip: 'Report History Visualization',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.assignment_outlined,
-      //         color: pageNumber == 3 ? selectColor : unselectColor,
-      //       ),
-      //       label: 'Add record',
-      //       tooltip: 'Add new medical report record',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.event_available_outlined,
-      //         color: pageNumber == 4 ? selectColor : unselectColor,
-      //       ),
-      //       label: 'Profile',
-      //       tooltip: 'Profile page',
-      //     ),
-      //   ],
-      // ),
       body: changePage(),
     );
   }
