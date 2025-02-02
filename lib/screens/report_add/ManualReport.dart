@@ -1,7 +1,6 @@
 import 'package:personal_health_tracker/ImportAll.dart';
-import 'package:personal_health_tracker/custom/CustomRadioSelectionTextField.dart';
-
 import '../../custom/CustomDropDown.dart';
+import 'package:http/http.dart' as http;
 
 class Manualreport extends StatefulWidget {
   @override
@@ -11,6 +10,8 @@ class Manualreport extends StatefulWidget {
 class _ManualreportState extends State<Manualreport> {
   DateTime? reportDate;
   DateTime? reportCollectionDate;
+
+  final IP = "";
 
   final TextEditingController reportDateController = TextEditingController();
   final TextEditingController reportCollectionDateController = TextEditingController();
@@ -46,7 +47,7 @@ class _ManualreportState extends State<Manualreport> {
 
   Future<List> getTestNames() async {
     QuerySnapshot snapshot =
-        await firebaseFirestore.collection('test_collection').get();
+    await firebaseFirestore.collection('test_collection').get();
 
     List<String> testNames = [];
 
@@ -54,7 +55,7 @@ class _ManualreportState extends State<Manualreport> {
       if (doc['test_names'] is List<dynamic>) {
         testNames.addAll(List<String>.from(doc['test_names']));
       } else if (doc['test_names'] is String) {
-            testNames.add(doc['test_names']);
+        testNames.add(doc['test_names']);
       }
     }
 
@@ -69,40 +70,6 @@ class _ManualreportState extends State<Manualreport> {
       DatePicker(picked);
     }
   }
-
-  // Widget DropDownSelector(int index) {
-  //   return DropdownButtonFormField<String>(
-  //     value: selectedTests[index],
-  //     hint: Text('Select a test'),
-  //     onChanged: (String? newValue) {
-  //       setState(() {
-  //         selectedTests[index] = newValue;
-  //       });
-  //     },
-  //     items: testNames.map((String testName) {
-  //       return DropdownMenuItem<String>(
-  //         value: testName,
-  //         child: Text(testName),
-  //       );
-  //     }).toList(),
-  //     decoration: InputDecoration(
-  //       prefixIcon: Icon(
-  //         Icons.search,
-  //         color: Colors.grey[600],
-  //       ),
-  //       border: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(30.0),
-  //       ),
-  //       focusedBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(30.0),
-  //         borderSide: BorderSide(
-  //           color: Colors.green,
-  //           width: 2,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget DropDownSelector(int index) {
     return CustomDropdown<String>(
@@ -167,7 +134,7 @@ class _ManualreportState extends State<Manualreport> {
                     borderSide: BorderSide(color: Colors.green,width: 2),
                   ),
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                 ),
                 style: TextStyle(fontSize: 14),
               ),
@@ -203,45 +170,46 @@ class _ManualreportState extends State<Manualreport> {
     }
 
     final String userId = user.uid; // Get the logged-in user's UID
-    final String reportId = firebaseFirestore.collection('manual_report').doc().id; // Generate a unique report ID
-
-    // Validate input fields
-    if (patientNameController.text.isEmpty || patientAgeController.text.isEmpty) {
-      print('Please fill in all required fields');
-      return;
-    }
-
-    // Convert age to an integer
-    int? age = int.tryParse(patientAgeController.text);
-    if (age == null) {
-      print('Invalid age');
-      return;
-    }
+    //final String reportId = firebaseFirestore.collection('manual_report').doc().id; // Generate a unique report ID
 
     // Prepare the data to be stored
     Map<String, dynamic> reportData = {
       'userId': userId,
       'reportCollectionDate': reportCollectionDate?.toIso8601String(),
-      'patientName': patientNameController.text, // Get patient name from text field
-      'age': age, // Get age from text field
       'tests': selectedTests
           .where((test) => test != null) // Exclude null entries
           .map((test){
-             int index = selectedTests.indexOf(test);
-             double testValue = double.tryParse(testValueControllers[index]?.text ?? '0.0') ?? 0.0;
-             return {
-               'testName': test,
-               'value': testValue,
-             };
+        int index = selectedTests.indexOf(test);
+        double testValue = double.tryParse(testValueControllers[index]?.text ?? '0.0') ?? 0.0;
+        return {
+          'testName': test,
+          'value': testValue,
+        };
       })
           .toList(),
     };
 
     try {
       // Save the report data in the manual_report collection
-      await firebaseFirestore.collection('manual_report').doc(reportId).set(reportData);
-      print('Report saved successfully!');
-      resetScreen();
+      // await firebaseFirestore.collection('manual_report').doc(reportId).set(reportData);
+      final response = await http.post(
+        Uri.parse('http://${IP}/api/store-report'), // Replace with your server's IP or domain
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(reportData),
+      );
+      print(json.encode(reportData));
+
+      if(response != null){
+        print("Response received");
+        print(response.body);
+      }
+      if (response.statusCode == 200) {
+        print('Report saved successfully!');
+        resetScreen();
+      } else {
+        print('Failed to save report: ${response.statusCode}');
+      }
+
     } catch (e) {
       print('Error saving report: $e');
     }
@@ -250,13 +218,11 @@ class _ManualreportState extends State<Manualreport> {
   void resetScreen() {
     setState(() {
       // Reset all text fields
-      patientNameController.clear();
-      patientAgeController.clear();
-      reportDateController.clear();
+      // reportDateController.clear();
       reportCollectionDateController.clear();
 
       // Reset dates
-      reportDate = null;
+      // reportDate = null;
       reportCollectionDate = null;
 
       // Reset test selections
@@ -295,28 +261,12 @@ class _ManualreportState extends State<Manualreport> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        controller: patientNameController,
-                        decoration: InputDecoration(
-                          labelText: "Patient's Name",
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      TextField(
-                        keyboardType: TextInputType.number,
-                        controller: patientAgeController,
-                        decoration: InputDecoration(
-                          labelText: 'Age',
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Customradioselectiontextfield(),
                       GestureDetector(
                         onTap: () => selectDate(context, (pickedDate) {
                           setState(() {
                             reportCollectionDate = pickedDate;
                             reportCollectionDateController.text =
-                                "${reportCollectionDate!.day}/${reportCollectionDate!.month}/${reportCollectionDate!.year}";
+                            "${reportCollectionDate!.day}/${reportCollectionDate!.month}/${reportCollectionDate!.year}";
                           });
                         }),
                         child: AbsorbPointer(
@@ -331,7 +281,7 @@ class _ManualreportState extends State<Manualreport> {
                                 ),
                               ),
                               prefixIconConstraints:
-                                  BoxConstraints(maxWidth: 40, maxHeight: 24),
+                              BoxConstraints(maxWidth: 40, maxHeight: 24),
                               labelText: 'Report Collection Date',
                               hintText: reportCollectionDate != null
                                   ? "${reportCollectionDate!.day}/${reportCollectionDate!.month}/${reportCollectionDate!.year}"
