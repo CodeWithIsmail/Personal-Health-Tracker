@@ -11,7 +11,7 @@ class _ManualreportState extends State<Manualreport> {
   DateTime? reportDate;
   DateTime? reportCollectionDate;
 
-  final IP = "";
+  final IP = "10.100.201.181:5000";//ip:5000
 
   final TextEditingController reportDateController = TextEditingController();
   final TextEditingController reportCollectionDateController = TextEditingController();
@@ -215,6 +215,7 @@ class _ManualreportState extends State<Manualreport> {
     }
   }
 
+
   void resetScreen() {
     setState(() {
       // Reset all text fields
@@ -223,9 +224,8 @@ class _ManualreportState extends State<Manualreport> {
 
       // Reset dates
       // reportDate = null;
+      reportCollectionDateController.clear();
       reportCollectionDate = null;
-
-      // Reset test selections
       selectedTests = [null];
     });
   }
