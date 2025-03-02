@@ -1,4 +1,5 @@
 import '../ImportAll.dart';
+import 'package:http/http.dart' as http;
 
 class ReportAttributeProvider with ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
@@ -59,9 +60,29 @@ class ReportAttributeProvider with ChangeNotifier {
 
   Future<void> storeReportData(String username, DateTime date,
       String attributeName, double value) async {
+    final url = Uri.parse("http://10.100.201.172:5000/api/reports/addReportAttribute");
     try {
-      await _firestoreService.storeReportData(
-          username, date, attributeName, value);
+      await _firestoreService.storeReportData(username, date, attributeName, value);
+
+      //backend add
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "userName": username,
+          "date": date.toIso8601String(),
+          "testName": attributeName,
+          "value": value
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        debugPrint("Report attribute added successfully.");
+      } else {
+        debugPrint("Failed to add report attribute: ${response.body}");
+      }
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error in ReportAttributeProvider.storeReportData: $e');

@@ -1,4 +1,5 @@
 import '../ImportAll.dart';
+import 'package:http/http.dart' as http;
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -148,23 +149,67 @@ class FirestoreService {
   Future<List<ChartDataTimewise>> fetchReportData(String username,
       String testName, DateTime startingDate, DateTime endingDate) async {
     try {
-      QuerySnapshot snapshot = await _firestore
-          .collection('report_attribute')
-          .where('username', isEqualTo: username)
-          .where('attribute_name', isEqualTo: testName)
-          .where('date', isGreaterThanOrEqualTo: startingDate)
-          .where('date', isLessThanOrEqualTo: endingDate)
-          .get();
 
-      return snapshot.docs.map((doc) {
-        final report =
-            ReportAttribute.fromMap(doc.data() as Map<String, dynamic>);
-        return ChartDataTimewise(
-          report.date.millisecondsSinceEpoch,
-          report.value,
-        );
-      }).toList();
-    } catch (e) {
+      if(startingDate != null || endingDate != null){
+        QuerySnapshot snapshot = await _firestore
+            .collection('report_attribute')
+            .where('username', isEqualTo: username)
+            .where('attribute_name', isEqualTo: testName)
+            .where('date', isGreaterThanOrEqualTo: startingDate)
+            .where('date', isLessThanOrEqualTo: endingDate)
+            .get();
+
+        return snapshot.docs.map((doc) {
+          final report =
+          ReportAttribute.fromMap(doc.data() as Map<String, dynamic>);
+          return ChartDataTimewise(
+            report.date.millisecondsSinceEpoch,
+            report.value,
+          );
+        }).toList();
+      }
+      //backend
+      String start = startingDate.toUtc().toIso8601String();
+      String end = endingDate.toUtc().toIso8601String();
+
+      print('$start  $end');
+
+      // String start = "";
+      // String end = "";
+
+      final url = Uri.parse(
+          "http://10.100.201.172:5000/api/reports/getReportAttributes?username=$username&testName=$testName&startDate=$start&endDate=$end"
+      );
+
+
+      final response = await http.get(url);
+
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        // Check if data is null or doesn't contain 'data' key
+        if (responseData == null || responseData['data'] == null) {
+          debugPrint("Response data is null or does not contain 'data' key");
+          return [];
+        }
+
+        List<dynamic> fetchedData = responseData['data'];
+
+        // Map fetched data to ChartDataTimewise objects
+        return fetchedData.map((data) {
+          return ChartDataTimewise(
+            DateTime.tryParse(data['reportCollectionDate'])?.millisecondsSinceEpoch ?? 0,
+            data['value'] ?? 0, // Default value in case of null
+          );
+        }).toList();
+      } else {
+        debugPrint("Failed to fetch report data: ${response.statusCode} - ${response.body}");
+        return [];
+      }
+    }
+    catch (e) {
       debugPrint('Error fetching report data: $e');
       rethrow;
     }
@@ -189,6 +234,28 @@ class FirestoreService {
   Future<void> storeSummeryImgLink(
       String username, String imgLink, String summery) async {
     try {
+
+      final url = Uri.parse("http://10.100.201.172:5000/api/reports/addReportSummary");
+
+      final data = {
+        'userName': username,
+        'imgLink': imgLink,
+        'summary': summery,
+      };
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data), // Convert data to JSON
+      );
+
+      // Handle the response from the backend
+      if (response.statusCode == 201) {
+        print("Report summary successfully stored!");
+      } else {
+        print("Failed to store report summary. Status code: ${response.statusCode}");
+      }
+
       await FirebaseFirestore.instance.collection('report').add({
         'username': username,
         'date': DateTime.now(),
