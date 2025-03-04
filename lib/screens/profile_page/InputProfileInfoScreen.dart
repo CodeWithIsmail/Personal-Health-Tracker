@@ -21,8 +21,18 @@ class _ProfileInputState extends State<ProfileInput> {
   final ImagePicker _picker = ImagePicker();
   int selectedGenderIndex = 0;
 
-  final List<String> genderOptions = ['Male', 'Female', 'Other'];
-  final List<String> bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',];
+  final List<String> genderOptions = ['Male', 'Female', 'Others'];
+  final List<String> bloodGroupOptions = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
+    "Others"
+  ];
 
   String selectedBloodGroup = '';
 
@@ -43,15 +53,15 @@ class _ProfileInputState extends State<ProfileInput> {
     editingControllers[8].text = widget.profileInfo.weight.toString();
     editingControllers[9].text = widget.profileInfo.height.toString();
     editingControllers[10].text = widget.profileInfo.bg;
-
+    timestamp=widget.profileInfo.dob;
     if (genderOptions.contains(widget.profileInfo.gender)) {
       selectedGenderIndex = genderOptions.indexOf(widget.profileInfo.gender);
     }
 
-    if (bloodGroupOptions.isNotEmpty && bloodGroupOptions.contains(widget.profileInfo.bg)) {
+    if (bloodGroupOptions.isNotEmpty &&
+        bloodGroupOptions.contains(widget.profileInfo.bg)) {
       selectedBloodGroup = widget.profileInfo.bg;
-    }
-    else {
+    } else {
       // Set to default if not found in the list
       selectedBloodGroup = bloodGroupOptions.first;
     }
@@ -85,8 +95,19 @@ class _ProfileInputState extends State<ProfileInput> {
     } else {
       uname = "ismail99";
     }
-    QRCodeGenerator qrCodeGenerator = QRCodeGenerator(uname);
-    String qrcode = await qrCodeGenerator.generateAndUploadQRCode();
+
+    String qrcode="";
+
+    if(widget.profileInfo.qr==""){
+      QRCodeGenerator qrCodeGenerator = QRCodeGenerator(uname);
+      qrcode = await qrCodeGenerator.generateAndUploadQRCode();
+    }else {
+      qrcode = widget.profileInfo.qr;
+    }
+
+    print(uname);
+
+
 
     ProfileInfo profileInfo = new ProfileInfo(
         uname,
@@ -176,11 +197,11 @@ class _ProfileInputState extends State<ProfileInput> {
                 SizedBox(
                   height: 15,
                 ),
-                CustomTextField("Email", false, editingControllers[4],
-                    TextInputType.emailAddress),
-                SizedBox(
-                  height: 15,
-                ),
+                // CustomTextField("Email", false, editingControllers[4],
+                //     TextInputType.emailAddress),
+                // SizedBox(
+                //   height: 15,
+                // ),
                 CustomTextField(
                     "Phone", false, editingControllers[5], TextInputType.phone),
                 SizedBox(
@@ -242,8 +263,8 @@ class _ProfileInputState extends State<ProfileInput> {
                   children: [
                     Text(
                       'Gender',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     ...List.generate(genderOptions.length, (index) {
@@ -256,7 +277,7 @@ class _ProfileInputState extends State<ProfileInput> {
                               setState(() {
                                 selectedGenderIndex = index;
                                 editingControllers[7].text =
-                                genderOptions[index]; // Update controller
+                                    genderOptions[index]; // Update controller
                               });
                             },
                           ),
@@ -285,7 +306,8 @@ class _ProfileInputState extends State<ProfileInput> {
                   children: [
                     Text(
                       'Blood Group',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     CustomDropdown<String>(
@@ -319,12 +341,14 @@ class _ProfileInputState extends State<ProfileInput> {
                         Color(0xFF355C7D),
                         Colors.white,
                         20,
-                        () {
-                          saveInfoToDB();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => NavigationPage()),
-                          );
+                        (){
+                         saveInfoToDB();
+                         Navigator.pop(context);
+                          // Navigator.pushReplacement(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => NavigationPage()),
+                          // );
                         },
                       ),
               ],

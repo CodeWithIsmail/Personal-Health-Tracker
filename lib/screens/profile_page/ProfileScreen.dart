@@ -17,7 +17,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     // Use addPostFrameCallback to ensure the fetch happens after the first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
+      final userInfoProvider = Provider.of<UserInfoProvider>(context);
+
       authProvider =
           Provider.of<AuthenticationProvider>(context, listen: false);
 
@@ -89,11 +90,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ProfileInfoItem(Icons.height, "Height", height),
             ProfileInfoItem(Icons.health_and_safety_sharp, "BMI", bmi),
             ProfileInfoItem(Icons.bloodtype, "Blood Type", bg),
-            Image.network(
-              qrLink,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-            ),
+            qrLink == defaultImageLink
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8, right: 8, top: 5, bottom: 10),
+                    child: CustomButtonGestureDetector(
+                      "Add profile info to get QR code",
+                      double.infinity,
+                      kToolbarHeight,
+                      Colors.green.withOpacity(0.3),
+                      Colors.black,
+                      20,
+                      () {},
+                    ),
+                  )
+                : Image.network(
+                    qrLink,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width,
+                  ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 8, right: 8, top: 5, bottom: 30),
+              child: CustomButtonGestureDetector(
+                "Edit Profile",
+                double.infinity,
+                kToolbarHeight,
+                Colors.blue.withOpacity(0.3),
+                Colors.black,
+                20,
+                () {
+                  ProfileInfo profileInfo;
+                  if (currentUser == null)
+                    profileInfo = ProfileInfo("", "", "", "", "", "", "", email,
+                        "", Timestamp.now(), "", "", 0.0, 0.0);
+                  else
+                    profileInfo = ProfileInfo(
+                        currentUser.uname,
+                        imgLink,
+                        qrLink,
+                        currentUser.fname,
+                        currentUser.lname,
+                        currentUser.city,
+                        currentUser.country,
+                        email,
+                        phone,
+                        currentUser.dob,
+                        gender,
+                        bg,
+                        currentUser.weight,
+                        currentUser.height);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileInput(profileInfo),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),
