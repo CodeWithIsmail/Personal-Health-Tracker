@@ -178,7 +178,7 @@ class FirestoreService {
       // String end = "";
 
       final url = Uri.parse(
-          "http://10.100.201.172:5000/api/reports/getReportAttributes?username=$username&testName=$testName&startDate=$start&endDate=$end"
+          "http://10.100.202.129:5000/api/reports/getReportAttributes?username=$username&testName=$testName&startDate=$start&endDate=$end"
       );
 
 
@@ -216,15 +216,28 @@ class FirestoreService {
   }
 
   /// Store new report data
-  Future<void> storeReportData(String username, DateTime date,
+  Future<String> storeReportData(String username, DateTime date,
       String attributeName, double value) async {
     try {
-      await _firestore.collection('report_attribute').add({
+
+      CollectionReference reportsRef = _firestore.collection('report_attribute');
+
+      // Get the current count of reports (to determine the serial number)
+      QuerySnapshot snapshot = await reportsRef.get();
+      int reportSerial = snapshot.docs.length + 1;
+
+      DocumentReference docRef = await _firestore.collection('report_attribute').add({
         'username': username,
         'date': date,
         'attribute_name': attributeName,
         'value': value,
       });
+
+      String customReportId = "report_$reportSerial";
+      debugPrint("Generated Report ID: $customReportId");
+
+      return customReportId;
+
     } catch (e) {
       debugPrint('Error storing report data: $e');
       rethrow;
@@ -235,9 +248,21 @@ class FirestoreService {
       String username, String imgLink, String summery) async {
     try {
 
-      final url = Uri.parse("http://10.100.201.172:5000/api/reports/addReportSummary");
+      final url = Uri.parse("http://10.100.202.129:5000/api/reports/addReportSummary");
+
+
+      CollectionReference reports = FirebaseFirestore.instance.collection('report_attribute');
+
+      // Get the count of existing reports
+      QuerySnapshot querySnapshot = await reports.get();
+      int reportCount = querySnapshot.docs.length; // Next report number
+
+      // Generate custom report ID
+      String reportId = "report_$reportCount";
+
 
       final data = {
+        'reportID': reportId,
         'userName': username,
         'imgLink': imgLink,
         'summary': summery,

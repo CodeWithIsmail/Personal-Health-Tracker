@@ -2,10 +2,12 @@ import '../../ImportAll.dart';
 
 class ReportDetailScreen extends StatelessWidget {
   final Report report;
+  final int reportIndex;
 
-  const ReportDetailScreen({Key? key, required this.report}) : super(key: key);
+  const ReportDetailScreen({Key? key, required this.report, required this.reportIndex}) : super(key: key);
 
   void _showViewerDialog(BuildContext context) {
+    print("Tapped Report Index : $reportIndex");
     showDialog(
       context: context,
       builder: (ctx) {

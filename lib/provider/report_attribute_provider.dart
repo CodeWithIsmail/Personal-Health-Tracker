@@ -60,9 +60,9 @@ class ReportAttributeProvider with ChangeNotifier {
 
   Future<void> storeReportData(String username, DateTime date,
       String attributeName, double value) async {
-    final url = Uri.parse("http://10.100.201.172:5000/api/reports/addReportAttribute");
+    final url = Uri.parse("http://10.100.202.129:5000/api/reports/addReportAttribute");
     try {
-      await _firestoreService.storeReportData(username, date, attributeName, value);
+      String docRefID = await _firestoreService.storeReportData(username, date, attributeName, value);
 
       //backend add
 
@@ -70,6 +70,7 @@ class ReportAttributeProvider with ChangeNotifier {
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
+          "reportID" : docRefID,
           "userName": username,
           "date": date.toIso8601String(),
           "testName": attributeName,

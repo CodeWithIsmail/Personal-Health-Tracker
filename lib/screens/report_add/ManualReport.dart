@@ -11,7 +11,7 @@ class _ManualreportState extends State<Manualreport> {
   DateTime? reportDate;
   DateTime? reportCollectionDate;
 
-  final IP = "10.100.201.172:5000";//ip:5000
+  final IP = "10.100.202.129:5000";//ip:5000
 
   final TextEditingController reportDateController = TextEditingController();
   final TextEditingController reportCollectionDateController = TextEditingController();
@@ -195,7 +195,7 @@ class _ManualreportState extends State<Manualreport> {
       // Save the report data in the manual_report collection
       // await firebaseFirestore.collection('manual_report').doc(reportId).set(reportData);
       final response = await http.post(
-        Uri.parse('http://${IP}/api/store-report'), // Replace with your server's IP or domain
+        Uri.parse('http://${IP}/api/reports/store-report'), // Replace with your server's IP or domain
         headers: {'Content-Type': 'application/json'},
         body: json.encode(reportData),
       );
