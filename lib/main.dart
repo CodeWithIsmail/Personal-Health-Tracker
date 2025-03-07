@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ReportProvider()),
         ChangeNotifierProvider(create: (_) => TestNamesProvider()),
         ChangeNotifierProvider(create: (_) => ReportAttributeProvider()),
+
       ],
       child: MaterialApp(
         title: 'Personal Health Tracker',

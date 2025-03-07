@@ -19,11 +19,13 @@ class _NavigationPageState extends State<NavigationPage> {
       return ReportListScreen();
     else if (pageNumber == 2)
       return HistoryVisualization();
-      // return ReportHistoryVisualization();
+    // return ReportHistoryVisualization();
     else if (pageNumber == 3)
       return AddReport();
-    else
+    else if (pageNumber == 4)
       return ProfileScreen();
+    else
+      return ConnectionPage();
   }
 
   @override
@@ -33,7 +35,7 @@ class _NavigationPageState extends State<NavigationPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.yellow[50],
-        onPressed: (){
+        onPressed: () {
           setState(() {
             pageNumber = 3;
           });
@@ -47,66 +49,78 @@ class _NavigationPageState extends State<NavigationPage> {
         child: IconTheme(
             data: IconThemeData(),
             child: Padding(
-                padding: EdgeInsets.all(0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                        onPressed: (){
-                           setState(() {
-                             pageNumber = 0;
-                           });
-                        },
-                      icon: Icon(
-                        Icons.home,
-                        color: pageNumber == 0 ? selectColor : unselectColor,
-                        size: 30,
-                      ),
-                      tooltip: 'Home',
+              padding: EdgeInsets.all(0.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        pageNumber = 0;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.home,
+                      color: pageNumber == 0 ? selectColor : unselectColor,
+                      size: 30,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          pageNumber = 1; // Favorites
-                        });
-                      },
-                      icon: Icon(
-                        Icons.history,
-                        color: pageNumber == 1 ? selectColor : unselectColor,
-                        size: 30,
-                      ),
-                      tooltip: 'Health report history',
+                    tooltip: 'Home',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        pageNumber = 1; // Favorites
+                      });
+                    },
+                    icon: Icon(
+                      Icons.history,
+                      color: pageNumber == 1 ? selectColor : unselectColor,
+                      size: 30,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          pageNumber = 2; // Profile
-                        });
-                      },
-                      icon: Icon(
-                        Icons.bar_chart,
-                        color: pageNumber == 2 ? selectColor : unselectColor,
-                        size: 30,
-                      ),
-                      tooltip: 'Report History Visualization',
+                    tooltip: 'Health report history',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        pageNumber = 2; // Profile
+                      });
+                    },
+                    icon: Icon(
+                      Icons.bar_chart,
+                      color: pageNumber == 2 ? selectColor : unselectColor,
+                      size: 30,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          pageNumber = 4; // Profile
-                        });
-                      },
-                      icon: Icon(
-                        Icons.person,
-                        color: pageNumber == 4 ? selectColor : unselectColor,
-                        size: 30,
-                      ),
-                      tooltip: 'Profile page',
+                    tooltip: 'Report History Visualization',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        pageNumber = 4; // Profile
+                      });
+                    },
+                    icon: Icon(
+                      Icons.person,
+                      color: pageNumber == 4 ? selectColor : unselectColor,
+                      size: 30,
                     ),
-                  ],
-                ),
-            )
-        ),
+                    tooltip: 'Profile page',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        pageNumber = 5; // Profile
+                      });
+                    },
+                    icon: Icon(
+                      Icons.people_rounded,
+                      color: pageNumber == 5 ? selectColor : unselectColor,
+                      size: 30,
+                    ),
+                    tooltip: 'Connections',
+                  ),
+                ],
+              ),
+            )),
       ),
       body: changePage(),
     );

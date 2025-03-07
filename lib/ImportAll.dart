@@ -71,6 +71,9 @@ export 'screens/report_add/ReportInputScreen.dart';
 export 'screens/report_add/ManualReport.dart';
 export 'screens/report_add/ReportAnalysisScreen.dart';
 
+// connection show page
+export 'screens/connection_show_page/connection_list_screen.dart';
+
 export 'screens/main_navigation_page.dart';
 
 // helper
