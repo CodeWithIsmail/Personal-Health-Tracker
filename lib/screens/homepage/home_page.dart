@@ -23,25 +23,25 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              height: MediaQuery.of(context).size.height / 4,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: Colors.blue.shade100,
-              ),
-              child: Text(
-                "My Latest Health Conditions",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.green.shade900),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Container(
+          //     height: MediaQuery.of(context).size.height / 4,
+          //     width: double.infinity,
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.all(Radius.circular(10)),
+          //       color: Colors.blue.shade100,
+          //     ),
+          //     child: Text(
+          //       "My Latest Health Conditions",
+          //       style: TextStyle(
+          //           fontSize: 18,
+          //           fontWeight: FontWeight.w500,
+          //           color: Colors.green.shade900),
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+          // ),
           Container(
             padding: EdgeInsets.all(16),
             child: Text(
