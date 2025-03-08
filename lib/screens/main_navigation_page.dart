@@ -23,7 +23,7 @@ class _NavigationPageState extends State<NavigationPage> {
     else if (pageNumber == 3)
       return AddReport();
     else if (pageNumber == 4)
-      return ProfileScreen(null);
+      return ProfileScreen(FirebaseAuth.instance.currentUser!.email!.split('@')[0]);
     else
       return ConnectionPage();
   }
