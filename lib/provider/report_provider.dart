@@ -25,6 +25,7 @@ class ReportProvider with ChangeNotifier {
     notifyListeners();
 
     try {
+      print("target user: " + username);
       _reports = await _firestoreService.fetchReports(username);
     } catch (error) {
       print('Error fetching reports: $error');

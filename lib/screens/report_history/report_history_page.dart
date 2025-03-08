@@ -10,21 +10,40 @@ class ReportListScreen extends StatefulWidget {
 }
 
 class _ReportListScreenState extends State<ReportListScreen> {
+  String username="";
+  // final AuthenticationProvider authProvider = AuthenticationProvider();
   @override
   void initState() {
     super.initState();
+     // username = widget.targetName ?? authProvider.currentUserName ?? "";
     String username = "";
-    if (widget.targetName != null) {
-       username = widget.targetName??"";
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final authProvider =
-            Provider.of<AuthenticationProvider>(context, listen: false);
-         username = authProvider.currentUserName ?? "";
-        Provider.of<ReportProvider>(context, listen: false)
-            .fetchReports(username);
-      });
-    }
+
+    setState(() {
+      username=widget.targetName??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // final authProvider =
+      // Provider.of<AuthenticationProvider>(context, listen: false);
+      // username = authProvider.currentUserName ?? "";
+      Provider.of<ReportProvider>(context, listen: false)
+          .fetchReports(username);
+    });
+
+    //
+    // if (widget.targetName != null) {
+    //    username = widget.targetName??"";
+    // } else {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     final authProvider =
+    //         Provider.of<AuthenticationProvider>(context, listen: false);
+    //      username = authProvider.currentUserName ?? "";
+    //     Provider.of<ReportProvider>(context, listen: false)
+    //         .fetchReports(username);
+    //   });
+    // }
+
+    print("target user get: " + username);
   }
 
   @override
@@ -61,10 +80,17 @@ class _ReportListScreenState extends State<ReportListScreen> {
                 )
               : RefreshIndicator(
                   onRefresh: () async {
-                    final authProvider = Provider.of<AuthenticationProvider>(
-                        context,
-                        listen: false);
-                    final username = authProvider.currentUserName ?? "";
+                    // final authProvider = Provider.of<AuthenticationProvider>(
+                    //     context,
+                    //     listen: false);
+                    // final username = authProvider.currentUserName ?? "";
+                    // setState(() {
+                    //   username=widget.targetName??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+                    // });
+                    setState(() {
+                      username=widget.targetName??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+                    });
+
                     await reportProvider.fetchReports(username);
                   },
                   child: ListView.builder(
@@ -100,9 +126,13 @@ class _ReportListScreenState extends State<ReportListScreen> {
   }
 
   void _onDateOptionChanged(String option) {
-    final authProvider =
-        Provider.of<AuthenticationProvider>(context, listen: false);
-    final username = authProvider.currentUserName ?? "";
+    // final authProvider =
+    //     Provider.of<AuthenticationProvider>(context, listen: false);
+    // final username = authProvider.currentUserName ?? "";
+    setState(() {
+      username=widget.targetName??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+    });
+
     final reportProvider = Provider.of<ReportProvider>(context, listen: false);
 
     final now = DateTime.now();
@@ -145,9 +175,14 @@ class _ReportListScreenState extends State<ReportListScreen> {
       },
     );
     if (pickedRange != null) {
-      final authProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
-      final username = authProvider.currentUserName ?? "";
+      // final authProvider =
+          // Provider.of<AuthenticationProvider>(context, listen: false);
+      // final username = authProvider.currentUserName ?? "";
+
+      setState(() {
+        username=widget.targetName??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+      });
+
 
       Provider.of<ReportProvider>(context, listen: false)
           .filterReportsByDateRange(

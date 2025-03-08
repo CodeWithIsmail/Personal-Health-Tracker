@@ -117,7 +117,7 @@ class _ProfileInputState extends State<ProfileInput> {
         editingControllers[1].text,
         editingControllers[2].text,
         editingControllers[3].text,
-        editingControllers[4].text,
+        email??"",
         editingControllers[5].text,
         timestamp!,
         genderOptions[selectedGenderIndex],
