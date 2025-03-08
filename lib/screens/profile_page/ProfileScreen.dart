@@ -1,10 +1,12 @@
 import '../../ImportAll.dart';
 
 class ProfileScreen extends StatefulWidget {
+  String? uname;
+
+  ProfileScreen(this.uname);
+
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
-
-  ProfileScreen();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -15,24 +17,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
 
-    // Use addPostFrameCallback to ensure the fetch happens after the first build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userInfoProvider = Provider.of<UserInfoProvider>(context);
+    if(widget.uname != null){
+      userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
+      userInfoProvider.fetchUserInfo(widget.uname ?? "");
+    }
+    else{
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
 
-      authProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
+        authProvider =
+            Provider.of<AuthenticationProvider>(context, listen: false);
 
-      // Fetch user data after the first build
-      if (!userInfoProvider.hasFetched) {
-        userInfoProvider.fetchUserInfo(authProvider.currentUserName ?? "");
-        print(authProvider.currentUserName);
-      }
-    });
+        // Fetch user data after the first build
+        if (!userInfoProvider.hasFetched) {
+          userInfoProvider.fetchUserInfo(authProvider.currentUserName ?? "");
+          print(authProvider.currentUserName);
+        }
+      });
+    }
+
+
   }
 
   @override
   Widget build(BuildContext context) {
-    final userInfoProvider = Provider.of<UserInfoProvider>(context);
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
     final authProvider = Provider.of<AuthenticationProvider>(context);
 
     // Show loading spinner if data is still loading
@@ -109,47 +119,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.width,
                   ),
+            if (widget.uname == null)
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 8, right: 8, top: 5, bottom: 30),
+                child: CustomButtonGestureDetector(
+                  "Edit Profile",
+                  double.infinity,
+                  kToolbarHeight,
+                  Colors.blue.withOpacity(0.3),
+                  Colors.black,
+                  20,
+                  () {
+                    ProfileInfo profileInfo;
+                    if (currentUser == null)
+                      profileInfo = ProfileInfo("", "", "", "", "", "", "",
+                          email, "", Timestamp.now(), "", "", 0.0, 0.0);
+                    else
+                      profileInfo = ProfileInfo(
+                          currentUser.uname,
+                          imgLink,
+                          qrLink,
+                          currentUser.fname,
+                          currentUser.lname,
+                          currentUser.city,
+                          currentUser.country,
+                          email,
+                          phone,
+                          currentUser.dob,
+                          gender,
+                          bg,
+                          currentUser.weight,
+                          currentUser.height);
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileInput(profileInfo),
+                      ),
+                    );
+                  },
+                ),
+              ),
             Padding(
               padding:
                   const EdgeInsets.only(left: 8, right: 8, top: 5, bottom: 30),
               child: CustomButtonGestureDetector(
-                "Edit Profile",
+                "Health Record History",
                 double.infinity,
                 kToolbarHeight,
                 Colors.blue.withOpacity(0.3),
                 Colors.black,
                 20,
                 () {
-                  ProfileInfo profileInfo;
-                  if (currentUser == null)
-                    profileInfo = ProfileInfo("", "", "", "", "", "", "", email,
-                        "", Timestamp.now(), "", "", 0.0, 0.0);
-                  else
-                    profileInfo = ProfileInfo(
-                        currentUser.uname,
-                        imgLink,
-                        qrLink,
-                        currentUser.fname,
-                        currentUser.lname,
-                        currentUser.city,
-                        currentUser.country,
-                        email,
-                        phone,
-                        currentUser.dob,
-                        gender,
-                        bg,
-                        currentUser.weight,
-                        currentUser.height);
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProfileInput(profileInfo),
+                      builder: (context) => ReportListScreen(null),
                     ),
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

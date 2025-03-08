@@ -1,7 +1,9 @@
 import '../../ImportAll.dart';
 
 class ReportListScreen extends StatefulWidget {
-  const ReportListScreen({Key? key}) : super(key: key);
+  String? targetName;
+
+  ReportListScreen(this.targetName);
 
   @override
   State<ReportListScreen> createState() => _ReportListScreenState();
@@ -11,13 +13,18 @@ class _ReportListScreenState extends State<ReportListScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
-      final username = authProvider.currentUserName ?? "";
-      Provider.of<ReportProvider>(context, listen: false)
-          .fetchReports(username);
-    });
+    String username = "";
+    if (widget.targetName != null) {
+       username = widget.targetName??"";
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final authProvider =
+            Provider.of<AuthenticationProvider>(context, listen: false);
+         username = authProvider.currentUserName ?? "";
+        Provider.of<ReportProvider>(context, listen: false)
+            .fetchReports(username);
+      });
+    }
   }
 
   @override
@@ -76,11 +83,10 @@ class _ReportListScreenState extends State<ReportListScreen> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ReportDetailScreen(
-                                        report: report,
-                                        reportIndex: index + 1,
-                                    ),
+                                builder: (context) => ReportDetailScreen(
+                                  report: report,
+                                  reportIndex: index + 1,
+                                ),
                               ),
                             );
                           },

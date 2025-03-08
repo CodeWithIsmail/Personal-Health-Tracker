@@ -33,11 +33,12 @@ class _ScanCodePageState extends State<ScanCodePage> {
           }
           if (image != null) {
             String uname = barcodes.first.rawValue ?? "ismail99";
+            print(uname);
 
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfileScreen(),
+                builder: (context) => ProfileScreen(uname),
               ),
             );
           }

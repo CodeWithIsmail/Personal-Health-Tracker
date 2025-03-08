@@ -168,46 +168,49 @@ class FirestoreService {
           );
         }).toList();
       }
-      //backend
-      String start = startingDate.toUtc().toIso8601String();
-      String end = endingDate.toUtc().toIso8601String();
-
-      print('$start  $end');
-
-      // String start = "";
-      // String end = "";
-
-      final url = Uri.parse(
-          "http://10.100.202.129:5000/api/reports/getReportAttributes?username=$username&testName=$testName&startDate=$start&endDate=$end"
-      );
-
-
-      final response = await http.get(url);
-
-      print('Response Body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-
-        // Check if data is null or doesn't contain 'data' key
-        if (responseData == null || responseData['data'] == null) {
-          debugPrint("Response data is null or does not contain 'data' key");
-          return [];
-        }
-
-        List<dynamic> fetchedData = responseData['data'];
-
-        // Map fetched data to ChartDataTimewise objects
-        return fetchedData.map((data) {
-          return ChartDataTimewise(
-            DateTime.tryParse(data['reportCollectionDate'])?.millisecondsSinceEpoch ?? 0,
-            data['value'] ?? 0, // Default value in case of null
-          );
-        }).toList();
-      } else {
-        debugPrint("Failed to fetch report data: ${response.statusCode} - ${response.body}");
+      else{
         return [];
       }
+      //backend
+      // String start = startingDate.toUtc().toIso8601String();
+      // String end = endingDate.toUtc().toIso8601String();
+      //
+      // print('$start  $end');
+      //
+      // // String start = "";
+      // // String end = "";
+      //
+      // final url = Uri.parse(
+      //     "http://10.100.202.129:5000/api/reports/getReportAttributes?username=$username&testName=$testName&startDate=$start&endDate=$end"
+      // );
+      //
+      //
+      // final response = await http.get(url);
+      //
+      // print('Response Body: ${response.body}');
+      //
+      // if (response.statusCode == 200) {
+      //   final responseData = json.decode(response.body);
+      //
+      //   // Check if data is null or doesn't contain 'data' key
+      //   if (responseData == null || responseData['data'] == null) {
+      //     debugPrint("Response data is null or does not contain 'data' key");
+      //     return [];
+      //   }
+      //
+      //   List<dynamic> fetchedData = responseData['data'];
+      //
+      //   // Map fetched data to ChartDataTimewise objects
+      //   return fetchedData.map((data) {
+      //     return ChartDataTimewise(
+      //       DateTime.tryParse(data['reportCollectionDate'])?.millisecondsSinceEpoch ?? 0,
+      //       data['value'] ?? 0, // Default value in case of null
+      //     );
+      //   }).toList();
+      // } else {
+      //   debugPrint("Failed to fetch report data: ${response.statusCode} - ${response.body}");
+      //   return [];
+      // }
     }
     catch (e) {
       debugPrint('Error fetching report data: $e');
@@ -268,18 +271,18 @@ class FirestoreService {
         'summary': summery,
       };
 
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(data), // Convert data to JSON
-      );
-
-      // Handle the response from the backend
-      if (response.statusCode == 201) {
-        print("Report summary successfully stored!");
-      } else {
-        print("Failed to store report summary. Status code: ${response.statusCode}");
-      }
+      // final response = await http.post(
+      //   url,
+      //   headers: {'Content-Type': 'application/json'},
+      //   body: json.encode(data), // Convert data to JSON
+      // );
+      //
+      // // Handle the response from the backend
+      // if (response.statusCode == 201) {
+      //   print("Report summary successfully stored!");
+      // } else {
+      //   print("Failed to store report summary. Status code: ${response.statusCode}");
+      // }
 
       await FirebaseFirestore.instance.collection('report').add({
         'username': username,

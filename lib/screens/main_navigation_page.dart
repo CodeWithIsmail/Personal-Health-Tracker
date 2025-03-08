@@ -16,14 +16,14 @@ class _NavigationPageState extends State<NavigationPage> {
     if (pageNumber == 0)
       return HomePage();
     else if (pageNumber == 1)
-      return ReportListScreen();
+      return ReportListScreen(null);
     else if (pageNumber == 2)
       return HistoryVisualization();
     // return ReportHistoryVisualization();
     else if (pageNumber == 3)
       return AddReport();
     else if (pageNumber == 4)
-      return ProfileScreen();
+      return ProfileScreen(null);
     else
       return ConnectionPage();
   }

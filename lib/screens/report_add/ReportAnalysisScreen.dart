@@ -151,7 +151,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
             //     date: DateTime.now(),
             //     image: widget.imageLink,
             //     summary: text));
-            firestoreService.storeSummeryImgLink(uname, widget.imageLink, text);
+            firestoreService.storeSummeryImgLink(uname, widget.imageLink, text,);
           }
           _scrollDown();
         });
