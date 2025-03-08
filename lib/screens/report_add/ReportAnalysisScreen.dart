@@ -34,6 +34,10 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Report Analysis'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(

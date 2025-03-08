@@ -18,7 +18,7 @@ class _NavigationPageState extends State<NavigationPage> {
     else if (pageNumber == 1)
       return ReportListScreen(FirebaseAuth.instance.currentUser!.email!.split('@')[0]);
     else if (pageNumber == 2)
-      return HistoryVisualization();
+      return HistoryVisualization(FirebaseAuth.instance.currentUser!.email!.split('@')[0]);
     // return ReportHistoryVisualization();
     else if (pageNumber == 3)
       return AddReport();

@@ -1,6 +1,10 @@
 import '../../ImportAll.dart';
 
 class HistoryVisualization extends StatefulWidget {
+  String? uname;
+
+  HistoryVisualization(this.uname);
+
   @override
   _HistoryVisualizationState createState() => _HistoryVisualizationState();
 }
@@ -8,16 +12,21 @@ class HistoryVisualization extends StatefulWidget {
 class _HistoryVisualizationState extends State<HistoryVisualization> {
   String? _selectedDateRange = 'All';
   DateTimeRange? _selectedDateRangeCustom;
-  String? _selectedTestName;
+  String? _selectedTestName="";
   String username = "";
 
   @override
   void initState() {
     super.initState();
+
+    setState(() {
+      username=widget.uname??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
-      username = authProvider.currentUserName ?? "";
+      // final authProvider =
+      //     Provider.of<AuthenticationProvider>(context, listen: false);
+      // username = authProvider.currentUserName ?? "";
       Provider.of<TestNamesProvider>(context, listen: false).fetchTestNames();
     });
   }
@@ -28,32 +37,38 @@ class _HistoryVisualizationState extends State<HistoryVisualization> {
         Provider.of<ReportAttributeProvider>(context);
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTestNameDropdown(),
-              SizedBox(height: 20),
-              _buildDateRangeDropdown(),
-              if (_selectedDateRange == 'Custom' &&
-                  _selectedDateRangeCustom != null)
-                _buildSelectedDateRangeInfo(),
-              SizedBox(height: 20),
-              _buildVisualizeButton(context),
-              SizedBox(height: 20),
-              if (reportAttributeProvider.isLoading)
-                Center(child: defaultSpinKitWave),
-              if (reportAttributeProvider.chartData.isNotEmpty &&
-                  !reportAttributeProvider.isLoading)
-                _buildChart(reportAttributeProvider.chartData),
-              if (reportAttributeProvider.chartData.isEmpty &&
-                  !reportAttributeProvider.isLoading)
-                Center(
-                  child: Text("No Record found within the date range"),
-                ),
-            ],
+      appBar: AppBar(
+        title: Text('Health History Visualization'),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTestNameDropdown(),
+                SizedBox(height: 20),
+                _buildDateRangeDropdown(),
+                if (_selectedDateRange == 'Custom' &&
+                    _selectedDateRangeCustom != null)
+                  _buildSelectedDateRangeInfo(),
+                SizedBox(height: 20),
+                _buildVisualizeButton(context),
+                SizedBox(height: 20),
+                if (reportAttributeProvider.isLoading)
+                  Center(child: defaultSpinKitWave),
+                if (reportAttributeProvider.chartData.isNotEmpty &&
+                    !reportAttributeProvider.isLoading)
+                  _buildChart(reportAttributeProvider.chartData),
+                if (reportAttributeProvider.chartData.isEmpty &&
+                    !reportAttributeProvider.isLoading)
+                  Center(
+                    child: Text("No Record found within the date range"),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -133,6 +148,9 @@ class _HistoryVisualizationState extends State<HistoryVisualization> {
           elevation: 5,
         ),
         onPressed: () async {
+          setState(() {
+            username=widget.uname??FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+          });
           if (_selectedTestName != null && _selectedDateRange != null) {
             await context.read<ReportAttributeProvider>().fetchReportData(
                 username,

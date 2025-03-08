@@ -109,6 +109,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         calculateBMI(_userData!.weight, _userData!.height).toStringAsFixed(2);
 
     return Scaffold(
+      appBar: FirebaseAuth.instance.currentUser!.email!.split('@')[0] ==
+              widget.uname
+          ? AppBar(toolbarHeight: 0,)
+          : AppBar(
+              title: Text( "${widget.uname}'s Profile"),
+              centerTitle: true,
+            ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -181,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _userData!.weight,
                         _userData!.height,
                       );
-        
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -192,8 +199,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 8, right: 8, top: 5, bottom: 30),
+                padding: const EdgeInsets.only(
+                    left: 8, right: 8, top: 5, bottom: 30),
                 child: CustomButtonGestureDetector(
                   "Health Record History",
                   double.infinity,
@@ -206,6 +213,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReportListScreen(widget.uname),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 8, right: 8, top: 5, bottom: 30),
+                child: CustomButtonGestureDetector(
+                  "Health Record Visualization",
+                  double.infinity,
+                  kToolbarHeight,
+                  Colors.blue.withOpacity(0.3),
+                  Colors.black,
+                  20,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            HistoryVisualization(widget.uname),
                       ),
                     );
                   },

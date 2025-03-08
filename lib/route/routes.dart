@@ -20,7 +20,7 @@ class AppRoutes {
       verify: (context) => VerificationPage(),
       mainNavigationPage: (context) => NavigationPage(),
       scanCodePage: (context) => ScanCodePage(),
-      historyVisualizationPage: (context) => HistoryVisualization(),
+      historyVisualizationPage: (context) => HistoryVisualization(FirebaseAuth.instance.currentUser!.email!.split('@')[0]),
     };
   }
 }
