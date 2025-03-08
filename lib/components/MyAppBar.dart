@@ -374,14 +374,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     // Fetch the current user's document from the 'connection' collection
     final DocumentSnapshot<Map<String, dynamic>> currentUserDoc =
         await FirebaseFirestore.instance
-            .collection("connection")
+            .collection("users")
             .doc(currentUser)
             .get();
 
     // Fetch the target user's document from the 'connection' collection
     final DocumentSnapshot<Map<String, dynamic>> targetUserDoc =
         await FirebaseFirestore.instance
-            .collection("connection")
+            .collection("users")
             .doc(targetUsername)
             .get();
 

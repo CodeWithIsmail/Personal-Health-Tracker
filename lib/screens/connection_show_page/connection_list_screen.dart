@@ -21,14 +21,14 @@ class _ConnectionPageState extends State<ConnectionPage>
     try {
       // Remove viewer from "viewers" array (they can't view me anymore)
       DocumentReference userDocRef =
-          _firestore.collection("connection").doc(currentUserName);
+          _firestore.collection("users").doc(currentUserName);
       await userDocRef.update({
         "viewers": FieldValue.arrayRemove([viewerName])
       });
 
       // Remove myself from their "connections" array (I disappear from their view)
       DocumentReference viewerDocRef =
-          _firestore.collection("connection").doc(viewerName);
+          _firestore.collection("users").doc(viewerName);
       await viewerDocRef.update({
         "connections": FieldValue.arrayRemove([currentUserName])
       });
@@ -52,9 +52,9 @@ class _ConnectionPageState extends State<ConnectionPage>
 
     try {
       DocumentReference userDocRef =
-          _firestore.collection("connection").doc(currentUserName);
+          _firestore.collection("users").doc(currentUserName);
       DocumentReference viewerDocRef =
-          _firestore.collection("connection").doc(newViewer);
+          _firestore.collection("users").doc(newViewer);
 
       // Ensure current user's document exists & update "viewers"
       await userDocRef.set({
@@ -154,7 +154,7 @@ class _ConnectionPageState extends State<ConnectionPage>
   Widget _buildList(String field, String currentUserName, bool isViewersList) {
     return StreamBuilder<DocumentSnapshot>(
       stream:
-          _firestore.collection("connection").doc(currentUserName).snapshots(),
+          _firestore.collection("users").doc(currentUserName).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
