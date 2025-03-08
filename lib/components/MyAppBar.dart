@@ -43,6 +43,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
+            searchUser(context);
+          },
+          icon: Icon(Icons.search),
+        ),
+        IconButton(
+          onPressed: () {
             Navigator.pushNamed(context, '/scanCodePage');
           },
           icon: Icon(Icons.qr_code_scanner),
@@ -72,6 +78,104 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
     );
   }
+
+  Future<String?> showUsernameInputDialog(BuildContext context) async {
+    TextEditingController _usernameController = TextEditingController();
+
+    return await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Title
+                Text(
+                  "Search user",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 15),
+
+                // Input Field
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    hintText: "Enter username",
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 12,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                // Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, null); // Close dialog
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        String enteredUsername = _usernameController.text.trim();
+                        if (enteredUsername.isNotEmpty) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(enteredUsername),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text("Search"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void searchUser(BuildContext context) async {
+    String? newUsername = await showUsernameInputDialog(context);
+
+    if (newUsername != null) {
+      // Perform action with newUsername (e.g., add to Firestore)
+      print("Entered Username: $newUsername");
+    }
+  }
+
+
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

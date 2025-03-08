@@ -20,8 +20,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if(widget.uname != null){
       userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
       userInfoProvider.fetchUserInfo(widget.uname ?? "");
+      print("name found");
     }
     else{
+      print("else name found");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
 
@@ -41,8 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userInfoProvider =
-        Provider.of<UserInfoProvider>(context, listen: false);
+    // final userInfoProvider =
+    //     Provider.of<UserInfoProvider>(context, listen: false);
     final authProvider = Provider.of<AuthenticationProvider>(context);
 
     // Show loading spinner if data is still loading

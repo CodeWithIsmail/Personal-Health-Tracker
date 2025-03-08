@@ -14,6 +14,7 @@ class UserInfoProvider with ChangeNotifier {
     if (hasFetched) return;
     isLoading = true;
     notifyListeners();
+    reset();
 
     try {
       final userDataMap = await _firestoreService.fetchUserDocument(username);
