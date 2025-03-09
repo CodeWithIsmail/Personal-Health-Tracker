@@ -54,27 +54,27 @@ class _LoginPageState extends State<LoginPage> {
                                 "Password", true, password, TextInputType.text),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 20),
-                            Padding(
-                              padding: EdgeInsets.only(right: 10),
-                              child: CustomTextGestureDetector(
-                                "Forgot Password?",
-                                Colors.white60,
-                                15,
-                                true,
-                                () {
-                                  if (email.text.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Enter your email to reset password.')),
-                                    );
-                                    return;
-                                  }
-                                  authProvider.resetPassword(
-                                      email.text, context);
-                                },
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: EdgeInsets.only(right: 10),
+                            //   child: CustomTextGestureDetector(
+                            //     "Forgot Password?",
+                            //     Colors.white60,
+                            //     15,
+                            //     true,
+                            //     () {
+                            //       if (email.text.isEmpty) {
+                            //         ScaffoldMessenger.of(context).showSnackBar(
+                            //           const SnackBar(
+                            //               content: Text(
+                            //                   'Enter your email to reset password.')),
+                            //         );
+                            //         return;
+                            //       }
+                            //       authProvider.resetPassword(
+                            //           email.text, context);
+                            //     },
+                            //   ),
+                            // ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.width / 10),
                             CustomButtonGestureDetector(
