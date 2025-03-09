@@ -1,10 +1,10 @@
 import '../ImportAll.dart';
 
-const defaultSpinKitThreeInOut = SpinKitThreeInOut(
+const defaultSpinKitThreeInOut = SpinKitDoubleBounce(
   color: Colors.deepPurple,
   size: 20,
 );
-const defaultSpinKitWave = SpinKitWave(
+const defaultSpinKitWave = SpinKitDoubleBounce(
   color: Colors.deepPurpleAccent,
   size: 25,
 );

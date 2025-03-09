@@ -160,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.width,
                     ),
-              if (widget.uname == null)
+              if (widget.uname == FirebaseAuth.instance.currentUser!.email!.split('@')[0])
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 8, right: 8, top: 5, bottom: 30),
