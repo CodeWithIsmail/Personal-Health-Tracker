@@ -57,14 +57,14 @@ class _ScanCodePageState extends State<ScanCodePage> {
     // Fetch the current user's document from the 'connection' collection
     final DocumentSnapshot<Map<String, dynamic>> currentUserDoc =
         await FirebaseFirestore.instance
-            .collection("users")
+            .collection("connection")
             .doc(currentUser)
             .get();
 
     // Fetch the target user's document from the 'connection' collection
     final DocumentSnapshot<Map<String, dynamic>> targetUserDoc =
         await FirebaseFirestore.instance
-            .collection("users")
+            .collection("connection")
             .doc(targetUsername)
             .get();
 

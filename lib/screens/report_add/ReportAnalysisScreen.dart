@@ -3,8 +3,9 @@ import '../../ImportAll.dart';
 class ReportAnalysis extends StatefulWidget {
   File selectedMedia;
   String imageLink;
+  DateTime selected;
 
-  ReportAnalysis(this.selectedMedia, this.imageLink);
+  ReportAnalysis(this.selectedMedia, this.imageLink, this.selected);
 
   @override
   State<ReportAnalysis> createState() => _ReportAnalysisState();
@@ -155,7 +156,7 @@ class _ReportAnalysisState extends State<ReportAnalysis> {
             //     date: DateTime.now(),
             //     image: widget.imageLink,
             //     summary: text));
-            firestoreService.storeSummeryImgLink(uname, widget.imageLink, text,);
+            firestoreService.storeSummeryImgLink(uname, widget.imageLink, text,widget.selected);
           }
           _scrollDown();
         });

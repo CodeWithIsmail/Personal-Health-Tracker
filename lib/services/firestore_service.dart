@@ -248,7 +248,7 @@ class FirestoreService {
   }
 
   Future<void> storeSummeryImgLink(
-      String username, String imgLink, String summery) async {
+      String username, String imgLink, String summery,DateTime date) async {
     try {
 
       final url = Uri.parse("http://10.100.202.129:5000/api/reports/addReportSummary");
@@ -286,7 +286,7 @@ class FirestoreService {
 
       await FirebaseFirestore.instance.collection('report').add({
         'username': username,
-        'date': DateTime.now(),
+        'date': date,
         'image': imgLink,
         'summery': summery,
         'viewer': [],

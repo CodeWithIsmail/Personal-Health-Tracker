@@ -11,7 +11,7 @@ class AddReport extends StatefulWidget {
 class _AddReportState extends State<AddReport> {
   File? selectedMedia;
   final ImagePicker _picker = ImagePicker();
-
+  DateTime? selectedDate;
   FirestoreService firestoreService = new FirestoreService();
   GeminiService geminiService = new GeminiService();
   String imageURL = "";
@@ -23,6 +23,7 @@ class _AddReportState extends State<AddReport> {
   void initState() {
     super.initState();
     getLostData();
+    selectedDate = DateTime.now();
   }
 
   Future<void> getLostData() async {
@@ -37,8 +38,8 @@ class _AddReportState extends State<AddReport> {
           selectedMedia = croppedFile;
         });
         // await _uploadImage(croppedFile);
-        String values =
-            await geminiService.sendImagePromptToGemini(generalPrompt, croppedFile, null);
+        String values = await geminiService.sendImagePromptToGemini(
+            generalPrompt, croppedFile, null);
         print(values);
         await _processImage(values);
         //  await _gotoAnalysisScreen(croppedFile);
@@ -61,9 +62,8 @@ class _AddReportState extends State<AddReport> {
             isLoading = true;
           });
 
-
-          String values =
-              await geminiService.sendImagePromptToGemini(generalPrompt, croppedFile, null);
+          String values = await geminiService.sendImagePromptToGemini(
+              generalPrompt, croppedFile, null);
           print(values);
           await _uploadImage(croppedFile);
           await _processImage(values);
@@ -180,18 +180,104 @@ class _AddReportState extends State<AddReport> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReportAnalysis(selectedMedia!, imageURL),
+        builder: (context) => ReportAnalysis(selectedMedia!, imageURL,selectedDate ?? DateTime.now()),
       ),
     );
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReportInputScreen(testData: reportMap),
+        builder: (context) =>
+            ReportInputScreen(reportMap, selectedDate ?? DateTime.now()),
       ),
     );
   }
 
+  Future<void> _pickDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
   @override
+  // Widget build(BuildContext context) {
+  //   return Container(
+  //     child: Center(
+  //       child: isLoading
+  //           ? Center(
+  //               child: defaultSpinKitWave,
+  //             )
+  //           : Container(
+  //               decoration: BoxDecoration(
+  //                 gradient: gradientMain,
+  //                 // color: Color(0xFF6C5B7B),
+  //                 borderRadius: BorderRadius.circular(10),
+  //               ),
+  //               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+  //               height: MediaQuery.of(context).size.height / 2,
+  //               width: MediaQuery.of(context).size.width,
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 children: [
+  //                   Text(
+  //                     'Give report data using',
+  //                     style: TextStyle(
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 20,
+  //                         color: Colors.white),
+  //                   ),
+  //                   CustomButtonGestureDetector(
+  //                     'Camera',
+  //                     MediaQuery.of(context).size.width / 3,
+  //                     MediaQuery.of(context).size.width / 6,
+  //                     Colors.white,
+  //                     Colors.black,
+  //                     18,
+  //                     () {
+  //                       _getImage(ImageSource.camera);
+  //                     },
+  //                   ),
+  //                   CustomButtonGestureDetector(
+  //                     'Gallery',
+  //                     MediaQuery.of(context).size.width / 3,
+  //                     MediaQuery.of(context).size.width / 6,
+  //                     Colors.white,
+  //                     Colors.black,
+  //                     18,
+  //                     () {
+  //                       _getImage(ImageSource.gallery);
+  //                     },
+  //                   ),
+  //                   CustomButtonGestureDetector(
+  //                     'Manual Input',
+  //                     MediaQuery.of(context).size.width / 3,
+  //                     MediaQuery.of(context).size.width / 6,
+  //                     Colors.white,
+  //                     Colors.black,
+  //                     18,
+  //                     () {
+  //                       Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => Manualreport()),
+  //                       );
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //     ),
+  //   );
+  // }
   Widget build(BuildContext context) {
     return Container(
       child: Center(
@@ -202,7 +288,6 @@ class _AddReportState extends State<AddReport> {
             : Container(
                 decoration: BoxDecoration(
                   gradient: gradientMain,
-                  // color: Color(0xFF6C5B7B),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -212,6 +297,35 @@ class _AddReportState extends State<AddReport> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // Date Picker Button
+                    GestureDetector(
+                      onTap: _pickDate,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.calendar_today, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text(
+                              selectedDate == null
+                                  ? "Select Report Date"
+                                  : "${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
                     Text(
                       'Give report data using',
                       style: TextStyle(
@@ -219,6 +333,7 @@ class _AddReportState extends State<AddReport> {
                           fontSize: 20,
                           color: Colors.white),
                     ),
+
                     CustomButtonGestureDetector(
                       'Camera',
                       MediaQuery.of(context).size.width / 3,
@@ -230,6 +345,7 @@ class _AddReportState extends State<AddReport> {
                         _getImage(ImageSource.camera);
                       },
                     ),
+
                     CustomButtonGestureDetector(
                       'Gallery',
                       MediaQuery.of(context).size.width / 3,
@@ -241,6 +357,7 @@ class _AddReportState extends State<AddReport> {
                         _getImage(ImageSource.gallery);
                       },
                     ),
+
                     CustomButtonGestureDetector(
                       'Manual Input',
                       MediaQuery.of(context).size.width / 3,

@@ -35,7 +35,7 @@ class _SignupPageState extends State<SignupPage> {
                           MediaQuery.of(context).size.width / 3,
                           MediaQuery.of(context).size.height / 5),
                       SizedBox(height: MediaQuery.of(context).size.width / 50),
-                      Text('Personal Health Tracker', style: appNameTextStyle),
+                      Text('HealthMate', style: appNameTextStyle),
                       SizedBox(height: MediaQuery.of(context).size.width / 10),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),

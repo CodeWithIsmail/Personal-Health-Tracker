@@ -4,8 +4,9 @@ import '../../ImportAll.dart';
 
 class ReportInputScreen extends StatefulWidget {
   final Map<String, String> testData;
+  DateTime selected;
 
-  ReportInputScreen({required this.testData});
+  ReportInputScreen(this.testData, this.selected);
 
   @override
   _ReportInputScreenState createState() => _ReportInputScreenState();
@@ -13,7 +14,6 @@ class ReportInputScreen extends StatefulWidget {
 
 class _ReportInputScreenState extends State<ReportInputScreen> {
   Timestamp? timestamp;
-  late DateTime selected;
   late Map<String, TextEditingController> controllers;
   TextEditingController dayController = new TextEditingController();
   bool isLoading = false;
@@ -29,7 +29,7 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
       username = authProvider.currentUserName ?? "";
     });
 
-    selected = DateTime.now();
+    // selected = DateTime.now();
     controllers = {};
     widget.testData.forEach((testName, value) {
       controllers[testName] = TextEditingController(text: value);
@@ -126,10 +126,10 @@ class _ReportInputScreenState extends State<ReportInputScreen> {
                   20,
                   () async {
                     controllers.forEach((key, value) {
-                      reportAttributeProvider.storeReportData(
-                          username, selected, key, double.parse(value.text));
+                      reportAttributeProvider.storeReportData(username,
+                          widget.selected, key, double.parse(value.text));
                     });
-                    Navigator.pop(context, selected);
+                    Navigator.pop(context);
                   },
                 ),
           SizedBox(height: 16),

@@ -136,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ProfileInfoItem(Icons.email, "Email", email),
               ProfileInfoItem(Icons.phone, "Phone", phone),
               ProfileInfoItem(Icons.date_range_outlined, "Age", dob),
-              ProfileInfoItem(Icons.male, "Gender", gender),
+              ProfileInfoItem(Icons.person_rounded, "Gender", gender),
               ProfileInfoItem(Icons.monitor_weight, "Weight", weight),
               ProfileInfoItem(Icons.height, "Height", height),
               ProfileInfoItem(Icons.health_and_safety_sharp, "BMI", bmi),

@@ -15,7 +15,7 @@ final gradientMain = LinearGradient(
 );
 
 final appNameTextStyle = TextStyle(
-  fontSize: 25,
+  fontSize: 30,
   fontWeight: FontWeight.bold,
   color: Colors.white,
   shadows: [
@@ -64,3 +64,11 @@ final visualizationDropdownDecoration=InputDecoration(
   ),
 );
 
+final visualizationDropdownDecorationTest=InputDecoration(
+  labelText: 'Select Test Name',
+  labelStyle: const TextStyle(color: Colors.teal),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(8.0),
+    borderSide: const BorderSide(color: Colors.teal),
+  ),
+);

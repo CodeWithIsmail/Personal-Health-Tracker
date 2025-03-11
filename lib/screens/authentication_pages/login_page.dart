@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
                           MediaQuery.of(context).size.height / 5),
                       SizedBox(height: MediaQuery.of(context).size.width / 50),
                       Text(
-                        'Personal Health Tracker',
+                        'HealthMate',
                         style: appNameTextStyle,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.width / 10),

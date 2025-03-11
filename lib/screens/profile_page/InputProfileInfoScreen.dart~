@@ -57,7 +57,7 @@ class _ProfileInputState extends State<ProfileInput> {
     editingControllers[10].text = widget.profileInfo.bg;
     timestamp = widget.profileInfo.dob;
 
-    selected = widget.profileInfo.dob.toDate();
+    selected = timestamp.toDate();
     editingControllers[6].text = DateFormat('dd-MMM-yy').format(selected);
     if (genderOptions.contains(widget.profileInfo.gender)) {
       selectedGenderIndex = genderOptions.indexOf(widget.profileInfo.gender);

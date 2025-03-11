@@ -82,7 +82,7 @@ class _HistoryVisualizationState extends State<HistoryVisualization> {
           return Center(child: CircularProgressIndicator());
         }
         return DropdownButtonFormField<String>(
-          decoration: visualizationDropdownDecoration,
+          decoration: visualizationDropdownDecorationTest,
           items: provider.testNames.map((String testName) {
             return DropdownMenuItem<String>(
               value: testName,
